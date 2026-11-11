@@ -163,6 +163,16 @@ window.NBB_ROSTER = {
       "reports": [
         { "id": "mozzicato-snapshot", "kind": "snapshot", "title": "2026 Season Snapshot", "updated": "2026-09-26", "url": "https://sicher19-dev.github.io/No-Brand-2026-Season-Snapshots/frank-mozzicato.pdf" }
       ]
+    },
+
+    /* ===================== APP STORE REVIEW ACCOUNT (Demo / Pitcher) ===================== */
+    {
+      "id": "demo", "first": "Pitcher", "last": "Demo", "org": "No Brand Baseball Analytics", "level": "Sample account", "role": "", "hand": "RHP",
+      "reports": [
+        { "id": "demo-scout", "kind": "scout", "title": "Sample Scouting Report (Skenes vs STL)", "updated": "2026-09-21", "url": "https://sicher19-dev.github.io/skenes-scout/" },
+        { "id": "demo-reverse", "kind": "reverse", "title": "Sample Reverse Report (Skenes vs STL)", "updated": "2026-09-26", "url": "https://sicher19-dev.github.io/reverse-report-skenes-starts/" },
+        { "id": "demo-grades", "kind": "grades", "title": "Sample Pitch Grades (Skenes 2026)", "updated": "2026-08-13", "url": "https://sicher19-dev.github.io/Skenes-Pitch-Grades/" }
+      ]
     }
   ]
 };

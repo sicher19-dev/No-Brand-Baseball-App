@@ -1,0 +1,105 @@
+# One-time setup. Run it from the Actions tab (Run workflow) after adding the secrets listed in README.
+# - iOS: registers the bundle ID, creates the App Store Connect app record, creates the signing
+#        certificate + provisioning profile and stores them (encrypted) in the certs repo.
+# - Android: generates an upload keystore, saves it to this repo's secrets, and backs it up
+#            (encrypted) in the certs repo.
+name: One-time signing setup
+
+on:
+  workflow_dispatch:
+    inputs:
+      app_name:
+        description: "App Store name (must be unique on the App Store)"
+        default: "No Brand Baseball"
+        required: true
+
+jobs:
+  ios-signing:
+    name: iOS certificates + App Store Connect record
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx cap sync ios
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+      - run: bundle install
+        working-directory: ios/App
+
+      - name: fastlane setup
+        working-directory: ios/App
+        run: bundle exec fastlane setup
+        env:
+          APP_NAME: ${{ inputs.app_name }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          MATCH_GIT_TOKEN: ${{ secrets.MATCH_GIT_TOKEN }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_GIT_URL: ${{ vars.MATCH_GIT_URL || 'https://github.com/sicher19-dev/No-Brand-Certificates.git' }}
+          MATCH_GIT_USER: ${{ vars.MATCH_GIT_USER || 'sicher19-dev' }}
+          FASTLANE_SKIP_UPDATE_CHECK: "1"
+
+  android-keystore:
+    name: Android upload keystore
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ secrets.MATCH_GIT_TOKEN }}
+      CERTS_REPO: ${{ vars.MATCH_GIT_URL || 'https://github.com/sicher19-dev/No-Brand-Certificates.git' }}
+      CERTS_USER: ${{ vars.MATCH_GIT_USER || 'sicher19-dev' }}
+    steps:
+      - name: Skip if a keystore already exists
+        id: existing
+        run: |
+          if gh secret list --repo "$GITHUB_REPOSITORY" | grep -q '^ANDROID_KEYSTORE_BASE64'; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"; echo "Keystore secret already present; nothing to do."
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-java@v4
+        if: steps.existing.outputs.exists == 'false'
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Generate keystore and store it as repo secrets
+        if: steps.existing.outputs.exists == 'false'
+        run: |
+          set -euo pipefail
+          PASS="$(openssl rand -base64 24 | tr -d '/+=' | cut -c1-28)"
+          keytool -genkeypair -v -keystore upload.jks -alias upload -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass "$PASS" -keypass "$PASS" \
+            -dname "CN=No Brand Baseball Analytics, O=No Brand Baseball Analytics, C=US"
+          base64 -w0 upload.jks > upload.jks.b64
+          gh secret set ANDROID_KEYSTORE_BASE64 --repo "$GITHUB_REPOSITORY" < upload.jks.b64
+          gh secret set ANDROID_KEYSTORE_PASSWORD --repo "$GITHUB_REPOSITORY" --body "$PASS"
+          echo "Keystore saved to repo secrets."
+
+          # Encrypted backup in the certs repo (same password as the iOS certs)
+          if [ -n "${MATCH_PASSWORD:-}" ]; then
+            openssl enc -aes-256-cbc -pbkdf2 -salt -in upload.jks -out upload.jks.enc -pass env:MATCH_PASSWORD
+            echo -n "$PASS" | openssl enc -aes-256-cbc -pbkdf2 -salt -out upload.password.enc -pass env:MATCH_PASSWORD
+            AUTH_URL="$(echo "$CERTS_REPO" | sed "s#https://#https://${CERTS_USER}:${GH_TOKEN}@#")"
+            git clone --depth 1 "$AUTH_URL" certs || { mkdir certs && git -C certs init -b main; }
+            mkdir -p certs/android
+            cp upload.jks.enc upload.password.enc certs/android/
+            cd certs
+            git config user.name "github-actions"; git config user.email "actions@github.com"
+            git remote get-url origin >/dev/null 2>&1 || git remote add origin "$AUTH_URL"
+            git add android && git commit -m "Add encrypted Android upload keystore" && git push -u origin HEAD:main
+            echo "Encrypted backup pushed to the certs repo (android/)."
+          fi
+          rm -f upload.jks upload.jks.b64
+        env:
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}

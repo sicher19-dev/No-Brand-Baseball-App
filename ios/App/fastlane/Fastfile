@@ -1,0 +1,101 @@
+# No Brand Baseball - iOS release automation (runs on GitHub's macOS runners, no Mac needed).
+#
+#   bundle exec fastlane setup   one time: App ID + App Store Connect record + signing certs
+#   bundle exec fastlane beta    build, sign, upload to TestFlight (and then App Store review)
+#
+# Everything is driven by environment variables set from GitHub Actions secrets; see README.
+
+default_platform(:ios)
+
+APP_ID = "com.nobrandbaseball.app"
+CERTS_REPO = ENV.fetch("MATCH_GIT_URL", "https://github.com/sicher19-dev/No-Brand-Certificates.git")
+CERTS_USER = ENV.fetch("MATCH_GIT_USER", "sicher19-dev")
+
+def asc_key
+  app_store_connect_api_key(
+    key_id: ENV.fetch("ASC_KEY_ID"),
+    issuer_id: ENV.fetch("ASC_ISSUER_ID"),
+    key_content: ENV.fetch("ASC_KEY_CONTENT"),
+    is_key_content_base64: true,
+    in_house: false
+  )
+end
+
+def certs_auth
+  Base64.strict_encode64("#{CERTS_USER}:#{ENV.fetch('MATCH_GIT_TOKEN')}")
+end
+
+def sync_certs(key, readonly:)
+  match(
+    type: "appstore",
+    readonly: readonly,
+    api_key: key,
+    app_identifier: APP_ID,
+    team_id: ENV.fetch("APPLE_TEAM_ID"),
+    git_url: CERTS_REPO,
+    git_basic_authorization: certs_auth,
+    git_branch: "main",
+    platform: "ios"
+  )
+end
+
+platform :ios do
+  desc "One-time setup: register the bundle ID, create the App Store Connect app record, and create the distribution certificate + profile in the certs repo"
+  lane :setup do
+    setup_ci
+    key = asc_key
+
+    create_app_online(
+      api_key: key,
+      app_identifier: APP_ID,
+      app_name: ENV.fetch("APP_NAME", "No Brand Baseball"),
+      app_version: "1.0",
+      language: "en-US",
+      sku: "nobrandbaseball-ios",
+      enable_services: {}
+    )
+
+    sync_certs(key, readonly: false)
+    UI.success("Signing is set up. Push a tag like v1.0.0 (or run the iOS workflow) to ship a build to TestFlight.")
+  end
+
+  desc "Build, sign and upload to TestFlight"
+  lane :beta do
+    setup_ci
+    key = asc_key
+    sync_certs(key, readonly: true)
+
+    profile = lane_context[SharedValues::MATCH_PROVISIONING_PROFILE_MAPPING][APP_ID]
+    build_number = ENV.fetch("BUILD_NUMBER", Time.now.strftime("%Y%m%d%H%M"))
+    version = ENV.fetch("APP_VERSION", "1.0.0")
+
+    update_code_signing_settings(
+      path: "App.xcodeproj",
+      targets: ["App"],
+      use_automatic_signing: false,
+      team_id: ENV.fetch("APPLE_TEAM_ID"),
+      code_sign_identity: "Apple Distribution",
+      bundle_identifier: APP_ID,
+      profile_name: profile
+    )
+
+    build_app(
+      project: "App.xcodeproj",
+      scheme: "App",
+      configuration: "Release",
+      export_method: "app-store",
+      export_options: { provisioningProfiles: { APP_ID => profile } },
+      output_directory: "build",
+      output_name: "NoBrandBaseball.ipa",
+      xcargs: "MARKETING_VERSION=#{version} CURRENT_PROJECT_VERSION=#{build_number} -skipPackagePluginValidation -skipMacroValidation",
+      silent: true
+    )
+
+    upload_to_testflight(
+      api_key: key,
+      skip_waiting_for_build_processing: true,
+      changelog: ENV.fetch("RELEASE_NOTES", "New No Brand Baseball build #{version} (#{build_number})")
+    )
+    UI.success("Uploaded #{version} (#{build_number}) to TestFlight.")
+  end
+end

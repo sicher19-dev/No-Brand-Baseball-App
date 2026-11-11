@@ -1,0 +1,91 @@
+# Builds a signed Android App Bundle (.aab) ready for the Google Play Console.
+# Trigger: push a tag like v1.0.0, or Run workflow from the Actions tab.
+# Needs ANDROID_KEYSTORE_BASE64 + ANDROID_KEYSTORE_PASSWORD (created by the setup workflow).
+# If PLAY_SERVICE_ACCOUNT_JSON is also set, the bundle is uploaded to the Play internal testing track.
+name: Android - Play bundle
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version name (e.g. 1.0.0)"
+        default: "1.0.0"
+        required: true
+
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Work out version
+        id: ver
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then V="${GITHUB_REF_NAME#v}"; else V="${{ inputs.version }}"; fi
+          echo "version=$V" >> "$GITHUB_OUTPUT"
+          echo "code=${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx cap sync android
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Stamp version into build.gradle
+        run: |
+          sed -i "s/versionCode [0-9]*/versionCode ${{ steps.ver.outputs.code }}/" android/app/build.gradle
+          sed -i "s/versionName \"[^\"]*\"/versionName \"${{ steps.ver.outputs.version }}\"/" android/app/build.gradle
+          grep -E 'versionCode|versionName' android/app/build.gradle
+
+      - name: Build release bundle
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew bundleRelease --no-daemon
+
+      - name: Sign the bundle
+        env:
+          KS_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [ -z "$KS_B64" ]; then echo "ANDROID_KEYSTORE_BASE64 is not set. Run the 'One-time signing setup' workflow first."; exit 1; fi
+          echo "$KS_B64" | base64 -d > upload.jks
+          IN=android/app/build/outputs/bundle/release/app-release.aab
+          mkdir -p out
+          jarsigner -keystore upload.jks -storepass "$KS_PASS" -keypass "$KS_PASS" \
+            -signedjar "out/NoBrandBaseball-${{ steps.ver.outputs.version }}-${{ steps.ver.outputs.code }}.aab" "$IN" upload
+          rm -f upload.jks
+          ls -la out
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: NoBrandBaseball-android-${{ steps.ver.outputs.version }}-${{ steps.ver.outputs.code }}
+          path: out/*.aab
+
+      - name: Check for Play Console credentials
+        id: play
+        env:
+          SA: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+        run: |
+          if [ -n "$SA" ]; then echo "upload=true" >> "$GITHUB_OUTPUT"; else echo "upload=false" >> "$GITHUB_OUTPUT"; echo "No PLAY_SERVICE_ACCOUNT_JSON secret: download the .aab from this run's artifacts and upload it in the Play Console."; fi
+
+      - name: Upload to Google Play (internal testing)
+        if: steps.play.outputs.upload == 'true'
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.nobrandbaseball.app
+          releaseFiles: out/*.aab
+          track: internal
+          status: completed

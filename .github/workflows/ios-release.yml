@@ -1,0 +1,79 @@
+# Builds the iOS app on a GitHub-hosted Mac and uploads it to TestFlight.
+# Trigger: push a tag like v1.0.0, or Run workflow from the Actions tab.
+name: iOS - TestFlight
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Marketing version shown in the App Store (e.g. 1.0.0)"
+        default: "1.0.0"
+        required: true
+      notes:
+        description: "What changed (shown to TestFlight testers)"
+        default: "Latest No Brand Baseball build"
+        required: false
+
+concurrency:
+  group: ios-release
+  cancel-in-progress: false
+
+jobs:
+  testflight:
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Work out version and build number
+        id: ver
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            V="${GITHUB_REF_NAME#v}"
+          else
+            V="${{ inputs.version }}"
+          fi
+          echo "version=$V" >> "$GITHUB_OUTPUT"
+          echo "build=${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+          echo "Version $V build ${{ github.run_number }}"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx cap sync ios
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+      - run: bundle install
+        working-directory: ios/App
+
+      - name: Build and upload to TestFlight
+        working-directory: ios/App
+        run: bundle exec fastlane beta
+        env:
+          APP_VERSION: ${{ steps.ver.outputs.version }}
+          BUILD_NUMBER: ${{ steps.ver.outputs.build }}
+          RELEASE_NOTES: ${{ inputs.notes || github.event.head_commit.message }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          MATCH_GIT_TOKEN: ${{ secrets.MATCH_GIT_TOKEN }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_GIT_URL: ${{ vars.MATCH_GIT_URL || 'https://github.com/sicher19-dev/No-Brand-Certificates.git' }}
+          MATCH_GIT_USER: ${{ vars.MATCH_GIT_USER || 'sicher19-dev' }}
+          FASTLANE_SKIP_UPDATE_CHECK: "1"
+          FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: "180"
+
+      - name: Keep the .ipa as a build artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: NoBrandBaseball-ios-${{ steps.ver.outputs.version }}-${{ steps.ver.outputs.build }}
+          path: ios/App/build/*.ipa
+          if-no-files-found: ignore
