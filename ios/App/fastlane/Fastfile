@@ -43,6 +43,7 @@ platform :ios do
   desc "One-time setup: register the bundle ID, create the App Store Connect app record, and create the distribution certificate + profile in the certs repo"
   lane :setup do
     setup_ci
+    ENV["MATCH_READONLY"] = "false" # setup_ci forces readonly; this lane must be allowed to create certs
     key = asc_key
 
     create_app_online(
