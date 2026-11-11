@@ -1,0 +1,18 @@
+{
+  "appId": "com.nobrandbaseball.app",
+  "appName": "No Brand Baseball",
+  "webDir": "www",
+  "backgroundColor": "#0b0b0d",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#0b0b0d",
+    "preferredContentMode": "mobile"
+  },
+  "android": {
+    "backgroundColor": "#0b0b0d",
+    "allowMixedContent": false
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

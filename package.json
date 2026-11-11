@@ -1,0 +1,20 @@
+{
+  "name": "no-brand-baseball",
+  "version": "1.0.0",
+  "description": "No Brand Baseball pitcher portal",
+  "main": "dev-serve.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "private": "true",
+  "dependencies": {
+    "@capacitor/android": "^8.6.0",
+    "@capacitor/cli": "^8.6.0",
+    "@capacitor/core": "^8.6.0",
+    "@capacitor/ios": "^8.6.0"
+  }
+}

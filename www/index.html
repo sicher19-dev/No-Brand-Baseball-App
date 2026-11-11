@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>No Brand Baseball</title>
+<meta name="description" content="No Brand Baseball Analytics pitcher portal: daily scouting reports, reverse reports, pitch grades and labs.">
+<meta name="theme-color" content="#0b0b0d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="No Brand">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<section id="view-login" class="view">
+  <div class="login-wrap">
+    <div class="brand">
+      <div class="mark">NB</div>
+      <div class="brand-text">
+        <div class="brand-name">NO BRAND<span>BASEBALL</span></div>
+        <div class="brand-sub">Pitcher Portal</div>
+      </div>
+    </div>
+
+    <form id="login-form" class="login-card" autocomplete="on" novalidate>
+      <label class="field">
+        <span>Username</span>
+        <input id="login-user" type="text" name="username" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Last name" required>
+      </label>
+      <label class="field">
+        <span>Password</span>
+        <input id="login-pass" type="password" name="password" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;" required>
+      </label>
+      <div id="login-error" class="error" hidden></div>
+      <button id="login-btn" type="submit" class="btn-primary">Sign in</button>
+    </form>
+
+    <div class="login-foot mono">No Brand Baseball Analytics &middot; <span id="roster-stamp"></span></div>
+  </div>
+</section>
+
+<!-- ============ HOME ============ -->
+<section id="view-home" class="view" hidden>
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="mark small">NB</div>
+      <div class="topbar-title">No Brand Baseball</div>
+    </div>
+    <button id="signout" class="btn-ghost" type="button">Sign out</button>
+  </header>
+
+  <main class="home-wrap">
+    <div class="player-head">
+      <div class="player-name" id="player-name"></div>
+      <div class="chips" id="player-chips"></div>
+    </div>
+
+    <div id="hero"></div>
+
+    <div id="report-groups"></div>
+
+    <div id="empty" class="empty" hidden>
+      <div class="empty-title">No reports posted yet</div>
+      <div class="empty-sub">Your first No Brand report will show up here the moment it is published. Reopen the app to refresh.</div>
+    </div>
+  </main>
+</section>
+
+<!-- ============ VIEWER ============ -->
+<section id="view-report" class="view" hidden>
+  <header class="topbar viewer-bar">
+    <button id="back" class="btn-ghost" type="button">&#8592; Back</button>
+    <div class="viewer-title" id="viewer-title"></div>
+    <a id="viewer-ext" class="btn-ghost" target="_blank" rel="noopener" title="Open in browser">&#8599;</a>
+  </header>
+  <div class="viewer-body">
+    <div id="viewer-loading" class="loading mono">Loading report&hellip;</div>
+    <iframe id="viewer-frame" title="Report" allow="fullscreen" referrerpolicy="no-referrer-when-downgrade"></iframe>
+  </div>
+</section>
+
+<script src="roster.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
