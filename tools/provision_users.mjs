@@ -75,18 +75,27 @@ for (const p of roster.pitchers) {
 
 // Workflow logs on a public repo are public: never print a full coach email.
 const mask = e => e.replace(/^(.).*?(@.*)$/, '$1***$2');
-let coachesDone = 0;
+let coachesDone = 0, rateLimited = 0;
 for (const email of COACHES) {
   let u = byEmail.get(email);
-  if (!u) {
-    u = await api('/auth/v1/invite', { method: 'POST', body: JSON.stringify({ email, data: { role: 'coach', display_name: email } }) });
-    console.log(`invited   ${mask(email)} (they get an email to set a password)`);
-  } else if (RESEND && !u.last_sign_in_at) {
-    await api('/auth/v1/recover', { method: 'POST', body: JSON.stringify({ email }) });
-    console.log(`re-sent   set-password link to ${mask(email)}`);
+  try {
+    if (!u) {
+      u = await api('/auth/v1/invite', { method: 'POST', body: JSON.stringify({ email, data: { role: 'coach', display_name: email } }) });
+      console.log(`invited   ${mask(email)} (they get an email to set a password)`);
+    } else if (RESEND && !u.last_sign_in_at) {
+      await api('/auth/v1/recover', { method: 'POST', body: JSON.stringify({ email }) });
+      console.log(`re-sent   set-password link to ${mask(email)}`);
+    }
+  } catch (e) {
+    if (/429|rate limit/i.test(e.message)) {
+      rateLimited++;
+      console.log(`WAITING   ${mask(email)}: Supabase's built-in mailer allows 2 emails per hour. Re-run this workflow in an hour to send it.`);
+      continue;
+    }
+    throw e;
   }
   await upsertProfile({ user_id: u.id, pitcher_id: null, role: 'coach', display_name: u.user_metadata?.display_name || email });
   coachesDone++;
 }
 
-console.log(`\nPitchers: ${created} created, ${reset} reset, ${kept} unchanged (${roster.pitchers.length} in roster). Coaches: ${coachesDone}.`);
+console.log(`\nPitchers: ${created} created, ${reset} reset, ${kept} unchanged (${roster.pitchers.length} in roster). Coaches: ${coachesDone} done${rateLimited ? `, ${rateLimited} waiting on the email limit` : ''}.`);
