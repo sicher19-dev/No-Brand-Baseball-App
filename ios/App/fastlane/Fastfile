@@ -73,20 +73,15 @@ platform :ios do
       UI.success("Registered bundle ID #{APP_ID}")
     end
 
-    # 2. App record in App Store Connect (idempotent)
+    # 2. App record in App Store Connect. Apple's API does not allow creating apps, so this is a
+    #    one-time manual step: App Store Connect -> My Apps -> (+) New App -> iOS, name, bundle ID
+    #    com.nobrandbaseball.app, SKU nobrandbaseball-ios. We only check for it here.
     existing = Spaceship::ConnectAPI::App.find(APP_ID)
     if existing
-      UI.message("App Store Connect record already exists: '#{existing.name}'")
+      UI.success("App Store Connect record found: '#{existing.name}'")
     else
-      Spaceship::ConnectAPI::App.create(
-        name: app_name,
-        version_string: "1.0",
-        sku: "nobrandbaseball-ios",
-        primary_locale: "en-US",
-        bundle_id: APP_ID,
-        platforms: [Spaceship::ConnectAPI::Platform::IOS]
-      )
-      UI.success("Created App Store Connect app '#{app_name}'")
+      UI.important("No App Store Connect app record for #{APP_ID} yet. Create it by hand (My Apps -> + -> New App, " \
+                   "name '#{app_name}', bundle ID #{APP_ID}). Certificates are created regardless; TestFlight uploads need the record.")
     end
 
     # 3. Distribution certificate + App Store provisioning profile, stored encrypted in the certs repo
