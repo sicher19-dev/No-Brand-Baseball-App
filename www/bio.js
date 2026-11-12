@@ -31,17 +31,33 @@ window.NBB_BIO = (function () {
   function pref() { try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { return null; } }
   function setPref(v) { try { if (v) localStorage.setItem(KEY, JSON.stringify(v)); else localStorage.removeItem(KEY); } catch (e) {} }
 
-  // Confirm identity, then keep the login in the device keychain.
+  // Keychain item protected by biometry (plugin AccessControl.BIOMETRY_ANY = 2): only Face ID / Touch ID can read it back.
+  var PROTECTED = 2;
+
+  // Confirm identity, then keep the login in the device keychain behind biometry.
   async function enable(kind, username, password, label, displayName) {
     var p = plugin(); if (!p) throw new Error('Not available on this device.');
     await p.verifyIdentity({ reason: 'Turn on ' + label + ' for No Brand Baseball', title: 'No Brand Baseball', useFallback: true });
-    await p.setCredentials({ username: username, password: password, server: SERVER });
+    try { await p.deleteCredentials({ server: SERVER }); } catch (e) {}
+    await p.setCredentials({ username: username, password: password, server: SERVER, accessControl: PROTECTED });
     setPref({ kind: kind, label: label, name: displayName || username });
   }
   // Prompt Face ID / Touch ID and return the stored login.
   async function unlock(label) {
     var p = plugin(); if (!p) throw new Error('Not available on this device.');
-    var c = await p.getSecureCredentials({ server: SERVER, reason: 'Sign in to No Brand Baseball', title: 'No Brand Baseball' });
+    var c = null;
+    try {
+      c = await p.getSecureCredentials({ server: SERVER, reason: 'Sign in to No Brand Baseball', title: 'No Brand Baseball' });
+    } catch (e) {
+      var msg = String(e && e.message || e);
+      if (/cancel/i.test(msg)) throw e;
+      // Login saved before protected storage existed: verify, read the plain item, and upgrade it.
+      await p.verifyIdentity({ reason: 'Sign in to No Brand Baseball', title: 'No Brand Baseball', useFallback: true });
+      c = await p.getCredentials({ server: SERVER });
+      if (c && c.username) {
+        try { await p.deleteCredentials({ server: SERVER }); await p.setCredentials({ username: c.username, password: c.password, server: SERVER, accessControl: PROTECTED }); } catch (e2) {}
+      }
+    }
     if (!c || !c.username) throw new Error('No saved login. Sign in once, then turn ' + (label || 'Face ID') + ' back on.');
     return c;
   }
