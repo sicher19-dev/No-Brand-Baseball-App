@@ -11,12 +11,30 @@ APP_ID = "com.nobrandbaseball.app"
 CERTS_REPO = ENV.fetch("MATCH_GIT_URL", "https://github.com/sicher19-dev/No-Brand-Certificates.git")
 CERTS_USER = ENV.fetch("MATCH_GIT_USER", "sicher19-dev")
 
+# Accepts ASC_KEY_CONTENT either as the raw .p8 text or as base64 of the file, and fails
+# with a readable message (never printing the key) when the secret is not a valid key.
+def asc_key_pem
+  raw = ENV.fetch("ASC_KEY_CONTENT").strip
+  pem = raw.start_with?("-----BEGIN") ? raw : (Base64.decode64(raw) rescue "")
+  pem = pem.gsub("\r", "")
+  unless pem.include?("-----BEGIN PRIVATE KEY-----") && pem.include?("-----END PRIVATE KEY-----")
+    UI.user_error!("ASC_KEY_CONTENT is not a valid App Store Connect .p8 key (got #{raw.length} characters, " \
+                   "starts with '#{raw[0, 4]}'). Re-add the secret: base64 of the AuthKey_XXXX.p8 file, or the file's text.")
+  end
+  begin
+    OpenSSL::PKey.read(pem)
+  rescue => e
+    UI.user_error!("ASC_KEY_CONTENT decodes to PEM text but OpenSSL cannot read it (#{e.class}). Re-download the key from App Store Connect.")
+  end
+  pem
+end
+
 def asc_key
   app_store_connect_api_key(
-    key_id: ENV.fetch("ASC_KEY_ID"),
-    issuer_id: ENV.fetch("ASC_ISSUER_ID"),
-    key_content: ENV.fetch("ASC_KEY_CONTENT"),
-    is_key_content_base64: true,
+    key_id: ENV.fetch("ASC_KEY_ID").strip,
+    issuer_id: ENV.fetch("ASC_ISSUER_ID").strip,
+    key_content: asc_key_pem,
+    is_key_content_base64: false,
     in_house: false
   )
 end

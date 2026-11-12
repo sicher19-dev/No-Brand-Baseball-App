@@ -53,7 +53,7 @@ The native shell bundles `www/`; reports still load live from GitHub Pages, so d
 
 **Apple (you do these once)**
 1. Enroll in the [Apple Developer Program](https://developer.apple.com/programs/enroll/) ($99/yr).
-2. In App Store Connect -> Users and Access -> Integrations -> App Store Connect API, create a key with the **App Manager** role.
+2. In App Store Connect -> Users and Access -> Integrations -> App Store Connect API, create a key with the **Admin** role.
    Download the `.p8` file (only offered once) and note the **Key ID** and **Issuer ID**.
 3. Find your **Team ID** on developer.apple.com -> Membership details (10 characters, e.g. `A1B2C3D4E5`).
 
