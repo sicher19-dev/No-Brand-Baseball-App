@@ -8,8 +8,10 @@
 import fs from 'node:fs';
 import vm from 'node:vm';
 
-const URL_ = (process.env.SUPABASE_URL || '').replace(/\/+$/, '');
-const KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+// Secrets pasted into GitHub sometimes carry a trailing newline, quotes or spaces; strip them.
+const clean = s => String(s || '').replace(/[\s"'`]/g, '');
+const URL_ = clean(process.env.SUPABASE_URL).replace(/\/+$/, '');
+const KEY = clean(process.env.SUPABASE_SERVICE_ROLE_KEY);
 const COACHES = (process.env.COACH_EMAILS || '').split(/[,\s]+/).map(s => s.trim().toLowerCase()).filter(Boolean);
 const RESET = process.argv.includes('--reset-passwords');
 
