@@ -26,6 +26,12 @@
 	<true/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSCameraUsageDescription</key>
+	<string>No Brand Baseball uses the camera so you can record a mobility assessment video for your coaches.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>No Brand Baseball records audio with your assessment video.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>No Brand Baseball lets you choose an existing video from your library to send to your coaches.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

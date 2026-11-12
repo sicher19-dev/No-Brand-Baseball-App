@@ -1,0 +1,29 @@
+# Creates the backend login for every pitcher in www/roster.js and marks the coach accounts.
+# Run it after adding pitchers to the roster, or with reset_passwords after fixing a name.
+# Needs secrets SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY (Supabase -> Project Settings -> API).
+# Coach emails come from the COACH_EMAILS repository variable (comma-separated).
+name: Provision app users
+
+on:
+  workflow_dispatch:
+    inputs:
+      reset_passwords:
+        description: "Also reset every pitcher's derived password (use after a roster name change)"
+        type: boolean
+        default: false
+
+jobs:
+  provision:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Provision users
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          COACH_EMAILS: ${{ vars.COACH_EMAILS || 'nobrandbaseball@gmail.com' }}
+        run: node tools/provision_users.mjs ${{ inputs.reset_passwords && '--reset-passwords' || '' }}

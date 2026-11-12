@@ -31,23 +31,36 @@
     </div>
 
     <form id="login-form" class="login-card" autocomplete="on" novalidate>
-      <label class="field">
-        <span>Username</span>
-        <input id="login-user" type="text" name="username" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Last name" required>
-      </label>
-      <label class="field">
-        <span>Password</span>
-        <input id="login-pass" type="password" name="password" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;" required>
-      </label>
+      <div id="login-pitcher-fields">
+        <label class="field">
+          <span>Username</span>
+          <input id="login-user" type="text" name="username" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Last name">
+        </label>
+        <label class="field">
+          <span>Password</span>
+          <input id="login-pass" type="password" name="password" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;">
+        </label>
+      </div>
+      <div id="login-coach-fields" hidden>
+        <label class="field">
+          <span>Coach email</span>
+          <input id="login-email" type="email" name="email" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="you@nobrandbaseball.com">
+        </label>
+        <label class="field">
+          <span>Password</span>
+          <input id="login-coach-pass" type="password" name="coachpassword" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;">
+        </label>
+      </div>
       <div id="login-error" class="error" hidden></div>
       <button id="login-btn" type="submit" class="btn-primary">Sign in</button>
+      <button id="login-mode" type="button" class="link-btn">Coach sign in</button>
     </form>
 
     <div class="login-foot mono">No Brand Baseball Analytics &middot; <span id="roster-stamp"></span></div>
   </div>
 </section>
 
-<!-- ============ HOME ============ -->
+<!-- ============ PITCHER HOME ============ -->
 <section id="view-home" class="view" hidden>
   <header class="topbar">
     <div class="topbar-left">
@@ -65,6 +78,47 @@
 
     <div id="hero"></div>
 
+    <!-- Remote assessment -->
+    <section class="group" id="assess-section">
+      <div class="group-title"><span>Remote Assessment</span><span class="c" id="assess-count"></span></div>
+      <div class="panel">
+        <div id="assess-disabled" class="panel-text muted" hidden>Video assessments are not switched on for this account yet.</div>
+        <div id="assess-enabled" hidden>
+          <div class="panel-text">Record a 30 to 60 second mobility video for <span id="coach-label-1">the coaches</span>. Good light, full body in frame, phone propped up.</div>
+          <div class="row">
+            <label class="btn-primary btn-file">Record video<input type="file" accept="video/*" capture="environment" id="assess-record" hidden></label>
+            <label class="btn-ghost btn-file">Choose from library<input type="file" accept="video/*" id="assess-pick" hidden></label>
+          </div>
+          <div id="assess-preview" hidden>
+            <video id="assess-video" controls playsinline muted></video>
+            <div class="meta mono" id="assess-meta"></div>
+            <textarea id="assess-note" rows="2" placeholder="Anything we should know? (optional)"></textarea>
+            <div class="row">
+              <button id="assess-send" class="btn-primary" type="button">Send to No Brand</button>
+              <button id="assess-cancel" class="btn-ghost" type="button">Cancel</button>
+            </div>
+          </div>
+          <div id="assess-status" class="status" hidden></div>
+          <div id="assess-list" class="list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Messages -->
+    <section class="group" id="msg-section">
+      <div class="group-title"><span>Messages</span><span class="c" id="msg-count"></span></div>
+      <div class="panel">
+        <div id="msg-disabled" class="panel-text muted" hidden>Messaging is not switched on for this account yet.</div>
+        <div id="msg-enabled" hidden>
+          <div class="thread" id="msg-thread"></div>
+          <form class="composer" id="msg-form">
+            <textarea id="msg-input" rows="2" placeholder="Message the coaches"></textarea>
+            <button class="btn-primary" type="submit">Send</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
     <div id="report-groups"></div>
 
     <div id="empty" class="empty" hidden>
@@ -74,7 +128,7 @@
   </main>
 </section>
 
-<!-- ============ VIEWER ============ -->
+<!-- ============ REPORT VIEWER ============ -->
 <section id="view-report" class="view" hidden>
   <header class="topbar viewer-bar">
     <button id="back" class="btn-ghost" type="button">&#8592; Back</button>
@@ -87,7 +141,66 @@
   </div>
 </section>
 
+<!-- ============ COACH: PITCHER LIST ============ -->
+<section id="view-coach" class="view" hidden>
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="mark small">NB</div>
+      <div class="topbar-title">Coach view</div>
+    </div>
+    <div class="row-tight">
+      <button id="coach-refresh" class="btn-ghost" type="button">Refresh</button>
+      <button id="coach-signout" class="btn-ghost" type="button">Sign out</button>
+    </div>
+  </header>
+  <main class="home-wrap">
+    <div class="player-head">
+      <div class="player-name" id="coach-name"></div>
+      <div class="chips"><span class="chip"><b>Coach</b></span><span class="chip" id="coach-summary"></span></div>
+    </div>
+    <div id="coach-status" class="status" hidden></div>
+    <section class="group">
+      <div class="group-title"><span>Needs attention</span><span class="c" id="coach-attn-count"></span></div>
+      <div id="coach-attn" class="list"></div>
+    </section>
+    <section class="group">
+      <div class="group-title"><span>All pitchers</span><span class="c" id="coach-all-count"></span></div>
+      <div id="coach-all" class="list"></div>
+    </section>
+  </main>
+</section>
+
+<!-- ============ COACH: ONE PITCHER ============ -->
+<section id="view-coach-pitcher" class="view" hidden>
+  <header class="topbar viewer-bar">
+    <button id="coach-back" class="btn-ghost" type="button">&#8592; Pitchers</button>
+    <div class="viewer-title" id="cp-title"></div>
+    <button id="cp-refresh" class="btn-ghost" type="button">Refresh</button>
+  </header>
+  <main class="home-wrap">
+    <div class="chips" id="cp-chips"></div>
+    <div id="cp-status" class="status" hidden></div>
+    <section class="group">
+      <div class="group-title"><span>Assessments</span><span class="c" id="cp-assess-count"></span></div>
+      <div id="cp-assess" class="list"></div>
+    </section>
+    <section class="group">
+      <div class="group-title"><span>Messages</span><span class="c" id="cp-msg-count"></span></div>
+      <div class="panel">
+        <div class="thread" id="cp-thread"></div>
+        <form class="composer" id="cp-form">
+          <textarea id="cp-input" rows="2" placeholder="Reply as coach"></textarea>
+          <button class="btn-primary" type="submit">Send</button>
+        </form>
+      </div>
+    </section>
+  </main>
+</section>
+
+<script src="vendor/supabase.js"></script>
+<script src="config.js"></script>
 <script src="roster.js"></script>
+<script src="backend.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

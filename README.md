@@ -44,6 +44,33 @@ npx serve www
 ## Hosted
 `https://sicher19-dev.github.io/No-Brand-Baseball-App/` - pitchers can use this in Safari today and tap **Share -> Add to Home Screen** for an app icon.
 
+## Remote assessments and messages (backend)
+
+Pitchers can record a mobility video and message the coaches from their player page; coaches sign in
+(Coach sign in on the login screen) to a coach view with every upload and thread. This needs a Supabase project.
+
+### One-time setup
+1. Create a project at [supabase.com](https://supabase.com) (sign up with the No Brand email). Pick a strong database password; you will not need it again.
+2. SQL Editor -> New query -> paste all of `supabase/schema.sql` -> Run. This creates the tables, security rules and the private `assessments` video bucket.
+3. Authentication -> Sign In / Providers -> Email: turn **Confirm email** off (pitcher accounts use internal addresses).
+4. Storage -> Settings: raise the global upload limit to **500 MB** (Pro plan). Videos over the limit are rejected with a clear message in the app.
+5. Project Settings -> API: copy **Project URL** and the **anon public** key into `www/config.js`, commit and push.
+6. In this repo add secrets `SUPABASE_URL` (same Project URL) and `SUPABASE_SERVICE_ROLE_KEY` (the **service_role** key, never put this one in the app),
+   and a repository **variable** `COACH_EMAILS` with the coach addresses, comma-separated.
+7. Actions -> **Provision app users** -> Run workflow. Every pitcher in `www/roster.js` gets a login; coaches get an invite email to set a password.
+   Re-run it whenever you add a pitcher. Tick *reset_passwords* after fixing a pitcher's first name.
+
+Pitchers keep signing in with last name / first name; the app derives their backend login from the roster.
+Coaches use Coach sign in with their email and the password from the invite.
+
+### Where things live
+| Thing | Where |
+|---|---|
+| Videos | Supabase Storage, bucket `assessments`, folder per pitcher id, private (signed links only) |
+| Video records, coach notes | table `assessments` |
+| Messages | table `messages`, one thread per pitcher |
+| Who is a coach | table `profiles`, `role = 'coach'` |
+
 ## Ship to the App Store and Google Play (no Mac needed)
 
 The native apps are built in the cloud by GitHub Actions: iOS on a GitHub-hosted Mac, Android on Linux.
