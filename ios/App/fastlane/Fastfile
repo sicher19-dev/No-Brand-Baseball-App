@@ -182,4 +182,29 @@ platform :ios do
       UI.message("Build #{v} (#{b.version}): #{b.processing_state}, external: #{ext}")
     end
   end
+
+  desc "Give the external TestFlight group a build (PROMOTE_BUILD = build number or 'latest') and submit it for beta review"
+  lane :promote do
+    asc_key
+    group_name = ENV.fetch("TESTER_GROUP", "No Brand Pitchers")
+    want = ENV.fetch("PROMOTE_BUILD", "latest").strip
+    app = Spaceship::ConnectAPI::App.find(APP_ID) || UI.user_error!("No App Store Connect app for #{APP_ID}")
+    group = app.get_beta_groups.find { |g| g.name == group_name }
+    UI.user_error!("No TestFlight group named '#{group_name}'") unless group
+
+    builds = app.get_builds(includes: "buildBetaDetail,preReleaseVersion", sort: "-uploadedDate", limit: 10)
+                .select { |b| b.processing_state == "VALID" }
+    build = want.casecmp("latest").zero? ? builds.first : builds.find { |b| b.version.to_s == want }
+    UI.user_error!("No processed build '#{want}'. Processed: #{builds.map(&:version).join(', ')}") unless build
+    v = build.pre_release_version ? build.pre_release_version.version : "?"
+    state = build.build_beta_detail ? build.build_beta_detail.external_build_state : "?"
+    UI.message("Build #{v} (#{build.version}) external state: #{state}")
+
+    build.add_beta_groups(beta_groups: [group])
+    UI.success("Added #{v} (#{build.version}) to '#{group_name}'")
+    if state == "READY_FOR_BETA_SUBMISSION"
+      build.post_beta_app_review_submission
+      UI.success("Submitted #{v} (#{build.version}) for Beta App Review; testers get it once Apple approves (usually hours).")
+    end
+  end
 end

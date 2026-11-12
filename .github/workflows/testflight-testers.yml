@@ -1,5 +1,6 @@
-# Invites TestFlight testers listed in store/testers.txt to the "No Brand Pitchers" group.
-# Trigger: push a change to store/testers.txt, or Run workflow with a single email.
+# TestFlight admin without a Mac, through the App Store Connect API key in the repo secrets:
+#   - invite a tester to the "No Brand Pitchers" group (Run workflow with an email, or push store/testers.txt)
+#   - give that group a newer build and submit it for beta review (Run workflow with build = latest or a number)
 name: TestFlight - testers
 
 on:
@@ -9,10 +10,13 @@ on:
   workflow_dispatch:
     inputs:
       email:
-        description: "Tester email to invite"
+        description: "Tester email to invite (optional)"
         required: false
       name:
         description: "Tester's name, e.g. Tyler O'Clair"
+        required: false
+      build:
+        description: "Build to give the group: 'latest', a build number like 6, or blank to leave builds alone"
         required: false
       group:
         description: "TestFlight group"
@@ -20,9 +24,15 @@ on:
         required: false
 
 jobs:
-  invite:
+  testflight:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      TESTER_GROUP: ${{ inputs.group || 'No Brand Pitchers' }}
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
+      FASTLANE_SKIP_UPDATE_CHECK: "1"
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
@@ -30,15 +40,19 @@ jobs:
           ruby-version: "3.3"
           bundler-cache: true
           working-directory: ios/App
+
       - name: Invite testers
+        if: github.event_name == 'push' || inputs.email != ''
         working-directory: ios/App
         run: bundle exec fastlane testers
         env:
           TESTERS_FILE: ${{ github.workspace }}/store/testers.txt
           TESTER_EMAIL: ${{ inputs.email }}
           TESTER_NAME: ${{ inputs.name }}
-          TESTER_GROUP: ${{ inputs.group || 'No Brand Pitchers' }}
-          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
-          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
-          ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
-          FASTLANE_SKIP_UPDATE_CHECK: "1"
+
+      - name: Give the group a build
+        if: inputs.build != ''
+        working-directory: ios/App
+        run: bundle exec fastlane promote
+        env:
+          PROMOTE_BUILD: ${{ inputs.build }}
