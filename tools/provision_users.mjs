@@ -14,6 +14,7 @@ const URL_ = clean(process.env.SUPABASE_URL).replace(/\/+$/, '');
 const KEY = clean(process.env.SUPABASE_SERVICE_ROLE_KEY);
 const COACHES = (process.env.COACH_EMAILS || '').split(/[,\s]+/).map(s => s.trim().toLowerCase()).filter(Boolean);
 const RESET = process.argv.includes('--reset-passwords');
+const RESEND = process.argv.includes('--resend-coach-links'); // email a fresh set-password link to coaches who never signed in
 
 if (!URL_ || !KEY) { console.error('SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required.'); process.exit(1); }
 
@@ -78,6 +79,9 @@ for (const email of COACHES) {
   if (!u) {
     u = await api('/auth/v1/invite', { method: 'POST', body: JSON.stringify({ email, data: { role: 'coach', display_name: email } }) });
     console.log(`invited   ${email} (they get an email to set a password)`);
+  } else if (RESEND && !u.last_sign_in_at) {
+    await api('/auth/v1/recover', { method: 'POST', body: JSON.stringify({ email }) });
+    console.log(`re-sent   set-password link to ${email}`);
   }
   await upsertProfile({ user_id: u.id, pitcher_id: null, role: 'coach', display_name: u.user_metadata?.display_name || email });
   coachesDone++;

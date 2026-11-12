@@ -400,13 +400,64 @@
   // EVENTS
   // =====================================================================
   var coachMode = false;
-  $('login-mode').addEventListener('click', function () {
-    coachMode = !coachMode;
+  function setCoachMode(on) {
+    coachMode = on;
     $('login-pitcher-fields').hidden = coachMode;
     $('login-coach-fields').hidden = !coachMode;
+    $('login-forgot').hidden = !coachMode;
     $('login-mode').textContent = coachMode ? 'Pitcher sign in' : 'Coach sign in';
     $('login-error').hidden = true;
+  }
+  $('login-mode').addEventListener('click', function () { setCoachMode(!coachMode); });
+
+  $('login-forgot').addEventListener('click', async function () {
+    var email = $('login-email').value.trim();
+    var err = $('login-error'), info = $('login-info');
+    err.hidden = true; info.hidden = true;
+    if (!email) { err.textContent = 'Type your coach email first, then tap Forgot password.'; err.hidden = false; return; }
+    try {
+      await B.sendPasswordReset(email);
+      info.textContent = 'Check ' + email + ' for a link to set a new password.'; info.hidden = false;
+    } catch (ex) { err.textContent = ex.message; err.hidden = false; }
   });
+
+  // ---------- coach invite / password reset landing ----------
+  var linkType = B.enabled() ? B.linkTypeInUrl() : null;
+  function showSetPassword() {
+    $('login-form').hidden = true;
+    $('setpw-form').hidden = false;
+    show('login');
+  }
+  $('setpw-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var p1 = $('setpw-1').value, p2 = $('setpw-2').value, err = $('setpw-error'), btn = $('setpw-btn');
+    err.hidden = true;
+    if (p1.length < 8) { err.textContent = 'Use at least 8 characters.'; err.hidden = false; return; }
+    if (p1 !== p2) { err.textContent = 'The two passwords do not match.'; err.hidden = false; return; }
+    btn.disabled = true; btn.textContent = 'Saving…';
+    try {
+      await B.setPassword(p1);
+      var prof = await B.myProfile();
+      if (prof && prof.role === 'coach') {
+        saveSession({ kind: 'coach', name: prof.display_name || 'Coach', email: '' });
+        $('setpw-form').hidden = true; $('login-form').hidden = false;
+        history.replaceState(null, '', location.pathname + '#/coach');
+        route();
+      } else {
+        await B.signOut();
+        err.textContent = 'Password saved, but this account is not a coach account. Ask Brian to add you as a coach.'; err.hidden = false;
+      }
+    } catch (ex) { err.textContent = ex.message; err.hidden = false; }
+    btn.disabled = false; btn.textContent = 'Save password';
+  });
+  if (linkType) {
+    // supabase-js reads the tokens from the URL and signs the user in; then we ask for a password.
+    clearSession();
+    B.onAuthChange(function (event, s) {
+      if (s && (event === 'SIGNED_IN' || event === 'PASSWORD_RECOVERY' || event === 'INITIAL_SESSION')) showSetPassword();
+    });
+    showSetPassword();
+  }
 
   $('login-form').addEventListener('submit', async function (e) {
     e.preventDefault();
@@ -472,6 +523,7 @@
 
   // ---------- boot ----------
   $('roster-stamp').textContent = 'reports as of ' + (roster.updated || '-');
+  if (linkType) { return; } // set-password screen is up; routing resumes after the password is saved
   loadSession();
   // If the backend session expired or was never established, retry quietly for pitchers.
   if (session && session.kind === 'pitcher' && B.enabled()) {

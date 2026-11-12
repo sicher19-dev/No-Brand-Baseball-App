@@ -11,6 +11,10 @@ on:
         description: "Also reset every pitcher's derived password (use after a roster name change)"
         type: boolean
         default: false
+      resend_coach_links:
+        description: "Email a fresh set-password link to coaches who have never signed in"
+        type: boolean
+        default: false
 
 jobs:
   provision:
@@ -26,4 +30,4 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           COACH_EMAILS: ${{ vars.COACH_EMAILS || 'nobrandbaseball@gmail.com' }}
-        run: node tools/provision_users.mjs ${{ inputs.reset_passwords && '--reset-passwords' || '' }}
+        run: node tools/provision_users.mjs ${{ inputs.reset_passwords && '--reset-passwords' || '' }} ${{ inputs.resend_coach_links && '--resend-coach-links' || '' }}

@@ -52,8 +52,25 @@
         </label>
       </div>
       <div id="login-error" class="error" hidden></div>
+      <div id="login-info" class="status good" hidden></div>
       <button id="login-btn" type="submit" class="btn-primary">Sign in</button>
       <button id="login-mode" type="button" class="link-btn">Coach sign in</button>
+      <button id="login-forgot" type="button" class="link-btn" hidden>Forgot password?</button>
+    </form>
+
+    <!-- Shown when a coach arrives from an invite or password-reset email -->
+    <form id="setpw-form" class="login-card" hidden>
+      <div class="panel-text"><b>Welcome, coach.</b> Choose a password for your No Brand Baseball coach login.</div>
+      <label class="field">
+        <span>New password (8+ characters)</span>
+        <input id="setpw-1" type="password" autocomplete="new-password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;">
+      </label>
+      <label class="field">
+        <span>Repeat it</span>
+        <input id="setpw-2" type="password" autocomplete="new-password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;">
+      </label>
+      <div id="setpw-error" class="error" hidden></div>
+      <button id="setpw-btn" type="submit" class="btn-primary">Save password</button>
     </form>
 
     <div class="login-foot mono">No Brand Baseball Analytics &middot; <span id="roster-stamp"></span></div>

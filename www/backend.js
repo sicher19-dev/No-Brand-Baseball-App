@@ -20,10 +20,29 @@ window.NBB_BACKEND = (function () {
     if (!enabled()) return null;
     if (!client) {
       client = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, {
-        auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
+        auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
       });
     }
     return client;
+  }
+
+  // Invite / password-reset links land on the app with tokens in the URL hash.
+  function linkTypeInUrl() {
+    var m = (location.hash + location.search).match(/[?&#]type=(invite|recovery|magiclink|signup)/);
+    return m ? m[1] : null;
+  }
+  function onAuthChange(fn) { var c = sb(); if (c) c.auth.onAuthStateChange(fn); }
+  async function setPassword(newPassword) {
+    var c = sb(); if (!c) fail('The backend is not set up yet.');
+    var r = await c.auth.updateUser({ password: newPassword });
+    if (r.error) fail(r.error);
+    return r.data.user;
+  }
+  async function sendPasswordReset(email) {
+    var c = sb(); if (!c) fail('The backend is not set up yet.');
+    var redirect = location.origin + location.pathname;
+    var r = await c.auth.resetPasswordForEmail(email, { redirectTo: redirect });
+    if (r.error) fail(r.error);
   }
 
   function fail(e) {
@@ -163,6 +182,7 @@ window.NBB_BACKEND = (function () {
     signInPitcher: signInPitcher, signInCoach: signInCoach, signOut: signOut,
     listAssessments: listAssessments, uploadAssessment: uploadAssessment, videoUrl: videoUrl, reviewAssessment: reviewAssessment,
     listMessages: listMessages, sendMessage: sendMessage, markRead: markRead, unreadForPitcher: unreadForPitcher,
-    coachOverview: coachOverview, MAX_BYTES: MAX_BYTES, MAX_MB: MAX_MB, MAX_HINT: MAX_HINT
+    coachOverview: coachOverview, MAX_BYTES: MAX_BYTES, MAX_MB: MAX_MB, MAX_HINT: MAX_HINT,
+    linkTypeInUrl: linkTypeInUrl, onAuthChange: onAuthChange, setPassword: setPassword, sendPasswordReset: sendPasswordReset
   };
 })();
