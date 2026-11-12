@@ -26,6 +26,8 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # tag messages are needed for the tester notes
 
       - name: Work out version and build number
         id: ver
@@ -37,7 +39,16 @@ jobs:
           fi
           echo "version=$V" >> "$GITHUB_OUTPUT"
           echo "build=${{ github.run_number }}" >> "$GITHUB_OUTPUT"
-          echo "Version $V build ${{ github.run_number }}"
+          # "What to Test" shown to testers: the tag's own message (or the workflow input), never commit trailers.
+          if [ "${{ github.event_name }}" = "push" ]; then
+            NOTES="$(git tag -l --format='%(contents:subject)' "$GITHUB_REF_NAME")"
+          else
+            NOTES="${{ inputs.notes }}"
+          fi
+          NOTES="$(printf '%s' "$NOTES" | grep -viE 'co-authored-by|generated with' | sed -e 's/^No Brand Baseball [0-9.]* - //' )"
+          [ -n "$NOTES" ] || NOTES="Latest No Brand Baseball build"
+          echo "notes=$NOTES" >> "$GITHUB_OUTPUT"
+          echo "Version $V build ${{ github.run_number }}: $NOTES"
 
       - uses: actions/setup-node@v4
         with:
@@ -58,7 +69,7 @@ jobs:
         env:
           APP_VERSION: ${{ steps.ver.outputs.version }}
           BUILD_NUMBER: ${{ steps.ver.outputs.build }}
-          RELEASE_NOTES: ${{ inputs.notes || github.event.head_commit.message }}
+          RELEASE_NOTES: ${{ steps.ver.outputs.notes }}
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
