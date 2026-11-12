@@ -73,15 +73,17 @@ for (const p of roster.pitchers) {
   await upsertProfile({ user_id: u.id, pitcher_id: p.id, role: 'pitcher', display_name: meta.display_name });
 }
 
+// Workflow logs on a public repo are public: never print a full coach email.
+const mask = e => e.replace(/^(.).*?(@.*)$/, '$1***$2');
 let coachesDone = 0;
 for (const email of COACHES) {
   let u = byEmail.get(email);
   if (!u) {
     u = await api('/auth/v1/invite', { method: 'POST', body: JSON.stringify({ email, data: { role: 'coach', display_name: email } }) });
-    console.log(`invited   ${email} (they get an email to set a password)`);
+    console.log(`invited   ${mask(email)} (they get an email to set a password)`);
   } else if (RESEND && !u.last_sign_in_at) {
     await api('/auth/v1/recover', { method: 'POST', body: JSON.stringify({ email }) });
-    console.log(`re-sent   set-password link to ${email}`);
+    console.log(`re-sent   set-password link to ${mask(email)}`);
   }
   await upsertProfile({ user_id: u.id, pitcher_id: null, role: 'coach', display_name: u.user_metadata?.display_name || email });
   coachesDone++;

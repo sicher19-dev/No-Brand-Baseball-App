@@ -56,7 +56,7 @@ Pitchers can record a mobility video and message the coaches from their player p
 4. Storage -> Settings: raise the global upload limit to **500 MB** (Pro plan). Videos over the limit are rejected with a clear message in the app.
 5. Project Settings -> API: copy **Project URL** and the **anon public** key into `www/config.js`, commit and push.
 6. In this repo add secrets `SUPABASE_URL` (same Project URL) and `SUPABASE_SERVICE_ROLE_KEY` (the **service_role** key, never put this one in the app),
-   and a repository **variable** `COACH_EMAILS` with the coach addresses, comma-separated.
+   and a secret `COACH_EMAILS` with the coach addresses, comma-separated (a secret so the public workflow logs mask them).
 7. Actions -> **Provision app users** -> Run workflow. Every pitcher in `www/roster.js` gets a login; coaches get an invite email to set a password.
    Re-run it whenever you add a pitcher. Tick *reset_passwords* after fixing a pitcher's first name.
 
