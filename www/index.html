@@ -30,6 +30,14 @@
       </div>
     </div>
 
+    <!-- Face ID / Touch ID (native app, after the first sign-in) -->
+    <div id="bio-panel" class="login-card bio-panel" hidden>
+      <div class="bio-name" id="bio-name"></div>
+      <button id="bio-btn" type="button" class="btn-primary">Unlock with Face ID</button>
+      <div id="bio-error" class="error" hidden></div>
+      <button id="bio-other" type="button" class="link-btn">Use a different account</button>
+    </div>
+
     <form id="login-form" class="login-card" autocomplete="on" novalidate>
       <div id="login-pitcher-fields">
         <label class="field">
@@ -94,6 +102,11 @@
     </div>
 
     <div id="hero"></div>
+
+    <div id="bio-offer-home" class="panel bio-offer" hidden>
+      <div class="panel-text"><b>Sign in faster next time.</b> Turn on <span class="bio-label">Face ID</span> and the app opens with a glance.</div>
+      <div class="row"><button type="button" class="btn-primary js-bio-on">Turn on <span class="bio-label">Face ID</span></button><button type="button" class="btn-ghost js-bio-later">Not now</button></div>
+    </div>
 
     <!-- Remote assessment -->
     <section class="group" id="assess-section">
@@ -176,6 +189,10 @@
       <div class="chips"><span class="chip"><b>Coach</b></span><span class="chip" id="coach-summary"></span></div>
     </div>
     <div id="coach-status" class="status" hidden></div>
+    <div id="bio-offer-coach" class="panel bio-offer" hidden>
+      <div class="panel-text"><b>Sign in faster next time.</b> Turn on <span class="bio-label">Face ID</span> and the app opens with a glance.</div>
+      <div class="row"><button type="button" class="btn-primary js-bio-on">Turn on <span class="bio-label">Face ID</span></button><button type="button" class="btn-ghost js-bio-later">Not now</button></div>
+    </div>
     <section class="group">
       <div class="group-title"><span>Needs attention</span><span class="c" id="coach-attn-count"></span></div>
       <div id="coach-attn" class="list"></div>
@@ -218,6 +235,7 @@
 <script src="config.js"></script>
 <script src="roster.js"></script>
 <script src="backend.js"></script>
+<script src="bio.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

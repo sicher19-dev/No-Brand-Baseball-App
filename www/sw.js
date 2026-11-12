@@ -1,6 +1,6 @@
 /* No Brand Baseball - service worker: cache the app shell, network first so updates land right away. */
-var CACHE = 'nbb-shell-v3';
-var SHELL = ['./', './index.html', './app.css', './app.js', './backend.js', './config.js', './roster.js', './vendor/supabase.js',
+var CACHE = 'nbb-shell-v4';
+var SHELL = ['./', './index.html', './app.css', './app.js', './backend.js', './bio.js', './config.js', './roster.js', './vendor/supabase.js',
              './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', function (e) {

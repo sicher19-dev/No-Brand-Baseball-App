@@ -117,6 +117,14 @@ textarea:focus{border-color:var(--gold)}
 .composer textarea{flex:1}
 .composer .btn-primary{margin-top:0;padding:12px 16px;font-size:14px}
 
+/* ---------- Face ID ---------- */
+.bio-panel{margin-bottom:14px;align-items:stretch}
+.bio-name{font-weight:800;font-size:18px;text-align:center}
+.bio-panel .btn-primary{margin-top:0}
+.bio-offer{margin-top:18px;border-color:var(--gold-dim)}
+.bio-offer .row{margin-top:10px}
+.bio-offer .btn-primary{margin-top:0;padding:11px 14px;font-size:14px}
+
 /* ---------- viewer ---------- */
 #view-report{display:flex;flex-direction:column;height:100vh;height:100dvh}
 .viewer-bar{flex:0 0 auto}

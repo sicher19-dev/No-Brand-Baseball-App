@@ -152,6 +152,7 @@
     });
     $('report-groups').innerHTML = html;
     $('empty').hidden = reports.length > 0;
+    renderBioOffer();
 
     // Backend-powered sections
     var on = !!(session && session.backend);
@@ -269,6 +270,7 @@
   // =====================================================================
   async function renderCoach() {
     $('coach-name').textContent = session.name || 'Coach';
+    renderBioOffer();
     setStatus('coach-status', 'Loading…', 'info');
     var overview = [];
     try { overview = await B.coachOverview(); setStatus('coach-status', ''); }
@@ -398,6 +400,96 @@
   }
 
   // =====================================================================
+  // SIGN-IN (shared by the form and Face ID)
+  // =====================================================================
+  async function signInPitcherWith(username, password) {
+    await refreshRoster();
+    var p = findPitcher(username, password);
+    if (!p) throw new Error('That username and password did not match. Username is your last name, password is your first name.');
+    var backend = false;
+    if (B.enabled()) { try { await B.signInPitcher(p); backend = true; } catch (be) { backend = false; } }
+    saveSession({ kind: 'pitcher', id: p.id, backend: backend });
+    return p;
+  }
+  async function signInCoachWith(email, password) {
+    if (!B.enabled()) throw new Error('Coach sign in is not set up yet.');
+    var prof = await B.signInCoach(email, password);
+    saveSession({ kind: 'coach', name: prof.display_name || 'Coach', email: email });
+    return prof;
+  }
+
+  // =====================================================================
+  // FACE ID / TOUCH ID (native app only)
+  // =====================================================================
+  var BIO = window.NBB_BIO;
+  var bioPending = null;   // { kind, username, password, name, label } until the user taps Turn on / Not now
+  var bioLabel = 'Face ID';
+
+  function setBioLabels(label) {
+    bioLabel = label || 'Face ID';
+    Array.prototype.forEach.call(document.querySelectorAll('.bio-label'), function (el) { el.textContent = bioLabel; });
+    $('bio-btn').textContent = 'Unlock with ' + bioLabel;
+  }
+  function renderBioOffer() {
+    var on = !!bioPending;
+    $('bio-offer-home').hidden = !on; $('bio-offer-coach').hidden = !on;
+  }
+  async function offerBio(kind, username, password, name) {
+    if (!BIO || !BIO.isNative() || BIO.pref()) return;
+    var a = await BIO.available(); if (!a) return;
+    setBioLabels(a.label);
+    bioPending = { kind: kind, username: username, password: password, name: name, label: a.label };
+    renderBioOffer();
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.js-bio-on'), function (btn) {
+    btn.addEventListener('click', async function () {
+      if (!bioPending) return;
+      btn.disabled = true;
+      try {
+        await BIO.enable(bioPending.kind, bioPending.username, bioPending.password, bioPending.label, bioPending.name);
+        bioPending = null; renderBioOffer();
+      } catch (e) { alert('Could not turn on ' + bioLabel + ': ' + (e.message || e)); }
+      btn.disabled = false;
+    });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.js-bio-later'), function (btn) {
+    btn.addEventListener('click', function () { bioPending = null; renderBioOffer(); });
+  });
+
+  function showBioPanel(pref) {
+    setBioLabels(pref.label);
+    $('bio-name').textContent = pref.name || '';
+    $('bio-panel').hidden = false;
+    $('bio-error').hidden = true;
+  }
+  async function unlockWithBio() {
+    var pref = BIO.pref(); if (!pref) return false;
+    var btn = $('bio-btn'), err = $('bio-error');
+    btn.disabled = true; err.hidden = true;
+    try {
+      var c = await BIO.unlock(pref.label);
+      if (pref.kind === 'coach') await signInCoachWith(c.username, c.password);
+      else await signInPitcherWith(c.username, c.password);
+      location.hash = pref.kind === 'coach' ? '#/coach' : '#/home';
+      route();
+      btn.disabled = false;
+      return true;
+    } catch (e) {
+      var msg = String(e && e.message || e);
+      if (!/cancel/i.test(msg)) { err.textContent = msg; err.hidden = false; }
+      btn.disabled = false;
+      return false;
+    }
+  }
+  $('bio-btn').addEventListener('click', unlockWithBio);
+  $('bio-other').addEventListener('click', async function () {
+    await BIO.disable();
+    $('bio-panel').hidden = true;
+    clearSession();
+    show('login');
+  });
+
+  // =====================================================================
   // EVENTS
   // =====================================================================
   var coachMode = false;
@@ -466,21 +558,16 @@
     err.hidden = true; btn.disabled = true; btn.textContent = 'Signing in…';
     try {
       if (coachMode) {
-        if (!B.enabled()) throw new Error('Coach sign in is not set up yet.');
-        var prof = await B.signInCoach($('login-email').value.trim(), $('login-coach-pass').value);
-        saveSession({ kind: 'coach', name: prof.display_name || 'Coach', email: $('login-email').value.trim() });
+        var cEmail = $('login-email').value.trim(), cPass = $('login-coach-pass').value;
+        await signInCoachWith(cEmail, cPass);
         $('login-coach-pass').value = '';
+        offerBio('coach', cEmail, cPass, session.name);
         location.hash = '#/coach';
       } else {
-        await refreshRoster();
-        var p = findPitcher($('login-user').value, $('login-pass').value);
-        if (!p) throw new Error('That username and password did not match. Username is your last name, password is your first name.');
-        var backend = false;
-        if (B.enabled()) {
-          try { await B.signInPitcher(p); backend = true; } catch (be) { backend = false; }
-        }
-        saveSession({ kind: 'pitcher', id: p.id, backend: backend });
+        var pUser = $('login-user').value, pPass = $('login-pass').value;
+        var p = await signInPitcherWith(pUser, pPass);
         $('login-pass').value = '';
+        offerBio('pitcher', pUser.trim(), pPass.trim(), p.first + ' ' + p.last);
         location.hash = '#/home';
       }
       route();
@@ -492,9 +579,12 @@
 
   async function doSignOut() {
     clearSession();
+    bioPending = null; renderBioOffer();
     try { await B.signOut(); } catch (e) {}
     location.hash = '#/login';
     route();
+    var pref = (BIO && BIO.isNative()) ? BIO.pref() : null;
+    if (pref) showBioPanel(pref); // next sign-in is a glance
   }
   $('signout').addEventListener('click', doSignOut);
   $('coach-signout').addEventListener('click', doSignOut);
@@ -526,6 +616,17 @@
   $('roster-stamp').textContent = 'reports as of ' + (roster.updated || '-');
   if (linkType) { return; } // set-password screen is up; routing resumes after the password is saved
   loadSession();
+  // Face ID lock: when it is turned on, every cold start asks for a glance before showing anything.
+  var bioPref = (BIO && BIO.isNative()) ? BIO.pref() : null;
+  if (bioPref) {
+    session = null; // keep the stored session for after the unlock, but do not show it yet
+    showBioPanel(bioPref);
+    show('login');
+    unlockWithBio();
+    refreshRoster();
+    if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) navigator.serviceWorker.register('sw.js').catch(function () {});
+    return;
+  }
   // If the backend session expired or was never established, retry quietly for pitchers.
   if (session && session.kind === 'pitcher' && B.enabled()) {
     B.session().then(function (s) {

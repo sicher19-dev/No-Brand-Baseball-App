@@ -26,6 +26,8 @@
 	<true/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSFaceIDUsageDescription</key>
+	<string>No Brand Baseball uses Face ID so you can sign in with a glance.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>No Brand Baseball uses the camera so you can record a mobility assessment video for your coaches.</string>
 	<key>NSMicrophoneUsageDescription</key>
