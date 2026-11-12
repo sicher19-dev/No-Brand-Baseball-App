@@ -116,7 +116,13 @@ git push origin v1.0.0
 That runs **iOS - TestFlight** (build on a Mac runner, upload to TestFlight) and **Android - Play bundle** (signed `.aab` as a downloadable artifact).
 Both can also be started from the Actions tab with **Run workflow**. The build number is the workflow run number, so it always goes up.
 
-Then in App Store Connect: TestFlight tab -> add pitchers as external testers (or share a public TestFlight link),
+Testers and builds, without opening App Store Connect (**TestFlight - testers** workflow, Actions tab -> Run workflow):
+- **Invite someone:** type their email and name. They get Apple's invite email; the public link
+  https://testflight.apple.com/join/Xhq23wY4 works too. Keep real emails out of `store/testers.txt` (public repo).
+- **Give pitchers a newer build:** set *build* to `latest` (or a build number). The group gets the build and it is
+  submitted for Beta App Review (a new version number needs Apple's OK, usually within hours; TestFlight then shows "Update").
+
+Then in App Store Connect:
 and when ready, App Store tab -> create the version, attach the build, fill in screenshots and description, and submit for review.
 App Review needs a login: give them username `Demo`, password `Pitcher` (the sample account in `www/roster.js`).
 
