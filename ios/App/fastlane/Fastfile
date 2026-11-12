@@ -153,16 +153,25 @@ platform :ios do
     UI.user_error!("No TestFlight group named '#{group_name}'") unless group
 
     existing = Spaceship::ConnectAPI::BetaTester.all(filter: { betaGroups: group.id }).map { |t| t.email.to_s.downcase }
-    missing = wanted.reject { |email, _| existing.include?(email) }
-    if missing.empty?
-      UI.success("All #{wanted.length} tester(s) are already in '#{group_name}'.")
-    else
-      payload = missing.map do |email, name|
-        first, last = name.split(" ", 2)
-        { email: email, firstName: first.to_s, lastName: last.to_s }
+    masked = ->(email) { email.sub(/^(.).*@/, '\1***@') }
+    wanted.each do |email, name|
+      if existing.include?(email)
+        UI.message("#{masked.call(email)} is already in '#{group_name}'")
+        next
       end
-      group.post_bulk_beta_tester_assignments(beta_testers: payload)
-      missing.each { |email, _| UI.success("Invited #{email.sub(/^(.).*@/, '\1***@')} to '#{group_name}'") }
+      first, last = name.split(" ", 2)
+      tester = (Spaceship::ConnectAPI::BetaTester.find(email: email) rescue nil)
+      if tester
+        # Known to this team already (another group / app): just add to the group.
+        group.add_beta_testers(beta_tester_ids: [tester.id])
+      else
+        # New tester: create and assign in one call (POST /v1/betaTesters) - Apple sends the invite.
+        Spaceship::ConnectAPI.post_beta_tester_assignment(
+          beta_group_ids: [group.id],
+          attributes: { email: email, firstName: first.to_s, lastName: last.to_s }
+        )
+      end
+      UI.success("Invited #{masked.call(email)} to '#{group_name}'")
     end
 
     # Where the builds stand: testers only get their email once a build is approved for the group.
