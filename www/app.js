@@ -158,6 +158,7 @@
     $('assess-disabled').hidden = on; $('assess-enabled').hidden = !on;
     $('msg-disabled').hidden = on; $('msg-enabled').hidden = !on;
     $('coach-label-1').textContent = COACH_LABEL;
+    $('assess-hint').textContent = B.MAX_HINT + ', under ' + B.MAX_MB + ' MB';
     $('msg-input').placeholder = 'Message ' + COACH_LABEL;
     if (on) { loadAssessments(p); loadThread(p); }
   }
@@ -171,7 +172,7 @@
     $('assess-meta').textContent = (file.name || 'video') + ' · ' + fmtMB(file.size);
     $('assess-preview').hidden = false;
     setStatus('assess-status', '');
-    if (file.size > B.MAX_BYTES) setStatus('assess-status', 'This video is ' + fmtMB(file.size) + '. Keep it under 500 MB (about two minutes).', 'bad');
+    if (file.size > B.MAX_BYTES) setStatus('assess-status', 'This video is ' + fmtMB(file.size) + '. Keep it under ' + B.MAX_MB + ' MB (' + B.MAX_HINT + ').', 'bad');
   }
   function cancelFile() {
     pendingFile = null;

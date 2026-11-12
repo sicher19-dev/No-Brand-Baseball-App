@@ -8,7 +8,9 @@ window.NBB_BACKEND = (function () {
   var cfg = window.NBB_CONFIG || {};
   var client = null;
   var BUCKET = 'assessments';
-  var MAX_BYTES = 500 * 1024 * 1024;
+  var MAX_MB = Number(cfg.maxVideoMB) > 0 ? Number(cfg.maxVideoMB) : 50;
+  var MAX_BYTES = MAX_MB * 1024 * 1024;
+  var MAX_HINT = MAX_MB >= 200 ? 'about two minutes' : 'about 30 seconds at normal quality';
 
   function enabled() {
     return !!(cfg.supabaseUrl && cfg.supabaseAnonKey && window.supabase && window.supabase.createClient);
@@ -83,7 +85,7 @@ window.NBB_BACKEND = (function () {
   async function uploadAssessment(p, file, note) {
     var c = sb(); if (!c) fail('The backend is not set up yet.');
     if (file.size > MAX_BYTES) {
-      fail('That video is ' + Math.round(file.size / 1048576) + ' MB. Please keep it under 500 MB (about two minutes).');
+      fail('That video is ' + Math.round(file.size / 1048576) + ' MB. Please keep it under ' + MAX_MB + ' MB (' + MAX_HINT + ').');
     }
     var ext = (file.name && file.name.indexOf('.') > -1) ? file.name.split('.').pop() : ((file.type || '').split('/')[1] || 'mp4');
     ext = String(ext).toLowerCase().replace(/[^a-z0-9]/g, '') || 'mp4';
@@ -161,6 +163,6 @@ window.NBB_BACKEND = (function () {
     signInPitcher: signInPitcher, signInCoach: signInCoach, signOut: signOut,
     listAssessments: listAssessments, uploadAssessment: uploadAssessment, videoUrl: videoUrl, reviewAssessment: reviewAssessment,
     listMessages: listMessages, sendMessage: sendMessage, markRead: markRead, unreadForPitcher: unreadForPitcher,
-    coachOverview: coachOverview, MAX_BYTES: MAX_BYTES
+    coachOverview: coachOverview, MAX_BYTES: MAX_BYTES, MAX_MB: MAX_MB, MAX_HINT: MAX_HINT
   };
 })();

@@ -124,12 +124,13 @@ create policy "messages: mark read" on public.messages
 
 -- ---------------------------------------------------------------------------
 -- Storage: private bucket, one folder per pitcher id.
--- NOTE: the bucket limit below (500 MB) only applies if the project's global upload limit
--- (Dashboard -> Storage -> Settings) is at least as high. Raise it there on the Pro plan.
+-- NOTE: the bucket limit below must not exceed the project's global upload limit
+-- (Free plan: 50 MB. Pro plan: raise it under Storage -> Settings, then set 524288000 here
+-- and maxVideoMB: 500 in www/config.js, and re-run this file).
 -- ---------------------------------------------------------------------------
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values (
-  'assessments', 'assessments', false, 524288000,
+  'assessments', 'assessments', false, 52428800,
   array['video/mp4', 'video/quicktime', 'video/webm', 'video/x-m4v', 'video/3gpp', 'video/x-matroska']
 )
 on conflict (id) do update
