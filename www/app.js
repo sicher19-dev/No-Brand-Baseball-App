@@ -259,7 +259,8 @@
     var frame = $('viewer-frame'); var loading = $('viewer-loading');
     loading.hidden = false;
     frame.onload = function () { loading.hidden = true; };
-    frame.src = r.url;
+    // location.replace keeps the report out of the browser history, so Back is a single tap.
+    try { frame.contentWindow.location.replace(r.url); } catch (e) { frame.src = r.url; }
     show('report');
   }
 
@@ -390,7 +391,7 @@
       return;
     }
     if (h.indexOf('#/r/') === 0) { openReport(decodeURIComponent(h.slice(4))); return; }
-    $('viewer-frame').src = 'about:blank';
+    try { $('viewer-frame').contentWindow.location.replace('about:blank'); } catch (e) { $('viewer-frame').src = 'about:blank'; }
     renderHome(pitcherById(session.id));
     show('home');
     if (h !== '#/home') history.replaceState(null, '', '#/home');
@@ -500,7 +501,7 @@
   $('coach-refresh').addEventListener('click', renderCoach);
   $('cp-refresh').addEventListener('click', function () { if (coachLoadedId) renderCoachPitcher(coachLoadedId); });
   $('coach-back').addEventListener('click', function () { location.hash = '#/coach'; });
-  $('back').addEventListener('click', function () { if (history.length > 1) history.back(); else location.hash = '#/home'; });
+  $('back').addEventListener('click', function () { location.hash = '#/home'; });
 
   $('assess-record').addEventListener('change', function (e) { chooseFile(e.target.files && e.target.files[0]); });
   $('assess-pick').addEventListener('change', function (e) { chooseFile(e.target.files && e.target.files[0]); });
