@@ -62,18 +62,34 @@ platform :ios do
   lane :setup do
     setup_ci
     ENV["MATCH_READONLY"] = "false" # setup_ci forces readonly; this lane must be allowed to create certs
-    key = asc_key
+    key = asc_key # also authenticates Spaceship::ConnectAPI for the direct calls below
+    app_name = ENV.fetch("APP_NAME", "No Brand Baseball")
 
-    create_app_online(
-      api_key: key,
-      app_identifier: APP_ID,
-      app_name: ENV.fetch("APP_NAME", "No Brand Baseball"),
-      app_version: "1.0",
-      language: "en-US",
-      sku: "nobrandbaseball-ios",
-      enable_services: {}
-    )
+    # 1. Bundle ID in the developer portal (idempotent)
+    if Spaceship::ConnectAPI::BundleId.find(APP_ID)
+      UI.message("Bundle ID #{APP_ID} is already registered")
+    else
+      Spaceship::ConnectAPI::BundleId.create(name: "No Brand Baseball", identifier: APP_ID, platform: Spaceship::ConnectAPI::BundleIdPlatform::IOS)
+      UI.success("Registered bundle ID #{APP_ID}")
+    end
 
+    # 2. App record in App Store Connect (idempotent)
+    existing = Spaceship::ConnectAPI::App.find(APP_ID)
+    if existing
+      UI.message("App Store Connect record already exists: '#{existing.name}'")
+    else
+      Spaceship::ConnectAPI::App.create(
+        name: app_name,
+        version_string: "1.0",
+        sku: "nobrandbaseball-ios",
+        primary_locale: "en-US",
+        bundle_id: APP_ID,
+        platforms: [Spaceship::ConnectAPI::Platform::IOS]
+      )
+      UI.success("Created App Store Connect app '#{app_name}'")
+    end
+
+    # 3. Distribution certificate + App Store provisioning profile, stored encrypted in the certs repo
     sync_certs(key, readonly: false)
     UI.success("Signing is set up. Push a tag like v1.0.0 (or run the iOS workflow) to ship a build to TestFlight.")
   end
