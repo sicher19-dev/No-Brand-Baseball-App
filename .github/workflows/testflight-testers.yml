@@ -1,0 +1,44 @@
+# Invites TestFlight testers listed in store/testers.txt to the "No Brand Pitchers" group.
+# Trigger: push a change to store/testers.txt, or Run workflow with a single email.
+name: TestFlight - testers
+
+on:
+  push:
+    branches: [main]
+    paths: ["store/testers.txt", "ios/App/fastlane/Fastfile", ".github/workflows/testflight-testers.yml"]
+  workflow_dispatch:
+    inputs:
+      email:
+        description: "Tester email to invite"
+        required: false
+      name:
+        description: "Tester's name, e.g. Tyler O'Clair"
+        required: false
+      group:
+        description: "TestFlight group"
+        default: "No Brand Pitchers"
+        required: false
+
+jobs:
+  invite:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+          working-directory: ios/App
+      - name: Invite testers
+        working-directory: ios/App
+        run: bundle exec fastlane testers
+        env:
+          TESTERS_FILE: ${{ github.workspace }}/store/testers.txt
+          TESTER_EMAIL: ${{ inputs.email }}
+          TESTER_NAME: ${{ inputs.name }}
+          TESTER_GROUP: ${{ inputs.group || 'No Brand Pitchers' }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
+          FASTLANE_SKIP_UPDATE_CHECK: "1"

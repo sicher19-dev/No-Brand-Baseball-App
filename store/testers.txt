@@ -1,0 +1,4 @@
+# TestFlight testers for the "No Brand Pitchers" group - one per line: email, First Last
+# This repo is public, so keep real emails OUT of this file. To invite someone, use
+# Actions -> "TestFlight - testers" -> Run workflow and type the email there.
+# (Lines here are only for a private fork/copy of the repo.)

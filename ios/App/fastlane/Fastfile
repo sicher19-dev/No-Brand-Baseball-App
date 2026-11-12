@@ -128,4 +128,49 @@ platform :ios do
     )
     UI.success("Uploaded #{version} (#{build_number}) to TestFlight.")
   end
+
+  desc "Invite TestFlight testers (TESTER_EMAIL, or store/testers.txt) to the external group"
+  lane :testers do
+    asc_key # authenticates Spaceship::ConnectAPI
+    group_name = ENV.fetch("TESTER_GROUP", "No Brand Pitchers")
+
+    wanted = []
+    if ENV["TESTER_EMAIL"].to_s.strip != ""
+      wanted << [ENV["TESTER_EMAIL"].strip.downcase, ENV["TESTER_NAME"].to_s.strip]
+    else
+      file = ENV.fetch("TESTERS_FILE", File.expand_path("../../../store/testers.txt", __dir__))
+      File.readlines(file).each do |line|
+        line = line.strip
+        next if line.empty? || line.start_with?("#")
+        email, name = line.split(",", 2).map { |x| x.to_s.strip }
+        wanted << [email.downcase, name.to_s] if email.include?("@")
+      end
+    end
+    UI.user_error!("No testers to invite: run the workflow with an email, or list testers in store/testers.txt") if wanted.empty?
+
+    app = Spaceship::ConnectAPI::App.find(APP_ID) || UI.user_error!("No App Store Connect app for #{APP_ID}")
+    group = Spaceship::ConnectAPI::BetaGroup.all(filter: { app: app.id }).find { |g| g.name == group_name }
+    UI.user_error!("No TestFlight group named '#{group_name}'") unless group
+
+    existing = group.fetch_beta_testers.map { |t| t.email.to_s.downcase }
+    missing = wanted.reject { |email, _| existing.include?(email) }
+    if missing.empty?
+      UI.success("All #{wanted.length} tester(s) are already in '#{group_name}'.")
+    else
+      payload = missing.map do |email, name|
+        first, last = name.split(" ", 2)
+        { email: email, firstName: first.to_s, lastName: last.to_s }
+      end
+      group.post_bulk_beta_tester_assignments(beta_testers: payload)
+      missing.each { |email, _| UI.success("Invited #{email.sub(/^(.).*@/, '\1***@')} to '#{group_name}'") }
+    end
+
+    # Where the builds stand: testers only get their email once a build is approved for the group.
+    builds = Spaceship::ConnectAPI::Build.all(app_id: app.id, includes: "buildBetaDetail,preReleaseVersion", sort: "-uploadedDate", limit: 6)
+    builds.each do |b|
+      v = b.pre_release_version ? b.pre_release_version.version : "?"
+      ext = b.build_beta_detail ? b.build_beta_detail.external_build_state : "?"
+      UI.message("Build #{v} (#{b.version}): #{b.processing_state}, external: #{ext}")
+    end
+  end
 end
