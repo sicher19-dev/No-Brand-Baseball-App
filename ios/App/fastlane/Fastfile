@@ -149,10 +149,10 @@ platform :ios do
     UI.user_error!("No testers to invite: run the workflow with an email, or list testers in store/testers.txt") if wanted.empty?
 
     app = Spaceship::ConnectAPI::App.find(APP_ID) || UI.user_error!("No App Store Connect app for #{APP_ID}")
-    group = Spaceship::ConnectAPI::BetaGroup.all(filter: { app: app.id }).find { |g| g.name == group_name }
+    group = app.get_beta_groups.find { |g| g.name == group_name }
     UI.user_error!("No TestFlight group named '#{group_name}'") unless group
 
-    existing = group.fetch_beta_testers.map { |t| t.email.to_s.downcase }
+    existing = Spaceship::ConnectAPI::BetaTester.all(filter: { betaGroups: group.id }).map { |t| t.email.to_s.downcase }
     missing = wanted.reject { |email, _| existing.include?(email) }
     if missing.empty?
       UI.success("All #{wanted.length} tester(s) are already in '#{group_name}'.")
@@ -166,10 +166,10 @@ platform :ios do
     end
 
     # Where the builds stand: testers only get their email once a build is approved for the group.
-    builds = Spaceship::ConnectAPI::Build.all(app_id: app.id, includes: "buildBetaDetail,preReleaseVersion", sort: "-uploadedDate", limit: 6)
+    builds = app.get_builds(includes: "buildBetaDetail,preReleaseVersion", sort: "-uploadedDate", limit: 6)
     builds.each do |b|
-      v = b.pre_release_version ? b.pre_release_version.version : "?"
-      ext = b.build_beta_detail ? b.build_beta_detail.external_build_state : "?"
+      v = (b.respond_to?(:pre_release_version) && b.pre_release_version) ? b.pre_release_version.version : "?"
+      ext = (b.respond_to?(:build_beta_detail) && b.build_beta_detail) ? b.build_beta_detail.external_build_state : "?"
       UI.message("Build #{v} (#{b.version}): #{b.processing_state}, external: #{ext}")
     end
   end

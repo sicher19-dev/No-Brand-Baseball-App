@@ -5,7 +5,7 @@ name: TestFlight - testers
 on:
   push:
     branches: [main]
-    paths: ["store/testers.txt", "ios/App/fastlane/Fastfile", ".github/workflows/testflight-testers.yml"]
+    paths: ["store/testers.txt"]
   workflow_dispatch:
     inputs:
       email:
