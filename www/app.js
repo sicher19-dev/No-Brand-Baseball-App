@@ -13,13 +13,13 @@
   var COACH_LABEL = CFG.coachLabel || 'the coaches';
 
   var KIND_LABEL = {
-    scout: 'Scouting Reports', reverse: 'Reverse Reports', grades: 'Pitch Grades',
+    pen: 'Bullpen Plan', scout: 'Scouting Reports', reverse: 'Reverse Reports', grades: 'Pitch Grades',
     picture: 'Full Picture', execution: 'Execution', player: 'Player Report',
     zone: 'Zone Usage', lab: 'Labs & Tools', snapshot: '2026 Season Snapshot'
   };
-  var KIND_ORDER = ['scout', 'reverse', 'grades', 'execution', 'picture', 'player', 'zone', 'snapshot', 'lab'];
+  var KIND_ORDER = ['pen', 'scout', 'reverse', 'grades', 'execution', 'picture', 'player', 'zone', 'snapshot', 'lab'];
   var KIND_ICO = {
-    scout: 'SCT', reverse: 'REV', grades: 'GRD', picture: 'PIC', execution: 'EXE',
+    pen: 'PEN', scout: 'SCT', reverse: 'REV', grades: 'GRD', picture: 'PIC', execution: 'EXE',
     player: 'PLR', zone: 'ZON', lab: 'LAB', snapshot: 'PDF'
   };
 
