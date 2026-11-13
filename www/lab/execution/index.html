@@ -260,6 +260,8 @@ function scoreAll() {
     p.m = { glove: p.glove ? [(p.x - p.glove[0]) * 12, (p.z - p.glove[1]) * 12] : null, inferred: p.inferred ? [(p.x - p.inferred[0]) * 12, (p.z - p.inferred[1]) * 12] : null, plan: p.mplan };
     p.d = {}; p.sc = {};
     for (const l of LAYERS) { const v = p.m[l]; p.d[l] = v ? Math.hypot(v[0], v[1]) : null; p.sc[l] = v ? score(p.d[l], L[l]) : null; }
+    // Plan policy: dead-middle scores a fixed value (0 for this pitcher), whatever its distance. Glove layers stay pure distance.
+    if (p.grade === 'centered' && D.policy && D.policy.centered_score != null) p.sc.plan = D.policy.centered_score;
     p.s = p.sc;
   }
   return H;
@@ -280,7 +282,7 @@ const LAYER_NAME = { glove: 'Glove', inferred: 'Glove + habit', plan: 'The plan'
 const LAYER_NOTE = {
   glove: 'Glove: distance from where the catcher set up. Charges every pitch that was never meant to go to the glove.',
   inferred: 'Glove + habit: the glove, moved by where this pitcher really aims that pitch. Closer to intent.',
-  plan: 'The plan: the pitcher’s own target box for that pitch in that count. Every pitch is graded, and dead-middle never counts.',
+  plan: 'The plan: the pitcher’s own target box for that pitch in that count. Every pitch is graded, and dead-middle never counts: it scores 0.',
 };
 const $ = id => document.getElementById(id);
 const f1 = x => x == null || isNaN(x) ? '–' : x.toFixed(1);

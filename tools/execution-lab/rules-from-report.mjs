@@ -35,6 +35,7 @@ const planRule = {
   zone: { x_half: 0.708, lo: t.zone_lo, hi: t.zone_hi },
   heart: { x_half: t.heart_x, lo: t.heart_lo, hi: t.heart_hi },
   near_in: t.near_in,
+  centered_score: 0,   // policy (Brian, 2026-11-13): dead-middle scores 0 on the plan layer, whatever its distance
   family_of: { CU: 'SL' },
   params: Object.fromEntries(Object.entries(t).filter(([k]) => !Array.isArray(t[k]) && typeof t[k] !== 'object')),
   families: Object.fromEntries(Object.entries(t).filter(([, v]) => typeof v === 'object')),

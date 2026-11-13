@@ -224,7 +224,12 @@ test('scorePitch fills every layer and keeps the plan graded without a glove', (
   const mid = scorePitch({ ...ff(0.1, 0.5, { family: 'ST' }) }, { planRule: ZONE_RULE, league });
   assert.equal(mid.grade, 'centered');
   close(mid.d.plan, 0.25 * IN, 1e-9, 'a centered pitch inside a box is scored as the miss out of the middle, not as on target');
-  close(mid.s.plan, score(3, 5), 1e-9);
+  close(mid.s.plan, score(3, 5), 1e-9, 'no centered_score set: pure distance');
+  const zero = scorePitch({ ...ff(0.1, 0.5, { family: 'ST' }), glove: [0.1, Z.bot + 0.5 * 1.5] }, { planRule: { ...ZONE_RULE, centered_score: 0 }, league });
+  assert.equal(zero.s.plan, 0, 'centered_score 0: dead-middle scores 0 on the plan layer');
+  assert.equal(zero.s.glove, 100, 'but a glove set up middle and hit is executed against the glove');
+  const notMid = scorePitch({ ...ff(0, 0.9) }, { planRule: { ...ZONE_RULE, centered_score: 0 }, league });
+  assert.equal(notMid.s.plan, 100, 'the policy only touches centered pitches');
   close(p.d.glove, Math.hypot(0.25 * IN, (Z.bot + 1.25 * 1.5 - 3.0) * IN));
   assert.equal(p.m.inferred, null); assert.equal(p.s.inferred, null);
   close(p.s.plan, score(1.8, 5));

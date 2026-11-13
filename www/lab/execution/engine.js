@@ -209,6 +209,11 @@ export function scorePitch(p, { planRule, league }) {
     const v = missVector(actual, targets[l]);
     p.m[l] = v; p.d[l] = distance(v); p.s[l] = v ? score(p.d[l], league[l]) : null;
   }
+  // Policy: a plan rule may fix the plan-layer score of a centered pitch
+  // (centered_score, e.g. 0), whatever its distance. Dead-middle is the plan's
+  // call; the glove layers stay pure distance, so a glove set up middle and a
+  // pitch that got there still counts against the glove.
+  if (p.grade === 'centered' && planRule && planRule.centered_score != null && p.s.plan != null) p.s.plan = planRule.centered_score;
   return p;
 }
 

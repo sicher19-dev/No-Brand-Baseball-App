@@ -63,7 +63,8 @@ list.forEach(g => { g.pitches.sort((a, b) => a.inn - b.inn || a.ab - b.ab || a.p
 const all = list.flatMap(g => g.pitches);
 const tds = all.map(p => p.td);
 const meanMiss = tds.reduce((s, d) => s + d, 0) / tds.length;
-const seasonScore = tds.reduce((s, d) => s + score(d, meanMiss), 0) / tds.length;
+const cs = planRule.centered_score;
+const seasonScore = all.reduce((s, p) => s + (p.g === 'centered' && cs != null ? cs : score(Math.hypot(p.m[0], p.m[1]), meanMiss)), 0) / all.length;
 const baseline = { plan: +meanMiss.toFixed(2), kind: 'season-mean', median_miss: +median(tds).toFixed(2), season_score: +seasonScore.toFixed(1) };
 
 const out = {
@@ -73,6 +74,7 @@ const out = {
   built: new Date().toISOString().slice(0, 10),
   rules_version: planRule.version,
   baseline,
+  policy: { centered_score: planRule.centered_score == null ? null : planRule.centered_score },
   fam_name: famName,
   games: list,
 };

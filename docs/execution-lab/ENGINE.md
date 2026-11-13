@@ -207,11 +207,15 @@ executed ground: the plan boxes with the heart cut out (`dgood` and
 miss it is, never as on target, while the report's `tdist` and the grades
 are unchanged. On Paul's 2026 this moved 48 pitches and the season score
 from 65.3 to 65.1, because most centered pitches already sat 2 to 3 inches
-from a plan box. Whether the score should punish the middle beyond its
-distance is a policy choice, not a geometry one: capping centered pitches at
-25 would put the season at 61.5, scoring them 0 at 59.4. Today the score
-means one thing, distance to a good spot, and the grade mix and dead-middle
-rate carry the penalty.
+from a plan box.
+
+Policy (Brian, 2026-11-13): on the plan layer a centered pitch scores 0,
+whatever its distance. The plan rule carries it as `centered_score: 0`
+(leave it out for pure distance), the engine applies it in `scorePitch`,
+and the page applies it from `policy.centered_score` in the data file. The
+glove and glove + habit layers stay pure distance: a catcher set up middle
+and a pitch that got there is executed against the glove, and only the plan
+says it was the wrong spot. With this, Paul's 2026 season scores 59.4.
 
 ## What the acceptance test found (2026-11-13)
 
