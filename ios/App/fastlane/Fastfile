@@ -207,4 +207,23 @@ platform :ios do
       UI.success("Submitted #{v} (#{build.version}) for Beta App Review; testers get it once Apple approves (usually hours).")
     end
   end
+
+  desc "Upload App Store screenshots from store/screenshots/<locale>/ (generic renders, see store/screenshots/render.js)"
+  lane :screenshots do
+    key = asc_key
+    deliver(
+      api_key: key,
+      app_identifier: APP_ID,
+      app_version: ENV.fetch("APP_STORE_VERSION", "1.0"),
+      screenshots_path: File.expand_path("../../../store/screenshots", __dir__),
+      overwrite_screenshots: true,
+      skip_binary_upload: true,
+      skip_metadata: true,
+      skip_app_version_update: true,
+      run_precheck_before_submit: false,
+      precheck_include_in_app_purchases: false,
+      force: true
+    )
+    UI.success("Screenshots uploaded to App Store Connect.")
+  end
 end

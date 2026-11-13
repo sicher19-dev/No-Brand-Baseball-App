@@ -1,0 +1,36 @@
+# Uploads the App Store screenshots in store/screenshots/<locale>/ through the App Store Connect API.
+# Trigger: push a change under store/screenshots, or Run workflow.
+name: App Store - screenshots
+
+on:
+  push:
+    branches: [main]
+    paths: ["store/screenshots/**"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "App Store version to attach them to"
+        default: "1.0"
+        required: false
+
+jobs:
+  screenshots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+          working-directory: ios/App
+      - name: Upload screenshots
+        working-directory: ios/App
+        run: bundle exec fastlane screenshots
+        env:
+          APP_STORE_VERSION: ${{ inputs.version || '1.0' }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
+          FASTLANE_SKIP_UPDATE_CHECK: "1"
+          DELIVER_SKIP_HTML_REPORT: "1"
