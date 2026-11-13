@@ -133,9 +133,23 @@ not: the plan rules, velocity, or any other internal column. The score anchor
 available: a miss of that size scores 50, on target scores 100.
 
 **Clips.** The page looks for `data/<id>-clips.json`, a map from pitch id to
-clip URL. When a pitch has one, tapping the pitch plays it inline with a
-caption; otherwise the slot says no clip is loaded. No provider is named on
-the page.
+`{ h: broadcast URL, hh: high-home URL }`. When a pitch has one, tapping the
+pitch plays it inline with a caption and an angle switch; otherwise the slot
+says no clip is loaded. No provider is named on the page.
+
+Building the map (done for Skenes 2026 on 2026-11-13, all 2,890 pitches):
+
+1. On the video provider's pitch log for the pitcher, paste
+   `tools/execution-lab/harvest-clips.browser.js` into the console. The page
+   returns at most 1,000 rows per query, so filter to one month at a time
+   and run `nbClipsHarvest()` on each; the rows accumulate in the browser.
+2. `nbClipsDownload('<id>')` saves `nb-clips-<id>.tsv.gz`; move it to
+   `private/clips/<id>.tsv.gz`.
+3. `node tools/execution-lab/clips-from-tsv.mjs <id>` writes the page map.
+
+The map is gitignored (`www/lab/execution/data/*-clips.json`): the URLs are
+the provider's hosted clips and stay off the public repo. Serving them to
+pitchers goes through the app's backend in a later step.
 
 **Layers.** The glove and glove + habit buttons stay disabled until glove
 reads are loaded for the pitcher (`glove` and `inferred` points per pitch in

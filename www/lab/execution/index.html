@@ -125,7 +125,7 @@ tr.sel td{background:var(--gold-soft)}
     <div class="slot" id="slot">Tap a pitch on the chart or in the log to load its clip</div>
     <button class="btn edit" id="editTarget" disabled title="Coach tool, coming later">Edit target</button>
   </div>
-  <div class="vbar"><span id="clipInfo"></span><span><button id="closeClip" hidden>Close</button></span></div>
+  <div class="vbar"><span id="clipInfo"></span><span id="angles"></span><span><button id="closeClip" hidden>Close</button></span></div>
   <div class="kv" id="kv"></div>
 </div>
 
@@ -307,14 +307,34 @@ function select(p) {
   st.sel = p; render();
   if (p) $('selCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
-function clipFor(p) { return (p.pid && CLIPS[p.pid]) || p.clip || null; }
+// Clips: data/<id>-clips.json maps pitch id -> { h: broadcast, hh: high home } (or a plain URL).
+const ANGLES = { h: 'Broadcast', hh: 'High home' };
+st.angle = 'h';
+function clipFor(p) {
+  const c = (p.pid && CLIPS[p.pid]) || p.clip || null;
+  if (!c) return null;
+  if (typeof c === 'string') return c;
+  return c[st.angle] || c.h || c.hh || null;
+}
+function drawAngles(p) {
+  const c = p && p.pid && CLIPS[p.pid];
+  const el = $('angles'); el.innerHTML = '';
+  if (!c || typeof c === 'string') return;
+  for (const [k, label] of Object.entries(ANGLES)) {
+    if (!c[k]) continue;
+    const b = document.createElement('button'); b.textContent = label; b.style.textDecoration = st.angle === k ? 'none' : 'underline'; b.style.marginRight = '10px'; b.style.fontWeight = st.angle === k ? '700' : '400';
+    b.onclick = () => { st.angle = k; drawSel(); };
+    el.appendChild(b);
+  }
+}
 function drawSel() {
   const p = st.sel, v = $('player'), slot = $('slot'), kv = $('kv');
   if (!p) {
     $('selHint').textContent = 'tap any dot or row'; $('selCap').textContent = 'No pitch selected';
     v.hidden = true; v.removeAttribute('src'); slot.hidden = false; slot.textContent = 'Tap a pitch on the chart or in the log to load its clip';
-    $('clipInfo').textContent = ''; $('closeClip').hidden = true; kv.innerHTML = ''; return;
+    $('clipInfo').textContent = ''; $('angles').innerHTML = ''; $('closeClip').hidden = true; kv.innerHTML = ''; return;
   }
+  drawAngles(p);
   const G = D.games[p.gi];
   $('selHint').textContent = gLabel(G);
   $('selCap').textContent = `Pitch ${p.i}, ${D.fam_name[p.fam] || p.pt} to ${p.bat || 'the hitter'}, inning ${p.inn}, count ${p.b}-${p.s_}`;

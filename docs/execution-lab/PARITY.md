@@ -13,10 +13,10 @@ Game page status (2026-11-13): built at `www/lab/execution/`, on real data
 for one pitcher. Done: header with prev / next / season, tiles vs season,
 grade bar, count and pitch filters, miss pattern and target-to-plate charts,
 selected pitch with caption and inline player, by-pitch table, pitch log.
-Waiting on data: clip URLs per pitch (the player is wired, the map is empty),
-glove reads (the glove layers are disabled until then). Not yet: Edit target,
-the plan box drawn for the selected pitch (rules stay server-side), season
-trends.
+Click-to-video works on every 2026 pitch (clip map built 2026-11-13, kept
+local). Waiting on data: glove reads (the glove layers are disabled until
+then). Not yet: the target circle drawn on the clip, Edit target, the plan
+box drawn for the selected pitch (rules stay server-side), season trends.
 
 ## Must have: click a pitch, watch the pitch
 
