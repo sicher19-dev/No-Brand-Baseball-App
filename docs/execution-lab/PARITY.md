@@ -29,8 +29,11 @@ the provider's pitch log, graded against today's plan, with a season switch
 and a seasons-side-by-side table. League line in: every 2026 pitch from the
 31 other qualified right-handed starters, graded on this pitcher's plan, with
 the anchor solved so 50 is the league average; the season tile reads "vs
-league" and every ? explainer is written for the pitcher. Not yet: the plan
-box drawn for the selected pitch (rules stay server-side).
+league" and every ? explainer is written for the pitcher. Later the same
+day: tabs (Read, Pitches, Starts, Situations), the catch point on every
+pitch, Tag gloves with set-up frames found by motion analysis, and the
+Situations tab. Not yet: the plan box drawn for the selected pitch (rules
+stay server-side); runners on base and a leverage index (not in the feed).
 
 ## Must have: click a pitch, watch the pitch
 
