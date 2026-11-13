@@ -14,9 +14,13 @@ for one pitcher. Done: header with prev / next / season, tiles vs season,
 grade bar, count and pitch filters, miss pattern and target-to-plate charts,
 selected pitch with caption and inline player, by-pitch table, pitch log.
 Click-to-video works on every 2026 pitch (clip map built 2026-11-13, kept
-local). Waiting on data: glove reads (the glove layers are disabled until
-then). Not yet: the target circle drawn on the clip, Edit target, the plan
-box drawn for the selected pitch (rules stay server-side), season trends.
+local). Season layer done the same day: start-by-start chart (command with
+noise band, executed %, dead-middle %, typical miss; pitch-type series
+multi-select; tap a start to open it) and a game log with a season row.
+Waiting on data: glove reads (the glove layers are disabled until then).
+Not yet: the target circle drawn on the clip, Edit target, the plan box
+drawn for the selected pitch (rules stay server-side), two seasons side by
+side (one season of data so far).
 
 ## Must have: click a pitch, watch the pitch
 

@@ -139,6 +139,19 @@ tr.sel td{background:var(--gold-soft)}
   <div class="scroll"><table id="log"></table></div>
 </div>
 
+<div class="card">
+  <h2>Start by start<small>shaded = noise band · tap a start to open it</small></h2>
+  <div class="ctl" style="margin-top:0"><span class="lab">Show</span><span id="metricBtns"></span></div>
+  <div class="ctl"><span class="lab">Series</span><span id="seriesBtns"></span></div>
+  <div style="overflow:auto;margin-top:8px"><svg id="trend" viewBox="0 0 720 250" style="min-width:560px"></svg></div>
+  <div class="legend" id="trendLeg"></div>
+</div>
+
+<div class="card">
+  <h2>Game log<small>tap a game to open it</small></h2>
+  <div class="scroll"><table id="glog"></table></div>
+</div>
+
 <div class="foot" id="foot"></div>
 </div>
 
@@ -170,7 +183,13 @@ const ALL = D.games.flatMap(g => g.pitches);
 const hasLayer = l => ALL.some(p => p.m[l]);
 
 // ---------- state ----------
-const st = { g: D.games.length - 1, layer: 'plan', count: 'all', pt: 'all', view: 'miss', sel: null };
+const st = { g: D.games.length - 1, layer: 'plan', count: 'all', pt: 'all', view: 'miss', sel: null, metric: 'score', series: [] };
+const METRICS = {
+  score: { label: 'Command', get: S => S.score, band: S => S.band, fmt: v => f1(v), lo: 0, hi: 100 },
+  exec: { label: 'Executed %', get: S => S.exec == null ? null : S.exec * 100, band: () => 0, fmt: v => Math.round(v) + '%', lo: 0, hi: 100 },
+  cent: { label: 'Dead-middle %', get: S => S.cent == null ? null : S.cent * 100, band: () => 0, fmt: v => Math.round(v) + '%', lo: 0, hi: 30 },
+  miss: { label: 'Typical miss', get: S => S.med, band: () => 0, fmt: v => f1(v) + '"', lo: 0, hi: 8 },
+};
 const LAYER_NAME = { glove: 'Glove', inferred: 'Glove + habit', plan: 'The plan' };
 const LAYER_NOTE = {
   glove: 'Glove: distance from where the catcher set up. Charges every pitch that was never meant to go to the glove.',
@@ -235,7 +254,7 @@ function render() {
   if (st.view === 'miss') drawMiss(P, S); else drawPlate(P);
   $('chartLeg').innerHTML = (st.view === 'miss' ? '<span>◌ rings at 6" and 12"</span><span>⬭ spread (1 sd)</span><span>→ aim offset</span>' : '<span>○ target</span><span>● plate</span><span>─ miss</span><span>┌ zone</span>')
     + FAMS.map(f => `<span><i style="background:${col(f)}"></i>${D.fam_name[f]}</span>`).join('');
-  drawTables(P, SS); drawSel();
+  drawTables(P, SS); drawSel(); drawTrend(); drawGameLog(SS);
   $('foot').textContent = `No Brand Baseball Analytics · plan rules ${D.rules_version ? 'v' + D.rules_version.split(':')[0].replace(/^v/, '') : ''} · built ${D.built}`;
 }
 
@@ -287,7 +306,7 @@ function drawPlate(P) {
   for (const p of P) dot(s, p, X(cx(p.x)), Y(cz(p.z)));
 }
 function drawTables(P, SS) {
-  const base = st.g < 0 ? ALL : D.games[st.g].pitches, cf = p => st.count === 'all' || (st.count === '2K' ? p.twoK : !p.twoK);
+  const base = st.g < 0 ? ALL : D.games[st.g].pitches;
   let h = '<thead><tr><th class="l">Pitch</th><th>N</th><th>Score</th><th>Miss</th><th>Aim offset</th><th>Spread</th><th>Executed</th><th>Middle</th></tr></thead><tbody>';
   for (const f of FAMS) {
     const Q = base.filter(p => p.fam === f && cf(p)), S = stats(Q, st.layer); if (!S) continue;
@@ -300,6 +319,52 @@ function drawTables(P, SS) {
   P.forEach((p, ix) => { h += `<tr data-ix="${ix}" class="${st.sel === p ? 'sel' : ''}"><td>${st.g < 0 ? 'G' + (p.gi + 1) + '·' : ''}${p.i}</td><td>${p.inn}</td><td>${p.b}-${p.s_}</td><td class="l">${p.bat || '–'} <span style="color:var(--dim)">${p.st}HH</span></td><td class="l"><span class="dot" style="background:${col(p.fam)}"></span>${p.pt}</td><td><span class="chip" style="background:${chipBg(p.sc[st.layer])}">${f1(p.sc[st.layer])}</span></td><td>${p.d[st.layer] == null ? '–' : f1(p.d[st.layer]) + '"'}</td><td>${p.m[st.layer] ? (p.grade === 'executed' ? 'on target' : p.dir || dirWord(p.m[st.layer])) : 'no glove read'}</td><td><span class="g" style="border-color:${GC[p.grade]}">${GRADE_LABEL[p.grade]}</span></td></tr>`; });
   $('log').innerHTML = h + '</tbody>';
   $('log').querySelectorAll('tbody tr').forEach(r => r.onclick = () => { const p = P[+r.dataset.ix]; select(st.sel === p ? null : p); });
+}
+
+// ---------- season: start by start, game log ----------
+const cf = p => st.count === 'all' || (st.count === '2K' ? p.twoK : !p.twoK);
+function gameStats(G, fam) { return stats(G.pitches.filter(p => cf(p) && (!fam || p.fam === fam)), st.layer); }
+function openGame(gi) { st.g = gi; st.sel = null; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function drawTrend() {
+  const M = METRICS[st.metric];
+  const mb = $('metricBtns'); mb.innerHTML = '';
+  for (const [k, m] of Object.entries(METRICS)) { const b = document.createElement('button'); b.className = 'btn' + (st.metric === k ? ' on' : ''); b.textContent = m.label; b.onclick = () => { st.metric = k; drawTrend(); }; mb.appendChild(b); }
+  const sb = $('seriesBtns'); sb.innerHTML = '';
+  const allB = document.createElement('button'); allB.className = 'btn' + (!st.series.length ? ' on' : ''); allB.textContent = 'All pitches'; allB.onclick = () => { st.series = []; drawTrend(); }; sb.appendChild(allB);
+  for (const f of FAMS) { const b = document.createElement('button'); b.className = 'btn' + (st.series.includes(f) ? ' on' : ''); b.innerHTML = `<span class="dot" style="background:${col(f)}"></span>${D.fam_name[f]}`; b.onclick = () => { st.series = st.series.includes(f) ? st.series.filter(x => x !== f) : [...st.series, f]; drawTrend(); }; sb.appendChild(b); }
+
+  const series = [{ fam: null, color: '#efece4', name: 'All pitches' }, ...st.series.map(f => ({ fam: f, color: col(f), name: D.fam_name[f] }))];
+  const pts = series.map(s => ({ ...s, pts: D.games.map((G, i) => { const S = gameStats(G, s.fam); const v = S ? M.get(S) : null; return v == null || isNaN(v) ? null : { i, v, band: M.band(S) || 0, n: S.n }; }).filter(Boolean) }));
+  let lo = M.lo, hi = M.hi; for (const s of pts) for (const p of s.pts) { lo = Math.min(lo, p.v - p.band); hi = Math.max(hi, p.v + p.band); }
+  if (st.metric === 'score') { lo = Math.max(0, Math.floor((lo - 5) / 10) * 10); hi = Math.min(100, Math.ceil((hi + 5) / 10) * 10); } else { lo = 0; hi = Math.ceil(hi * 1.1 / 5) * 5 || M.hi; }
+  const s = $('trend'); s.innerHTML = '';
+  const L = 38, Rr = 708, T = 16, B = 212, n = D.games.length, X = i => L + (Rr - L) * (i + .5) / n, Y = v => B - (v - lo) / (hi - lo) * (B - T);
+  const tickFmt = v => st.metric === 'miss' ? f1(v) + '"' : Math.round(v) + (st.metric === 'score' ? '' : '%');
+  const ticks = 5; for (let k = 0; k <= ticks; k++) { const v = lo + (hi - lo) * k / ticks; el(s, 'line', { x1: L, x2: Rr, y1: Y(v), y2: Y(v), stroke: '#1b1b1f' }); el(s, 'text', { x: L - 6, y: Y(v) + 4, 'text-anchor': 'end' }, tickFmt(v)); }
+  if (st.metric === 'score' && lo <= 50 && hi >= 50) el(s, 'line', { x1: L, x2: Rr, y1: Y(50), y2: Y(50), stroke: '#5c5c63', 'stroke-dasharray': '4 4' });
+  // month labels, skipping any that would sit on the previous one
+  let lastM = '', lastX = -99; D.games.forEach((G, i) => { const m = G.date.slice(5, 7); if (m !== lastM && X(i) - lastX > 34) { el(s, 'text', { x: X(i), y: 236, 'text-anchor': 'middle' }, ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m - 1]); lastX = X(i); } lastM = m; });
+  for (const sr of pts) {
+    if (sr.pts.length > 1) {
+      if (sr.fam === null && st.metric === 'score') el(s, 'path', { d: 'M' + sr.pts.map(o => `${X(o.i)} ${Y(o.v + o.band)}`).join(' L') + ' L' + sr.pts.slice().reverse().map(o => `${X(o.i)} ${Y(o.v - o.band)}`).join(' L') + ' Z', fill: 'rgba(245,183,0,.10)' });
+      el(s, 'path', { d: 'M' + sr.pts.map(o => `${X(o.i)} ${Y(o.v)}`).join(' L'), fill: 'none', stroke: sr.color, 'stroke-width': sr.fam === null ? 2 : 1.5, opacity: sr.fam === null ? 1 : .9 });
+    }
+    for (const o of sr.pts) {
+      const on = o.i === st.g;
+      el(s, 'circle', { cx: X(o.i), cy: Y(o.v), r: on && sr.fam === null ? 6 : 3.5, fill: on && sr.fam === null ? '#fff' : sr.color, stroke: '#131316', 'stroke-width': 1.5, 'pointer-events': 'none' });
+      if (on && sr.fam === null) el(s, 'text', { x: X(o.i), y: Y(o.v) - 10, 'text-anchor': 'middle', style: 'fill:#efece4;font-weight:700' }, M.fmt(o.v));
+    }
+  }
+  D.games.forEach((G, i) => { const h = el(s, 'rect', { x: X(i) - (Rr - L) / n / 2, y: T, width: (Rr - L) / n, height: B - T + 28, fill: 'transparent', style: 'cursor:pointer' }); h.onclick = () => openGame(i); const S0 = gameStats(G, null); el(h, 'title', {}, `${gLabel(G)}: ${S0 ? M.fmt(M.get(S0)) : '–'}${S0 && st.metric === 'score' ? ' ± ' + f1(S0.band) : ''} · ${S0 ? S0.n : 0} pitches`); });
+  $('trendLeg').innerHTML = series.map(sr => `<span><i style="background:${sr.color}"></i>${sr.name}</span>`).join('') + (st.metric === 'score' ? '<span>┄ 50 line</span>' : '');
+}
+function drawGameLog(SS) {
+  let h = '<thead><tr><th class="l">Game</th><th>Pitches</th><th>Command</th><th>Executed</th><th>Middle</th><th>Miss</th></tr></thead><tbody>';
+  D.games.forEach((G, i) => { const S = gameStats(G, st.pt === 'all' ? null : st.pt); if (!S) return;
+    h += `<tr data-gi="${i}" class="${st.g === i ? 'sel' : ''}"><td class="l">${gLabel(G)}</td><td>${S.total}</td><td><span class="chip" style="background:${chipBg(S.score)}">${f1(S.score)}</span></td><td>${pct(S.exec)}</td><td>${pct(S.cent)}</td><td>${f1(S.med)}"</td></tr>`; });
+  if (SS) h += `<tr style="font-weight:700"><td class="l">Season</td><td>${SS.total}</td><td><span class="chip" style="background:${chipBg(SS.score)}">${f1(SS.score)}</span></td><td>${pct(SS.exec)}</td><td>${pct(SS.cent)}</td><td>${f1(SS.med)}"</td></tr>`;
+  $('glog').innerHTML = h + '</tbody>';
+  $('glog').querySelectorAll('tbody tr[data-gi]').forEach(r => r.onclick = () => openGame(+r.dataset.gi));
 }
 
 // ---------- selected pitch and video ----------
