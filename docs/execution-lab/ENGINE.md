@@ -288,6 +288,32 @@ the provider tab opens that page from a trusted click (`window.open`),
 posts the gzip bytes to it with `postMessage`, and the page saves them
 same-origin. Keep the browser-side store until the file is verified on disk.
 
+## The catch point (`cp` on each pitch)
+
+The plate location is where the ball crossed the front of the plate. The
+catcher takes it about three feet further on, lower and a little further
+across, and that is where the glove is in the picture, so the clip overlay
+puts its filled dot at the catch point and a small ring at the plate crossing
+(the grades still use the plate crossing). Chart views stay at the plate.
+
+The build computes it from the provider's per-pitch release side, release
+height and break length (`private/harvest/<id>-rel.tsv.gz`, harvested from
+the pitch log by pitch id: 5,887 of 5,887 joined for 2025 and 2026). The
+ball's direction at the plate is the release-to-plate chord plus the bend:
+for a constant-acceleration flight the slope at the end leaves the chord by
+(total deflection) / (flight distance), and the provider's break length is a
+quarter of the total deflection (a parabola's mid-point distance from its
+chord). Constants in `build-game-data.mjs`: extension 6.5 ft, flight
+distance 60.5 − 6.5 − 1.417 ft, catch depth 3.0 ft from the front of the
+plate (`policy.catch_depth_ft` in the data file). The bend is applied
+straight down; the sideways share is small, and the provider's break angle
+is not a direction (it is positive for every pitch of a given hand). Checked
+sign conventions: release side is in the plate-location frame (left-handers
+positive, right-handers negative). Result on this pitcher: the catch point
+sits about 1.6 in toward first base and 3 to 4.5 in lower than the plate
+crossing, fastballs least, off-speed most. Only the catch point ships; the
+release point and velocity stay in `private/`.
+
 ## What the acceptance test found (2026-11-13)
 
 Engine + rules derived from the built report, run on the internal pitch file:

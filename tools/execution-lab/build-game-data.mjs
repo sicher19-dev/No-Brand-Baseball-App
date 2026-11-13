@@ -13,6 +13,7 @@
 // plan target. What stays behind: the rules themselves, velocity, and every
 // other internal column.
 import { existsSync, readFileSync, writeFileSync, readdirSync } from 'node:fs';
+import { gunzipSync } from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { gradePlan, missVector, median, score } from '../../www/lab/execution/engine.js';
@@ -41,6 +42,31 @@ if (D) for (const S of D.starts) for (const p of S.pitches) names[`${S.meta.date
 
 const famName = (D && D.fam_name) || { FF: 'Four-seam', SI: 'Sinker', FS: 'Splitter', CH: 'Changeup', ST: 'Sweeper', SL: 'Slider', CU: 'Curveball' };
 
+// Catch point. The plate location is where the ball crossed the front of the
+// plate; the catcher takes it about three feet further on, lower and a little
+// further across. With the release point and the pitch's break length
+// (private/harvest/<id>-rel.tsv.gz: pitch id, release side, release height,
+// break length, ...), the ball's direction at the plate is the release-to-plate
+// chord plus the bend: for a constant-acceleration flight the slope at the end
+// leaves the chord by (total deflection) / (distance), and the provider's break
+// length is a quarter of the total deflection (the parabola's mid-point
+// distance from its chord). The bend is applied straight down; its sideways
+// share is small and the provider's break angle is not a direction. Only the
+// catch point ships; release and velocity stay here.
+const EXTENSION = 6.5, PLATE_FRONT = 17 / 12, CATCH_DEPTH = 3.0;   // feet; depth measured from the front of the plate
+const FLIGHT = 60.5 - EXTENSION - PLATE_FRONT;
+const REL = {};
+const relPath = join(ROOT, 'private', 'harvest', `${id}-rel.tsv.gz`);
+if (existsSync(relPath)) for (const line of gunzipSync(readFileSync(relPath)).toString('utf8').trim().split('\n')) {
+  const [pid, rs, rh, bl] = line.split('\t');
+  if (pid && rs !== '' && rh !== '') REL[pid] = [+rs, +rh, bl === '' ? 0 : +bl];
+}
+function catchPoint(pid, x, z) {
+  const r = REL[pid]; if (!r) return null;
+  const sx = (x - r[0]) / FLIGHT, sz = (z - r[1]) / FLIGHT - 4 * (r[2] / 12) / FLIGHT;
+  return [+(x + sx * CATCH_DEPTH).toFixed(3), +(z + sz * CATCH_DEPTH).toFixed(3)];
+}
+
 const games = {};
 for (const r of rows) {
   const g = games[r.game_date] || (games[r.game_date] = { date: r.game_date, opp: r.opp, home: r.home === 'True', pitches: [] });
@@ -61,6 +87,7 @@ for (const r of rows) {
     m: [+m[0].toFixed(2), +m[1].toFixed(2)],
     zone: pitch.zone ? [+pitch.zone.bot.toFixed(3), +pitch.zone.top.toFixed(3)] : null,
     pid: r.play_id,
+    cp: catchPoint(r.play_id, pitch.x, pitch.z) || undefined,
   });
 }
 const everyGame = Object.values(games).sort((a, b) => a.date.localeCompare(b.date));
@@ -95,10 +122,11 @@ const out = {
   built: new Date().toISOString().slice(0, 10),
   rules_version: planRule.version,
   baseline,
-  policy: { centered_score: planRule.centered_score == null ? null : planRule.centered_score },
+  policy: { centered_score: planRule.centered_score == null ? null : planRule.centered_score, catch_depth_ft: Object.keys(REL).length ? CATCH_DEPTH : null },
   fam_name: famName,
   games: everyGame,
 };
 const outPath = join(ROOT, 'www', 'lab', 'execution', 'data', `${id}.json`);
 writeFileSync(outPath, JSON.stringify(out));
-console.log(`wrote ${outPath}: ${everyGame.length} games over ${seasons.join(', ')}; anchor ${latest} mean miss ${baseline.plan} in; ${JSON.stringify(out.seasons)}`);
+const withCp = everyGame.reduce((n, g) => n + g.pitches.filter(p => p.cp).length, 0);
+console.log(`wrote ${outPath}: ${everyGame.length} games over ${seasons.join(', ')}; anchor ${latest} ${baseline.plan} in; catch points on ${withCp} pitches; ${JSON.stringify(out.seasons)}`);

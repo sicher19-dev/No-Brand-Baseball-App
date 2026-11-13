@@ -574,13 +574,18 @@ function drawOverlay(p) {
   el(g, 'line', { x1: X(hitterX), x2: X(hitterX), y1: Y(0.2), y2: Y(zone[1] + 0.6), stroke: '#8e8e96', 'stroke-dasharray': '3 3' });
   el(g, 'text', { x: X(hitterX), y: Y(zone[1] + 0.9), 'text-anchor': 'middle', style: 'fill:#8e8e96;font-size:10px' }, p.st + 'HH');
   el(g, 'text', { x: ix, y: iy + 16, style: 'fill:#8e8e96;font-size:10px' }, ori > 0 ? 'catcher’s view' : 'from center field');
-  if (t) { el(g, 'line', { x1: X(t[0]), y1: Y(t[1]), x2: X(p.x), y2: Y(p.z), stroke: col(p.fam), 'stroke-width': 1.5 }); el(g, 'circle', { cx: X(t[0]), cy: Y(t[1]), r: 6, fill: 'none', stroke: 'var(--gold)', 'stroke-width': 2 }); }
-  el(g, 'circle', { cx: X(Math.max(-1.45, Math.min(1.45, p.x))), cy: Y(Math.max(0, Math.min(4.4, p.z))), r: 5, fill: col(p.fam), stroke: '#0b0b0d' });
+  // The filled dot is where the catcher takes the ball (the catch point, when
+  // the build has one); the small ring is where it crossed the front of the plate.
+  const cp = p.cp || [p.x, p.z], clampX = x => Math.max(-1.45, Math.min(1.45, x)), clampZ = z => Math.max(0, Math.min(4.4, z));
+  if (t) { el(g, 'line', { x1: X(t[0]), y1: Y(t[1]), x2: X(clampX(cp[0])), y2: Y(clampZ(cp[1])), stroke: col(p.fam), 'stroke-width': 1.5 }); el(g, 'circle', { cx: X(t[0]), cy: Y(t[1]), r: 6, fill: 'none', stroke: 'var(--gold)', 'stroke-width': 2 }); }
+  if (p.cp) el(g, 'circle', { cx: X(clampX(p.x)), cy: Y(clampZ(p.z)), r: 3.5, fill: 'none', stroke: col(p.fam), 'stroke-width': 1.5, opacity: .8 });
+  el(g, 'circle', { cx: X(clampX(cp[0])), cy: Y(clampZ(cp[1])), r: 5, fill: col(p.fam), stroke: '#0b0b0d' });
   // in-frame ring, when this park and angle are calibrated
   if (c && t && !cal.on) {
-    const [u, vv] = project(c, t[0], t[1]), [ua, va] = project(c, p.x, p.z);
+    const [u, vv] = project(c, t[0], t[1]), [ua, va] = project(c, cp[0], cp[1]);
     const r = Math.max(14, 0.5 * Math.abs(c.ax) * R.w * W);   // about a glove on the picture, never smaller than a fingertip
     el(s, 'circle', { cx: U(u), cy: V(vv), r, fill: 'none', stroke: 'var(--gold)', 'stroke-width': 3, 'stroke-dasharray': '6 4' });
+    if (p.cp) { const [up, vp] = project(c, p.x, p.z); el(s, 'circle', { cx: U(up), cy: V(vp), r: Math.max(3, r * .25), fill: 'none', stroke: col(p.fam), 'stroke-width': 2, opacity: .8 }); }
     el(s, 'circle', { cx: U(ua), cy: V(va), r: Math.max(3, r * .35), fill: col(p.fam), stroke: '#0b0b0d', 'stroke-width': 1.5 });
     el(s, 'line', { x1: U(u), y1: V(vv), x2: U(ua), y2: V(va), stroke: col(p.fam), 'stroke-width': 2, opacity: .8 });
   }
@@ -611,7 +616,7 @@ function drawOverlay(p) {
   const note = $('ovNote'); note.hidden = false;
   note.textContent = (c ? 'Dashed ring = the plan target drawn on the picture (approximate, from this park’s camera calibration). Inset: zone, target ring, where it went.' : 'Inset: zone, target ring, where it went. The ring is not drawn in the picture yet: this park’s camera is not calibrated.' + (COACH ? ' A coach can do it from Calibrate camera with four taps.' : ''))
     + (p.glove ? ' White circle = the glove read.' : '')
-    + ' The inset is oriented like the picture. The dot is where the ball crossed the front of the plate; the catcher receives it about two feet later and a few inches lower.';
+    + (st.sel && st.sel.cp ? ' The inset is oriented like the picture. Filled dot = where the catcher takes the ball; small ring = where it crossed the front of the plate.' : ' The inset is oriented like the picture. The dot is where the ball crossed the front of the plate; the catcher receives it a little later and lower.');
   $('calBtn').hidden = !COACH; $('calBtn').textContent = cal.on ? 'Cancel' : c ? 'Recalibrate camera' : 'Calibrate camera';
 }
 
@@ -750,7 +755,7 @@ const HELP = {
   read: '<b>Command</b> runs 0 to 100. 100 means the pitch hit its spot, 50 is the average big-league right-handed starter graded on your own plan, and dead-middle scores 0. Most of the league sits between the mid 40s and the mid 50s, so a few points is a real gap. <b>vs league</b> is you against that average. The <b>± noise</b> is how much one start can swing on luck alone: two starts inside each other’s band are the same start. <b>Typical miss</b> is the middle miss, in inches. <b>Aim offset</b> is your average miss direction, the part you can fix by aiming somewhere else. <b>Spread</b> is how tight the pitches sit around your own center, the part that is about repeating the delivery. <b>Executed</b> is the share that landed in the plan box, and <b>dead-middle</b> the share that landed where hitters live.',
   seasons: 'The same scoring for every season, so the numbers compare straight across. A season marked <b>approx.</b> has slightly less precise heights, which affects inches a little and grades not at all.',
   location: '<b>Miss pattern</b> plots every pitch by how far it missed the target, in inches. Up is up, and the sides are labeled arm side and glove side. Rings mark 6 and 12 inches. The ellipse is your spread and the arrow is your aim offset. <b>Target to plate</b> shows the target as an open circle, where the pitch crossed the plate as a dot, and the miss as the line between them. Tap any dot to watch the pitch.',
-  clip: 'The clip, with the plan target drawn as a dashed ring on the picture and a small inset showing the zone, the target and where the pitch went. The dot is where the ball crossed the front of the plate; the catcher receives it a little later and lower. The lines underneath give the grade and the miss against each target.',
+  clip: 'The clip, with the plan target drawn as a dashed ring on the picture and a small inset showing the zone, the target and where the pitch went. The filled dot is where the catcher takes the ball, about three feet past the front of the plate, worked out from the pitch’s release point and bend. The small ring is where it crossed the front of the plate, which is what the grades use. The lines underneath give the grade and the miss against each target.',
   bypitch: 'Each pitch type in this view against your season: how many, the Command score and the change versus the season, the typical miss, the aim offset and spread, and the executed and dead-middle shares. Tap a row to show only that pitch.',
   log: 'Every pitch in order. <b>Where</b> is which way it missed. <b>Grade</b> is one of executed (in the box), within one ball (under 3 inches), centered (dead middle), strike off target, or ball off target. Tap a row to watch it.',
   trend: 'Your Command score start by start. The shaded band is noise: a point that leaves the previous band is a real change, a point inside it is not. Add pitch types to see which one moved. Tap a start to open it.',
