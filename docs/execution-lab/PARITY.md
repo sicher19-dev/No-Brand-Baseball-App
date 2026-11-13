@@ -24,9 +24,10 @@ pitch from a tap, with the glove and glove + habit layers scoring from them.
 Reads and calibrations go to the team store (the app's backend) when a coach
 is signed in, and the coach tools are hidden from everyone else. Every park
 in the 2026 schedule has a broadcast-camera calibration in the store (13
-parks, tapped from magnified paused frames, approximate). Not yet: the plan
-box drawn for the selected pitch (rules stay server-side), two seasons side
-by side (one season of data so far).
+parks, tapped from magnified paused frames, approximate). 2025 is in from
+the provider's pitch log, graded against today's plan, with a season switch
+and a seasons-side-by-side table. Not yet: the plan box drawn for the
+selected pitch (rules stay server-side).
 
 ## Must have: click a pitch, watch the pitch
 
@@ -52,7 +53,7 @@ in place.
 |---|---|---|---|
 | Season hero tiles: Overall execution, Velo execution ("relative to max"), Command execution ("distance from target"), each with +/- vs league | yes | Command only on player pages by default. Velo tile is coach-only (house rule: no velo on player pages by default). | engine, page |
 | "50 is league avg execution" anchor on every section | yes | yes, league line per layer | engine |
-| Summary table by pitch type, two seasons side by side: pitches, overall, velo, command (inches) | yes | yes, minus velo on player pages. Command in inches and as score. | engine, page |
+| Summary table by pitch type, two seasons side by side: pitches, overall, velo, command (inches) | yes | yes, minus velo on player pages: pitches, command score, executed %, typical miss per season, following the layer and count filters | done |
 | Score chips colored by distance from 50 (red above, blue below) | yes | yes | page |
 | Trends: start-by-start line chart, two seasons side by side | yes | yes, with the noise band shaded per start (reference has no band) | engine, page |
 | Trend toggles: Overall / Velo / Command, each a separate line, multi-select | yes | Command plus the three target layers; velo coach-only | page |

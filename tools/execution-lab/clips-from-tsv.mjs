@@ -6,7 +6,7 @@
 // Reads  private/clips/<id>.tsv.gz   (from harvest-clips.browser.js)
 // Writes www/lab/execution/data/<id>-clips.json   (gitignored: local only)
 // and reports any pitch in data/<id>.json that has no clip.
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
@@ -16,13 +16,19 @@ const id = process.argv[2];
 if (!id) { console.error('usage: clips-from-tsv.mjs <id>'); process.exit(2); }
 
 const P = 'https://sporty-clips.mlb.com/';
-const tsv = gunzipSync(readFileSync(join(ROOT, 'private', 'clips', `${id}.tsv.gz`))).toString('utf8');
+// Every list for the pitcher: <id>.tsv.gz plus per-season <id>-<season>.tsv.gz.
+const dir = join(ROOT, 'private', 'clips');
+const files = readdirSync(dir).filter(f => f === `${id}.tsv.gz` || new RegExp(`^${id}-\\d{4}\\.tsv\\.gz$`).test(f));
 const out = {};
-for (const line of tsv.trim().split('\n')) {
-  const [g, h, hh] = line.split('\t');
-  out[g] = {};
-  if (h) out[g].h = P + h + '.mp4';
-  if (hh) out[g].hh = P + hh + '.mp4';
+for (const f of files) {
+  const tsv = gunzipSync(readFileSync(join(dir, f))).toString('utf8');
+  for (const line of tsv.trim().split('\n')) {
+    const [g, h, hh] = line.split('\t');
+    if (!g) continue;
+    out[g] = out[g] || {};
+    if (h) out[g].h = P + h + '.mp4';
+    if (hh) out[g].hh = P + hh + '.mp4';
+  }
 }
 const outPath = join(ROOT, 'www', 'lab', 'execution', 'data', `${id}-clips.json`);
 writeFileSync(outPath, JSON.stringify(out));

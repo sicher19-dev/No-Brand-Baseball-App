@@ -102,8 +102,9 @@ tr.sel td{background:var(--gold-soft)}
 <div class="card">
   <div class="row">
     <div><div class="gtitle" id="gTitle">Loading…</div><div class="gmeta" id="gMeta"></div></div>
-    <div class="nav"><button class="btn" id="prev">‹ Prev</button><button class="btn" id="next">Next ›</button><button class="btn" id="season">Season</button></div>
+    <div class="nav"><button class="btn" id="prev">‹ Prev</button><button class="btn" id="next">Next ›</button><button class="btn" id="season">Whole season</button></div>
   </div>
+  <div class="ctl"><span class="lab">Season</span><span id="seasonBtns"></span></div>
   <div class="ctl"><span class="lab">Count</span><span id="countBtns"></span></div>
   <div class="ctl"><span class="lab">Pitch</span><span id="ptBtns"></span></div>
   <div class="ctl"><span class="lab">Graded against</span><span id="layerBtns"></span></div>
@@ -114,6 +115,12 @@ tr.sel td{background:var(--gold-soft)}
   <h2>Read<small id="readSub"></small></h2>
   <div class="tiles" id="tiles"></div>
   <div class="bar" id="gbar"></div><div class="legend" id="gleg"></div>
+</div>
+
+<div class="card" id="summaryCard" hidden>
+  <h2>Seasons side by side<small id="summarySub"></small></h2>
+  <div style="overflow:auto"><table id="summary"></table></div>
+  <div class="note" id="summaryNote"></div>
 </div>
 
 <div class="card">
@@ -224,7 +231,6 @@ const storeWord = w => w === 'team' ? 'saved to the team store' : 'saved in this
 
 const L = { glove: 10, inferred: 9, plan: D.baseline.plan };   // glove/inferred placeholders until glove reads load
 const RHP = (D.pitcher.hand || 'RHP') === 'RHP';
-const FAMS = Object.keys(D.fam_name).filter(f => D.games.some(g => g.pitches.some(p => p.fam === f)));
 const col = f => getComputedStyle(document.documentElement).getPropertyValue('--' + f).trim() || '#999';
 const GC = { executed: 'var(--green)', near: '#8fd6b0', centered: 'var(--red)', 'off strike': 'var(--gold)', 'off ball': 'var(--dim)' };
 
@@ -235,18 +241,26 @@ try { const r = await fetch(`data/${PID}-glove.json`, { cache: 'no-store' }); if
 try { Object.assign(GLOVE, JSON.parse(localStorage.getItem('nb_glove_' + PID) || '{}')); } catch (e) { /* storage off */ }
 Object.assign(GLOVE, BE.reads);   // the team store wins over the browser copy
 
-D.games.forEach((g, gi) => g.pitches.forEach(p => {
-  p.gi = gi; p.twoK = p.s >= 2; p.grade = p.g; p.mplan = p.m;
-  p.s_ = p.s;   // the count's strikes; engine.stats reads p.s[layer] for scores
-}));
-const ALL = D.games.flatMap(g => g.pitches);
+// Seasons: the data file carries every season's games; the page shows one
+// at a time (st.season) and the summary card puts them side by side.
+const EVERY = D.games;
+EVERY.forEach(g => { g.season = g.season || g.date.slice(0, 4); g.pitches.forEach(p => { p.twoK = p.s >= 2; p.grade = p.g; p.mplan = p.m; p.s_ = p.s; }); });   // p.s_ = the count's strikes; engine.stats reads p.s[layer] for scores
+const SEASONS = [...new Set(EVERY.map(g => g.season))].sort();
+const ALL_P = EVERY.flatMap(g => g.pitches);
+let ALL = [], FAMS = [];
+function setSeason(s) {
+  D.games = EVERY.filter(g => g.season === s);
+  D.games.forEach((g, gi) => g.pitches.forEach(p => { p.gi = gi; }));
+  ALL = D.games.flatMap(g => g.pitches);
+  FAMS = Object.keys(D.fam_name).filter(f => ALL.some(p => p.fam === f));
+}
 // Aim habit per pitch type: where this pitcher's pitches really go relative
 // to the glove, from his own glove reads. Needs a handful of reads to mean
 // anything. The inferred target = glove + habit.
 const HABIT_MIN = 5;
 function habits() {
   const by = {};
-  for (const p of ALL) { const g = GLOVE[p.pid]; if (!g) continue; (by[p.fam] = by[p.fam] || []).push([p.x - g[0], p.z - g[1]]); }
+  for (const p of ALL_P) { const g = GLOVE[p.pid]; if (!g) continue; (by[p.fam] = by[p.fam] || []).push([p.x - g[0], p.z - g[1]]); }
   const out = {};
   for (const [f, v] of Object.entries(by)) if (v.length >= HABIT_MIN) out[f] = [mean(v.map(d => d[0])), mean(v.map(d => d[1]))];
   return out;
@@ -254,7 +268,7 @@ function habits() {
 // Score every pitch on every layer; run again whenever glove reads change.
 function scoreAll() {
   const H = habits();
-  for (const p of ALL) {
+  for (const p of ALL_P) {
     p.glove = GLOVE[p.pid] || null;
     p.inferred = p.glove && H[p.fam] ? [p.glove[0] + H[p.fam][0], p.glove[1] + H[p.fam][1]] : null;
     p.m = { glove: p.glove ? [(p.x - p.glove[0]) * 12, (p.z - p.glove[1]) * 12] : null, inferred: p.inferred ? [(p.x - p.inferred[0]) * 12, (p.z - p.inferred[1]) * 12] : null, plan: p.mplan };
@@ -267,11 +281,12 @@ function scoreAll() {
   return H;
 }
 let HABITS = scoreAll();
-const hasLayer = l => ALL.some(p => p.m[l]);
+const hasLayer = l => ALL_P.some(p => p.m[l]);
 const gloveCount = () => ALL.filter(p => p.glove).length;
 
 // ---------- state ----------
-const st = { g: D.games.length - 1, layer: 'plan', count: 'all', pt: 'all', view: 'miss', sel: null, metric: 'score', series: [] };
+const st = { season: D.season || SEASONS[SEASONS.length - 1], g: 0, layer: 'plan', count: 'all', pt: 'all', view: 'miss', sel: null, metric: 'score', series: [] };
+setSeason(st.season); st.g = D.games.length - 1;
 const METRICS = {
   score: { label: 'Command', get: S => S.score, band: S => S.band, fmt: v => f1(v), lo: 0, hi: 100 },
   exec: { label: 'Executed %', get: S => S.exec == null ? null : S.exec * 100, band: () => 0, fmt: v => Math.round(v) + '%', lo: 0, hi: 100 },
@@ -304,7 +319,7 @@ function btns(el, opts, key, disabled = {}) {
     const b = document.createElement('button'); b.className = 'btn' + (st[key] === v ? ' on' : '');
     b.innerHTML = (c ? `<span class="dot" style="background:${c}"></span>` : '') + label;
     if (disabled[v]) { b.disabled = true; b.title = disabled[v]; }
-    b.onclick = () => { st[key] = v; st.sel = null; render(); };
+    b.onclick = () => { if (key === 'season' && st.season !== v) { if (edit.on) stopEdit(); setSeason(v); st.g = D.games.length - 1; st.pt = 'all'; } st[key] = v; st.sel = null; render(); };
     el.appendChild(b);
   }
 }
@@ -312,10 +327,11 @@ function btns(el, opts, key, disabled = {}) {
 // ---------- render ----------
 function render() {
   const P = cur(), S = stats(P, st.layer), SS = stats(seasonSet(), st.layer), G = st.g < 0 ? null : D.games[st.g];
-  $('who').textContent = `${D.pitcher.name} · ${D.season} season` + (ROLE === 'coach' ? ' · coach view' : '') + (sbc && BE.status !== 'on' && BE.status !== 'signed out' ? ` · team store ${BE.status}` : '');
-  $('gTitle').textContent = G ? gLabel(G) : `${D.season} season`;
-  $('gMeta').textContent = (G ? `Game ${st.g + 1} of ${D.games.length} · ` : `${D.games.length} games · `) + `${P.length} pitches in view`;
+  $('who').textContent = `${D.pitcher.name} · ${SEASONS.length > 1 ? SEASONS[0] + '–' + SEASONS[SEASONS.length - 1] : st.season}` + (ROLE === 'coach' ? ' · coach view' : '') + (sbc && BE.status !== 'on' && BE.status !== 'signed out' ? ` · team store ${BE.status}` : '');
+  $('gTitle').textContent = G ? gLabel(G) : `${st.season} season`;
+  $('gMeta').textContent = (G ? `Game ${st.g + 1} of ${D.games.length} in ${st.season} · ` : `${D.games.length} games · `) + `${P.length} pitches in view`;
   $('prev').disabled = st.g <= 0; $('next').disabled = st.g < 0 || st.g === D.games.length - 1; $('season').className = 'btn' + (st.g < 0 ? ' on' : '');
+  btns($('seasonBtns'), SEASONS.map(s => [s, s + (D.seasons && D.seasons[s] && D.seasons[s].approx ? ' · approx.' : '')]), 'season');
   btns($('countBtns'), [['all', 'All'], ['pre', 'Before two strikes'], ['2K', 'Two strikes']], 'count');
   btns($('ptBtns'), [['all', 'All'], ...FAMS.map(f => [f, D.fam_name[f], col(f)])], 'pt');
   btns($('layerBtns'), LAYERS.map(l => [l, LAYER_NAME[l]]), 'layer', Object.fromEntries(LAYERS.filter(l => !hasLayer(l)).map(l => [l, l === 'glove' ? 'No glove reads yet: set them with Edit target under a clip' : `Needs at least ${HABIT_MIN} glove reads on a pitch type to learn the habit`])));
@@ -344,7 +360,7 @@ function render() {
   if (st.view === 'miss') drawMiss(P, S); else drawPlate(P);
   $('chartLeg').innerHTML = (st.view === 'miss' ? '<span>◌ rings at 6" and 12"</span><span>⬭ spread (1 sd)</span><span>→ aim offset</span>' : '<span>○ target</span><span>● plate</span><span>─ miss</span><span>┌ zone</span>')
     + FAMS.map(f => `<span><i style="background:${col(f)}"></i>${D.fam_name[f]}</span>`).join('');
-  drawTables(P, SS); drawSel(); drawTrend(); drawGameLog(SS);
+  drawTables(P, SS); drawSel(); drawTrend(); drawGameLog(SS); drawSummary();
   $('foot').textContent = `No Brand Baseball Analytics · plan rules ${D.rules_version ? 'v' + D.rules_version.split(':')[0].replace(/^v/, '') : ''} · built ${D.built}`;
 }
 
@@ -411,6 +427,24 @@ function drawTables(P, SS) {
   $('log').innerHTML = h + '</tbody>';
   $('log').querySelectorAll('tbody tr').forEach(r => r.onclick = () => { const p = P[+r.dataset.ix]; select(st.sel === p ? null : p); });
 }
+
+// ---------- seasons side by side ----------
+function drawSummary() {
+  const card = $('summaryCard'); if (SEASONS.length < 2) { card.hidden = true; return; }
+  card.hidden = false;
+  const fams = Object.keys(D.fam_name).filter(f => ALL_P.some(p => p.fam === f));
+  const cell = (s, f) => stats(ALL_P.filter(p => p.season === s && cf(p) && (!f || p.fam === f)), st.layer);
+  let h = '<thead><tr><th class="l">Pitch</th>' + SEASONS.map(s => `<th colspan="4" style="text-align:center;border-left:1px solid var(--line)">${s}</th>`).join('') + '</tr><tr><th></th>' + SEASONS.map(() => '<th style="border-left:1px solid var(--line)">N</th><th>Command</th><th>Executed</th><th>Miss</th>').join('') + '</tr></thead><tbody>';
+  for (const f of [null, ...fams]) {
+    const cells = SEASONS.map(s => cell(s, f)); if (cells.every(c => !c)) continue;
+    h += `<tr class="${f === null ? 'sel' : ''}"><td class="l">${f === null ? 'All pitches' : `<span class="dot" style="background:${col(f)}"></span>${D.fam_name[f]}`}</td>` + cells.map(S => S ? `<td style="border-left:1px solid var(--line)">${S.total}</td><td><span class="chip" style="background:${chipBg(S.score)}">${f1(S.score)}</span></td><td>${pct(S.exec)}</td><td>${f1(S.med)}"</td>` : '<td style="border-left:1px solid var(--line)">–</td><td></td><td></td><td></td>').join('') + '</tr>';
+  }
+  $('summary').innerHTML = h + '</tbody>';
+  $('summarySub').textContent = `${LAYER_NAME[st.layer].toLowerCase()} · ${st.count === 'all' ? 'all counts' : st.count === '2K' ? 'two strikes' : 'before two strikes'} · one 50 line for both`;
+  const approx = SEASONS.filter(s => D.seasons && D.seasons[s] && D.seasons[s].approx);
+  $('summaryNote').textContent = approx.length ? `${approx.join(', ')}: locations come from the provider's normalized feed, graded against today’s plan; heights in inches use a typical zone, so distances carry a little slop. The provider does not split sweeper from slider that season.` : '';
+}
+EVERY.forEach(g => g.pitches.forEach(p => { p.season = g.season; }));
 
 // ---------- season: start by start, game log ----------
 const cf = p => st.count === 'all' || (st.count === '2K' ? p.twoK : !p.twoK);

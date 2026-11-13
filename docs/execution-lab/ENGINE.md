@@ -220,6 +220,34 @@ glove and glove + habit layers stay pure distance: a catcher set up middle
 and a pitch that got there is executed against the glove, and only the plan
 says it was the wrong spot. With this, Paul's 2026 season scores 59.4.
 
+## More seasons (`pitches-from-harvest.mjs`)
+
+Seasons the internal file does not cover come from the video provider's
+pitch log, the same table the clips come from. `harvest-clips.browser.js`
+style: one month per query, rows accumulate in the browser, one compressed
+download; then
+
+```
+node tools/execution-lab/pitches-from-harvest.mjs skenes 2025
+node tools/execution-lab/build-game-data.mjs skenes "Paul Skenes" RHP PIT
+node tools/execution-lab/clips-from-tsv.mjs skenes
+```
+
+The harvest carries the provider's normalized location. Checked against 400
+pitches of the internal 2026 file: `plate_x = -x * 0.708` and
+`zn = (y + 1) / 2`, both exact to a thousandth. What it does not carry is
+the hitter's zone in feet, so heights use a typical zone (bottom 1.55 ft,
+height 1.58 ft) and distances in inches carry a few percent of slop; grades
+do not depend on it. The provider's pitch types differ in naming only: its
+two-seam is the file's sinker, and it does not split sweeper from slider in
+2025. The build grades every season against today's plan and anchors every
+season's score on the latest season's mean miss, so seasons compare on one
+line. The page carries a season switch and a seasons-side-by-side table;
+approximate seasons are marked.
+
+Paul 2025: 2,997 pitches over 32 starts, season command 60.1 against 59.4
+in 2026.
+
 ## What the acceptance test found (2026-11-13)
 
 Engine + rules derived from the built report, run on the internal pitch file:
