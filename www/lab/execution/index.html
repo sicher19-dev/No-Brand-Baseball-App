@@ -137,7 +137,7 @@ tr.sel td{background:var(--gold-soft)}
   <div class="editbar" id="editBar" hidden>
     <div id="editMsg"></div>
     <div class="ctl" style="margin-top:6px"><button class="btn" id="editOnPanel">Tap on the zone</button><button class="btn" id="editOnPic">Tap on the picture</button><span style="flex:1"></span><button class="btn" id="editClear">Clear glove</button><button class="btn" id="editCancel">Cancel</button><button class="btn on" id="editSave">Save</button></div>
-    <div class="note"><button id="editCopy" style="background:none;border:0;padding:0;color:var(--ink);text-decoration:underline;cursor:pointer;font-size:12px">Copy all glove reads</button> <span id="editCopied"></span> · reads stay in this browser until the app backend stores them</div>
+    <div class="note"><button id="editCopy" style="background:none;border:0;padding:0;color:var(--ink);text-decoration:underline;cursor:pointer;font-size:12px">Copy all glove reads</button> <span id="editCopied"></span> <span id="editStore"></span></div>
   </div>
   <div class="note" id="ovNote" hidden></div>
   <div class="kv" id="kv"></div>
@@ -169,6 +169,8 @@ tr.sel td{background:var(--gold-soft)}
 <div class="foot" id="foot"></div>
 </div>
 
+<script src="../../vendor/supabase.js"></script>
+<script src="../../config.js"></script>
 <script type="module">
 import { LAYERS, GRADES, GRADE_LABEL, score, stats, gradeCounts, dirWord, median } from './engine.js';
 
@@ -178,6 +180,47 @@ const PID = (qs.get('p') || 'skenes').replace(/[^a-z0-9_-]/gi, '');
 const D = await (await fetch(`data/${PID}.json`, { cache: 'no-store' })).json();
 let CLIPS = {};
 try { const r = await fetch(`data/${PID}-clips.json`, { cache: 'no-store' }); if (r.ok) CLIPS = await r.json(); } catch (e) { /* no clips yet */ }
+
+// ---------- team store (the app's backend) ----------
+// Same origin as the app, so the app's sign-in is already in this browser.
+// Coaches write glove reads and camera calibrations here; a pitcher reads his
+// own. With no backend configured (local preview) everything stays in the
+// browser and the coach tools are shown.
+const cfg = window.NBB_CONFIG || {};
+let sbc = null, SESSION = null, ROLE = null;
+const BE = { reads: {}, cams: {}, status: 'off' };
+if (cfg.supabaseUrl && cfg.supabaseAnonKey && window.supabase && window.supabase.createClient) {
+  try {
+    sbc = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, { auth: { persistSession: true, autoRefreshToken: true } });
+    SESSION = (await sbc.auth.getSession()).data.session;
+    if (SESSION) {
+      const pr = await sbc.from('profiles').select('role').eq('user_id', SESSION.user.id).maybeSingle();
+      ROLE = pr.data ? pr.data.role : null;
+      const g = await sbc.from('execution_glove_reads').select('play_id,x,z').eq('pitcher_id', PID);
+      if (!g.error) for (const r of g.data) BE.reads[r.play_id] = [r.x, r.z];
+      const c = await sbc.from('execution_cameras').select('park,angle,u0,ax,v0,az,taps,zone,note');
+      if (!c.error) for (const r of c.data) BE.cams[r.park + '|' + r.angle] = r;
+      BE.status = (g.error || c.error) ? 'tables missing' : 'on';
+    } else BE.status = 'signed out';
+  } catch (e) { BE.status = 'error'; }
+}
+const COACH = ROLE === 'coach' || !sbc;
+async function persistGlove(pid, xz) {
+  if (!sbc || ROLE !== 'coach') return 'browser';
+  const r = xz
+    ? await sbc.from('execution_glove_reads').upsert({ pitcher_id: PID, play_id: pid, x: xz[0], z: xz[1], updated_by: SESSION.user.id, updated_at: new Date().toISOString() })
+    : await sbc.from('execution_glove_reads').delete().eq('pitcher_id', PID).eq('play_id', pid);
+  if (r.error) throw new Error(r.error.message);
+  return 'team';
+}
+async function persistCamera(key, c) {
+  if (!sbc || ROLE !== 'coach') return 'browser';
+  const [park, angle] = key.split('|');
+  const r = await sbc.from('execution_cameras').upsert({ park, angle, u0: c.u0, ax: c.ax, v0: c.v0, az: c.az, taps: c.taps, zone: c.zone, note: c.note || null, updated_by: SESSION.user.id, updated_at: new Date().toISOString() });
+  if (r.error) throw new Error(r.error.message);
+  return 'team';
+}
+const storeWord = w => w === 'team' ? 'saved to the team store' : 'saved in this browser only';
 
 const L = { glove: 10, inferred: 9, plan: D.baseline.plan };   // glove/inferred placeholders until glove reads load
 const RHP = (D.pitcher.hand || 'RHP') === 'RHP';
@@ -190,6 +233,7 @@ const GC = { executed: 'var(--green)', near: '#8fd6b0', centered: 'var(--red)', 
 let GLOVE = {};
 try { const r = await fetch(`data/${PID}-glove.json`, { cache: 'no-store' }); if (r.ok) GLOVE = await r.json(); } catch (e) { /* none seeded */ }
 try { Object.assign(GLOVE, JSON.parse(localStorage.getItem('nb_glove_' + PID) || '{}')); } catch (e) { /* storage off */ }
+Object.assign(GLOVE, BE.reads);   // the team store wins over the browser copy
 
 D.games.forEach((g, gi) => g.pitches.forEach(p => {
   p.gi = gi; p.twoK = p.s >= 2; p.grade = p.g; p.mplan = p.m;
@@ -266,7 +310,7 @@ function btns(el, opts, key, disabled = {}) {
 // ---------- render ----------
 function render() {
   const P = cur(), S = stats(P, st.layer), SS = stats(seasonSet(), st.layer), G = st.g < 0 ? null : D.games[st.g];
-  $('who').textContent = `${D.pitcher.name} · ${D.season} season`;
+  $('who').textContent = `${D.pitcher.name} · ${D.season} season` + (ROLE === 'coach' ? ' · coach view' : '') + (sbc && BE.status !== 'on' && BE.status !== 'signed out' ? ` · team store ${BE.status}` : '');
   $('gTitle').textContent = G ? gLabel(G) : `${D.season} season`;
   $('gMeta').textContent = (G ? `Game ${st.g + 1} of ${D.games.length} · ` : `${D.games.length} games · `) + `${P.length} pitches in view`;
   $('prev').disabled = st.g <= 0; $('next').disabled = st.g < 0 || st.g === D.games.length - 1; $('season').className = 'btn' + (st.g < 0 ? ' on' : '');
@@ -423,6 +467,7 @@ const CAL_STEPS = ['Tap the LEFT edge of home plate', 'Tap the RIGHT edge of hom
 let CAL = {};
 try { const r = await fetch(`data/${PID}-cal.json`, { cache: 'no-store' }); if (r.ok) CAL = await r.json(); } catch (e) { /* none seeded */ }
 try { Object.assign(CAL, JSON.parse(localStorage.getItem('nb_cal_' + PID) || '{}')); } catch (e) { /* storage off */ }
+Object.assign(CAL, BE.cams);   // the team store wins over the browser copy
 const parkOf = G => G.home ? D.pitcher.team || 'HOME' : G.opp;
 const calKey = p => parkOf(D.games[p.gi]) + '|' + st.angle;
 let cal = { on: false, step: 0, taps: [] };
@@ -438,7 +483,7 @@ function drawOverlay(p) {
   const s = $('overlay'); s.innerHTML = '';
   const v = $('player'); if (!p) { s.setAttribute('hidden', ''); $('ovNote').hidden = true; $('editTarget').hidden = true; return; }
   s.removeAttribute('hidden');   // SVG elements do not reflect .hidden
-  $('editTarget').hidden = edit.on;
+  $('editTarget').hidden = edit.on || !COACH;
   if (v.hidden && !edit.on) { s.setAttribute('hidden', ''); $('ovNote').hidden = true; return; }   // no clip: the overlay only shows while editing
   const W = 1000, H = 562, R = contentRect(), U = u => (R.x + u * R.w) * W, V = vv => (R.y + vv * R.h) * H;
   const c = CAL[calKey(p)], t = p.tgt, zone = p.zone || [1.6, 3.4];
@@ -481,8 +526,8 @@ function drawOverlay(p) {
     if (edit.glove) el(s, 'circle', { cx: X2(edit.glove[0]), cy: Y2(edit.glove[1]), r: 11, fill: 'none', stroke: '#fff', 'stroke-width': 3 });
   }
   const note = $('ovNote'); note.hidden = false;
-  note.textContent = (c ? 'Dashed ring = the plan target drawn on the picture (approximate, from this park’s camera calibration). Inset: zone, target ring, where it went.' : 'Inset: zone, target ring, where it went. The ring is not drawn in the picture yet: this park’s camera is not calibrated. A coach can do it from Calibrate camera with four taps.') + (p.glove ? ' White circle = the glove read.' : '');
-  $('calBtn').hidden = false; $('calBtn').textContent = cal.on ? 'Cancel' : c ? 'Recalibrate camera' : 'Calibrate camera';
+  note.textContent = (c ? 'Dashed ring = the plan target drawn on the picture (approximate, from this park’s camera calibration). Inset: zone, target ring, where it went.' : 'Inset: zone, target ring, where it went. The ring is not drawn in the picture yet: this park’s camera is not calibrated.' + (COACH ? ' A coach can do it from Calibrate camera with four taps.' : '')) + (p.glove ? ' White circle = the glove read.' : '');
+  $('calBtn').hidden = !COACH; $('calBtn').textContent = cal.on ? 'Cancel' : c ? 'Recalibrate camera' : 'Calibrate camera';
 }
 
 // ---------- Edit target: set or correct the glove read for a pitch ----------
@@ -497,6 +542,7 @@ function stopEdit() { edit = { on: false, mode: 'panel', glove: null }; $('video
 function editMsg() {
   const p = st.sel, c = CAL[calKey(p)];
   $('editBar').hidden = false;
+  $('editStore').textContent = sbc && ROLE === 'coach' ? '· saves go to the team store' : sbc ? '· not signed in as a coach: saves stay in this browser' : '· no backend configured: saves stay in this browser';
   $('editOnPic').disabled = !c; $('editOnPic').title = c ? '' : 'Calibrate this park’s camera first';
   $('editOnPanel').className = 'btn' + (edit.mode === 'panel' ? ' on' : ''); $('editOnPic').className = 'btn' + (edit.mode === 'pic' ? ' on' : '');
   $('editMsg').textContent = (edit.mode === 'pic' ? 'Scrub to the frame where the catcher is set and tap the glove on the picture.' : 'Tap in the zone where the catcher set up, catcher’s view.')
@@ -504,9 +550,11 @@ function editMsg() {
 }
 function saveGlove() {
   const p = st.sel; if (!p) return;
-  if (edit.glove) GLOVE[p.pid] = [+edit.glove[0].toFixed(3), +edit.glove[1].toFixed(3)]; else delete GLOVE[p.pid];
+  const xz = edit.glove ? [+edit.glove[0].toFixed(3), +edit.glove[1].toFixed(3)] : null;
+  if (xz) GLOVE[p.pid] = xz; else delete GLOVE[p.pid];
   try { localStorage.setItem('nb_glove_' + PID, JSON.stringify(GLOVE)); } catch (e) { /* storage off */ }
   HABITS = scoreAll(); stopEdit(); render();
+  persistGlove(p.pid, xz).then(w => { $('clipInfo').textContent = `Glove read ${storeWord(w)}`; }).catch(e => { $('clipInfo').textContent = 'Glove read saved in this browser; team store said: ' + e.message; });
 }
 $('overlay').addEventListener('click', ev => {
   if (!edit.on || !st.sel) return;
@@ -549,6 +597,7 @@ $('overlay').addEventListener('click', ev => {
   CAL[key] = { u0, ax, v0, az, pitch: st.sel.pid, taps: cal.taps, zone };
   try { localStorage.setItem('nb_cal_' + PID, JSON.stringify(CAL)); } catch (e) { /* storage off */ }
   stopCal();
+  persistCamera(key, CAL[key]).then(w => { $('clipInfo').textContent = `Camera ${key.split('|')[0]} ${storeWord(w)}`; }).catch(e => { $('clipInfo').textContent = 'Camera saved in this browser; team store said: ' + e.message; });
 });
 $('calBtn').onclick = () => cal.on ? stopCal() : startCal();
 $('player').addEventListener('loadedmetadata', () => drawOverlay(st.sel));

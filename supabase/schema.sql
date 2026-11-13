@@ -149,6 +149,56 @@ create policy "assessments bucket: pitcher reads own, coach reads all" on storag
   using (bucket_id = 'assessments' and ((storage.foldername(name))[1] = public.my_pitcher_id() or public.is_coach()));
 
 -- ---------------------------------------------------------------------------
+-- Execution Lab: glove reads (where the catcher set up, per pitch) and camera
+-- calibrations (plate feet -> picture fractions, per park and angle).
+-- Coaches write both; a pitcher reads his own glove reads; everyone signed in
+-- reads the cameras.
+-- ---------------------------------------------------------------------------
+create table if not exists public.execution_glove_reads (
+  pitcher_id text not null,
+  play_id    text not null,
+  x          double precision not null,
+  z          double precision not null,
+  updated_by uuid references auth.users(id) on delete set null,
+  updated_at timestamptz not null default now(),
+  primary key (pitcher_id, play_id)
+);
+
+create table if not exists public.execution_cameras (
+  park       text not null,
+  angle      text not null,
+  u0         double precision not null,
+  ax         double precision not null,
+  v0         double precision not null,
+  az         double precision not null,
+  taps       jsonb,
+  zone       jsonb,
+  note       text,
+  updated_by uuid references auth.users(id) on delete set null,
+  updated_at timestamptz not null default now(),
+  primary key (park, angle)
+);
+
+alter table public.execution_glove_reads enable row level security;
+alter table public.execution_cameras     enable row level security;
+
+drop policy if exists "glove reads: pitcher reads own, coach reads all" on public.execution_glove_reads;
+create policy "glove reads: pitcher reads own, coach reads all" on public.execution_glove_reads
+  for select to authenticated using (pitcher_id = public.my_pitcher_id() or public.is_coach());
+
+drop policy if exists "glove reads: coach writes" on public.execution_glove_reads;
+create policy "glove reads: coach writes" on public.execution_glove_reads
+  for all to authenticated using (public.is_coach()) with check (public.is_coach());
+
+drop policy if exists "cameras: signed in reads" on public.execution_cameras;
+create policy "cameras: signed in reads" on public.execution_cameras
+  for select to authenticated using (true);
+
+drop policy if exists "cameras: coach writes" on public.execution_cameras;
+create policy "cameras: coach writes" on public.execution_cameras
+  for all to authenticated using (public.is_coach()) with check (public.is_coach());
+
+-- ---------------------------------------------------------------------------
 -- Coach overview: unread counts per pitcher, computed server-side (coaches only).
 -- ---------------------------------------------------------------------------
 create or replace function public.coach_overview()

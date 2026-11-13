@@ -170,9 +170,23 @@ the plate and approximate off it; a true per-camera solve is a later step.
 read for the selected pitch, where the catcher set up, in plate feet: tap on
 the picture (when the park's camera is calibrated, the tap maps back through
 the calibration) or tap in a large zone panel (always). Save stores the read;
-Clear glove removes it. Reads live in the browser (`localStorage`) and are
-seeded from `data/<id>-glove.json`; Copy all glove reads puts the JSON on the
-clipboard so they can be moved until the app backend stores them.
+Clear glove removes it.
+
+**Team store.** The page uses the app's backend (same Supabase project,
+`www/config.js`, same origin as the app so the app's sign-in carries over):
+
+- `execution_glove_reads` (pitcher id, play id, x, z): coaches write, a
+  pitcher reads his own.
+- `execution_cameras` (park, angle, u0, ax, v0, az, taps, zone, note):
+  coaches write, anyone signed in reads.
+
+Both are in `supabase/schema.sql` (re-run the whole file in the SQL editor;
+it is safe to re-run). On load the page merges the seed file, then the
+browser copy, then the team store, which wins. A coach's Save writes the
+browser copy and the team store; the status line under the player says
+which one took it. Without a session the tools are hidden; without a backend
+configured (local preview) they show and everything stays in the browser.
+Copy all glove reads still puts the JSON on the clipboard.
 
 **Layers.** Saving a read rescores the pitch at once: the glove layer is the
 miss from the read, and the glove + habit layer is the miss from the read

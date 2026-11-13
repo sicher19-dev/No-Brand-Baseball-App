@@ -21,10 +21,11 @@ Target on the clip done the same day: a zone inset on every clip, and the
 target ring drawn in the picture wherever the park's camera is calibrated
 (four taps by a coach; home park done). Edit target done: glove reads per
 pitch from a tap, with the glove and glove + habit layers scoring from them.
-Not yet: a backend for reads and calibrations (browser storage today), the
-plan box drawn for the selected pitch (rules stay server-side), two seasons
-side by side (one season of data so far), calibrations for the away parks,
-coach-only gating of the coach tools.
+Reads and calibrations go to the team store (the app's backend) when a coach
+is signed in, and the coach tools are hidden from everyone else. Not yet:
+the plan box drawn for the selected pitch (rules stay server-side), two
+seasons side by side (one season of data so far), calibrations for the away
+parks.
 
 ## Must have: click a pitch, watch the pitch
 
