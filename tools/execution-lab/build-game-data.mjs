@@ -77,8 +77,15 @@ const all = list.flatMap(g => g.pitches);
 const tds = all.map(p => p.td);
 const meanMiss = tds.reduce((s, d) => s + d, 0) / tds.length;
 const cs = planRule.centered_score;
-const seasonScoreOf = P => P.reduce((s, p) => s + (p.g === 'centered' && cs != null ? cs : score(Math.hypot(p.m[0], p.m[1]), meanMiss)), 0) / P.length;
-const baseline = { plan: +meanMiss.toFixed(2), kind: 'season-mean', anchor_season: latest, median_miss: +median(tds).toFixed(2), season_score: +seasonScoreOf(all).toFixed(1) };
+// A league line, when league-from-harvest.mjs has built one for the latest
+// season, replaces the pitcher's own mean miss as the anchor: 50 = the league.
+const leaguePath = join(ROOT, 'www', 'lab', 'execution', 'data', `league-${latest}.json`);
+const league = existsSync(leaguePath) ? JSON.parse(readFileSync(leaguePath, 'utf8')) : null;
+const anchor = league ? league.anchor : meanMiss;
+const seasonScoreOf = P => P.reduce((s, p) => s + (p.g === 'centered' && cs != null ? cs : score(Math.hypot(p.m[0], p.m[1]), anchor)), 0) / P.length;
+const baseline = league
+  ? { plan: +anchor.toFixed(3), kind: 'league', anchor_season: latest, league_pitchers: league.pitchers, league_pitches: league.pitches, league_score: league.score, median_miss: +median(tds).toFixed(2), own_mean_miss: +meanMiss.toFixed(2), season_score: +seasonScoreOf(all).toFixed(1) }
+  : { plan: +meanMiss.toFixed(2), kind: 'season-mean', anchor_season: latest, median_miss: +median(tds).toFixed(2), season_score: +seasonScoreOf(all).toFixed(1) };
 
 const out = {
   schema: 'nb.execution_page/2',

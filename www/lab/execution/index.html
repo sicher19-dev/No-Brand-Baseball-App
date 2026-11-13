@@ -311,11 +311,12 @@ const gLabel = g => fmtDate(g.date) + (g.home ? ' vs ' : ' at ') + g.opp;
 const filt = P => { if (st.count !== 'all') P = P.filter(p => st.count === '2K' ? p.twoK : !p.twoK); if (st.pt !== 'all') P = P.filter(p => p.fam === st.pt); return P; };
 const cur = () => filt(st.g < 0 ? ALL : D.games[st.g].pitches);
 const seasonSet = () => filt(ALL);
-function delta(v, ref, dec = 1, suffix = '') {
+function delta(v, ref, dec = 1, suffix = '', vs = 'season') {
   if (v == null || ref == null || isNaN(v) || isNaN(ref)) return '';
   const d = v - ref, cls = d > 0.05 ? 'up' : d < -0.05 ? 'dn' : 'flat';
-  return `<span class="d ${cls}">${d > 0 ? '+' : ''}${d.toFixed(dec)}${suffix} vs season</span>`;
+  return `<span class="d ${cls}">${d > 0 ? '+' : ''}${d.toFixed(dec)}${suffix} vs ${vs}</span>`;
 }
+const LEAGUE = D.baseline.kind === 'league' ? D.baseline : null;
 function chipBg(s) { if (s == null) return 'transparent'; const t = Math.max(-1, Math.min(1, (s - 50) / 35)); return t >= 0 ? `rgba(76,175,109,${.15 + t * .55})` : `rgba(214,92,92,${.15 - t * .55})`; }
 function btns(el, opts, key, disabled = {}) {
   el.innerHTML = '';
@@ -341,13 +342,14 @@ function render() {
   btns($('layerBtns'), LAYERS.map(l => [l, LAYER_NAME[l]]), 'layer', Object.fromEntries(LAYERS.filter(l => !hasLayer(l)).map(l => [l, l === 'glove' ? 'No glove reads yet: set them with Edit target under a clip' : `Needs at least ${HABIT_MIN} glove reads on a pitch type to learn the habit`])));
   const gc = gloveCount();
   $('layerNote').textContent = LAYER_NOTE[st.layer] + (st.layer === 'plan' && D.baseline.kind === 'season-mean' ? ` Score: 100 on target, 50 at a ${D.baseline.plan}" miss (his season average), lower from there.` : '')
+    + (st.layer === 'plan' && LEAGUE ? ` Score: 100 on target, 50 = the average right-handed starter (${LEAGUE.league_pitchers} of them, ${LEAGUE.anchor_season}, every pitch graded against this plan). The league runs about ${f1(LEAGUE.league_score.p10)} to ${f1(LEAGUE.league_score.p90)}.` : '')
     + (st.layer !== 'plan' ? ` ${gc} of ${ALL.length} pitches have a glove read; the 50 line is a placeholder (${L[st.layer]}") until there are enough.` : '');
   $('readSub').textContent = G ? 'this game vs his season' : 'whole season';
 
   const T = $('tiles'); T.innerHTML = '';
   const tile = (k, v, n, bg) => T.insertAdjacentHTML('beforeend', `<div class="tile" style="${bg ? 'background:' + bg : ''}"><div class="k">${k}</div><div class="v">${v}</div><div class="n">${n}</div></div>`);
   if (S) {
-    tile('Command', f1(S.score), `± ${f1(S.band)} noise · ${G && SS ? delta(S.score, SS.score) : 'season'}`, chipBg(S.score));
+    tile('Command', f1(S.score), `± ${f1(S.band)} noise · ${G && SS ? delta(S.score, SS.score) : (LEAGUE && st.layer === 'plan' ? delta(S.score, LEAGUE.league_score.mean, 1, '', 'league') : 'season')}`, chipBg(S.score));
     tile('Typical miss', f1(S.med) + '"', `median · ${S.n} of ${S.total} graded`);
     tile('Aim offset', f1(Math.hypot(...S.bias)) + '"', dirWord(S.bias) + ' · fixable by aim');
     tile('Spread', f1(S.spread) + '"', 'around his own center');
@@ -718,7 +720,7 @@ $('closeClip').onclick = () => { const v = $('player'); v.pause(); v.hidden = tr
 // ---------- plain-language explainers, one per card ----------
 const HELP = {
   start: '<b>Pick a start</b> with Prev and Next, or Whole season for the whole year. <b>Count</b> splits the pitches into before two strikes and with two strikes, because the plan is different in each. <b>Pitch</b> shows one pitch type. <b>Graded against</b> is what counts as the target: the <b>glove</b> is where the catcher set up; <b>glove + habit</b> is the glove moved by where you really aim that pitch, learned from your own pitches; <b>the plan</b> is your own target box for that pitch in that count.',
-  read: '<b>Command</b> runs 0 to 100. 100 means the pitch hit its spot, 50 means it missed by about 3 inches, your typical miss, and dead-middle scores 0. The <b>± noise</b> is how much one start can swing on luck alone: two starts inside each other’s band are the same start. <b>Typical miss</b> is the middle miss, in inches. <b>Aim offset</b> is your average miss direction, the part you can fix by aiming somewhere else. <b>Spread</b> is how tight the pitches sit around your own center, the part that is about repeating the delivery. <b>Executed</b> is the share that landed in the plan box, and <b>dead-middle</b> the share that landed where hitters live.',
+  read: '<b>Command</b> runs 0 to 100. 100 means the pitch hit its spot, 50 is the average big-league right-handed starter graded on your own plan, and dead-middle scores 0. Most of the league sits between the mid 40s and the mid 50s, so a few points is a real gap. <b>vs league</b> is you against that average. The <b>± noise</b> is how much one start can swing on luck alone: two starts inside each other’s band are the same start. <b>Typical miss</b> is the middle miss, in inches. <b>Aim offset</b> is your average miss direction, the part you can fix by aiming somewhere else. <b>Spread</b> is how tight the pitches sit around your own center, the part that is about repeating the delivery. <b>Executed</b> is the share that landed in the plan box, and <b>dead-middle</b> the share that landed where hitters live.',
   seasons: 'The same scoring for every season, so the numbers compare straight across. A season marked <b>approx.</b> has slightly less precise heights, which affects inches a little and grades not at all.',
   location: '<b>Miss pattern</b> plots every pitch by how far it missed the target, in inches. Up is up, and the sides are labeled arm side and glove side. Rings mark 6 and 12 inches. The ellipse is your spread and the arrow is your aim offset. <b>Target to plate</b> shows the target as an open circle, where the pitch crossed the plate as a dot, and the miss as the line between them. Tap any dot to watch the pitch.',
   clip: 'The clip, with the plan target drawn as a dashed ring on the picture and a small inset showing the zone, the target and where the pitch went. The dot is where the ball crossed the front of the plate; the catcher receives it a little later and lower. The lines underneath give the grade and the miss against each target.',

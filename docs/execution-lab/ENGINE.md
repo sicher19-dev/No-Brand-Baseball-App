@@ -248,6 +248,46 @@ approximate seasons are marked.
 Paul 2025: 2,997 pitches over 32 starts, season command 60.1 against 59.4
 in 2026.
 
+## The league line (`league-from-harvest.mjs`)
+
+The score's 50 is the league, not the pitcher, once a league file exists for
+the latest season. The league is every qualified right-handed starter in the
+provider's pitching leaderboard for that season (the pitcher himself left
+out), every regular-season pitch, harvested from the pitch log the same way
+as a season (one month-chunk per query, compact rows, no clips, no names in
+the data file: `private/harvest/league-<season>-*.tsv.gz`). Each pitch is
+graded against this pitcher's plan, the report's approach: the league
+graded with these same targets.
+
+```
+node tools/execution-lab/league-from-harvest.mjs skenes 2026
+node tools/execution-lab/build-game-data.mjs skenes "Paul Skenes" RHP PIT
+```
+
+The league file (`www/lab/execution/data/league-<season>.json`) carries
+aggregates only: the anchor, the spread of per-pitcher season scores (mean
+and percentiles), and per family-and-count cells (executed, within one ball
+and centered rates, mean miss). The anchor is solved, not measured: it is
+the miss distance `L` at which the league's average pitcher scores exactly
+50, so "50 = league average" holds on the page. (The league's mean miss
+itself would not land on 50, because the score is a bell curve of the miss
+and most pitches miss by less than the mean.) The build then anchors every
+season on it and the page says "vs league" on the season tile, with the
+league's range in the layer note. Without a league file the build falls
+back to the pitcher's own mean miss.
+
+Pitch types with no rule in this pitcher's plan (cutters, for one) are left
+out of the league; the provider's FT grades as SI and KC as CU (which grades
+as SL). 2026: 31 starters, 87,637 pitches harvested, 78,530 graded, anchor
+2.12 in; the league runs 43 to 56 per pitcher (p10 45.6, p90 53.7).
+
+Getting the harvest out of the browser: Chrome stopped saving page-triggered
+downloads partway through, even from a real click. What works instead is a
+tiny local receiver (`node` HTTP server on 127.0.0.1) with a hand-off page;
+the provider tab opens that page from a trusted click (`window.open`),
+posts the gzip bytes to it with `postMessage`, and the page saves them
+same-origin. Keep the browser-side store until the file is verified on disk.
+
 ## What the acceptance test found (2026-11-13)
 
 Engine + rules derived from the built report, run on the internal pitch file:
