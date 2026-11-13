@@ -41,6 +41,14 @@ Open `www/index.html` in a browser, or serve the folder:
 npx serve www
 ```
 
+## Execution Lab (in progress)
+Pitch-location execution grading. The scoring engine lives in `www/lab/execution/engine.js`; the prototype page and the engine notes are in `docs/execution-lab/`.
+Plan rules and internal pitch data stay in `private/` (gitignored, never in the app bundle or this repo).
+```
+npm test
+```
+runs the unit tests and, when `private/` is present, the pitch-for-pitch acceptance test against the built execution report.
+
 ## Hosted
 `https://sicher19-dev.github.io/No-Brand-Baseball-App/` - pitchers can use this in Safari today and tap **Share -> Add to Home Screen** for an app icon.
 

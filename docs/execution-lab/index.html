@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>No Brand Execution Lab — prototype</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#05080b; --panel:#0b1117; --panel2:#101922; --line:#1c2a36; --edge:#1f6f86;
+  --cy:#45d0f0; --ink:#eef4f7; --ink2:#a9b8c2; --ink3:#6f808c;
+  --FF:#e66767; --SI:#d95926; --CH:#199e70; --FS:#3987e5; --ST:#c98500; --SL:#9085e9;
+  --good:#3fbf7f; --warn:#d9a400; --bad:#e05252;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 Barlow,system-ui,sans-serif;
+  background-image:linear-gradient(rgba(69,208,240,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(69,208,240,.035) 1px,transparent 1px);background-size:32px 32px}
+.wrap{max-width:1080px;margin:0 auto;padding:14px 12px 60px}
+h1,h2,.cap{font-family:"Barlow Condensed","Arial Narrow",sans-serif;text-transform:uppercase;letter-spacing:.06em;margin:0}
+header{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.nb{font:700 40px/1 "Barlow Condensed",sans-serif;color:var(--cy);letter-spacing:.02em}
+h1{font-size:22px;font-weight:700}
+.sub{color:var(--ink2);font-size:13px}
+.banner{border:1px dashed var(--warn);color:#f0d27a;padding:8px 10px;font-size:13px;margin:10px 0 14px;background:rgba(217,164,0,.06)}
+.fr{background:var(--edge);padding:1px;clip-path:polygon(12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%,0 12px);margin-bottom:14px}
+.fr>.in{background:var(--panel);padding:14px;clip-path:polygon(12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%,0 12px)}
+h2{font-size:17px;font-weight:600;color:var(--cy);margin-bottom:10px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+h2 small{font:400 12px Barlow,sans-serif;color:var(--ink3);text-transform:none;letter-spacing:0;text-align:right}
+.ctl{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:8px}
+.ctl .lab{font-size:12px;color:var(--ink3);width:100%;margin-top:4px}
+button{font:600 14px "Barlow Condensed",sans-serif;letter-spacing:.05em;text-transform:uppercase;background:transparent;color:var(--ink2);border:1px solid var(--line);padding:7px 11px;cursor:pointer;min-height:36px}
+button.on{background:var(--cy);color:#02222b;border-color:var(--cy)}
+button .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:1px}
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+@media(min-width:760px){.tiles{grid-template-columns:repeat(5,1fr)}.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}}
+.tile{background:var(--panel2);border:1px solid var(--line);padding:10px}
+.tile .k{font-size:12px;color:var(--ink3)}
+.tile .v{font:700 30px/1.1 "Barlow Condensed",sans-serif}
+.tile .n{font-size:12px;color:var(--ink2)}
+svg{display:block;width:100%;height:auto;touch-action:manipulation}
+svg text{font-family:Barlow,sans-serif;fill:var(--ink3);font-size:11px}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--ink2);margin-top:8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font:600 12px "Barlow Condensed",sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);text-align:right;padding:6px 6px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--panel)}
+td{padding:7px 6px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
+th:first-child,td:first-child{text-align:left}
+tr.sel td{background:rgba(69,208,240,.12)}
+tbody tr{cursor:pointer}
+.scroll{max-height:380px;overflow:auto}
+.chip{display:inline-block;min-width:38px;text-align:center;padding:1px 6px;font-weight:600;color:var(--ink);border:1px solid var(--line)}
+.g{display:inline-block;padding:1px 6px;font-size:12px;border:1px solid var(--line);color:var(--ink2);white-space:nowrap}
+.bar{display:flex;height:22px;gap:2px;margin:6px 0}
+.bar div{min-width:2px}
+.det{display:grid;grid-template-columns:1fr;gap:10px}
+@media(min-width:760px){.det{grid-template-columns:1.1fr 1fr}}
+.clip{aspect-ratio:16/9;border:1px dashed var(--edge);display:flex;align-items:center;justify-content:center;color:var(--ink3);font-size:13px;text-align:center;padding:10px;background:repeating-linear-gradient(135deg,transparent 0 10px,rgba(69,208,240,.04) 10px 20px)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;font-size:13px}
+.kv span:nth-child(odd){color:var(--ink3)}
+.note{font-size:12px;color:var(--ink3);margin-top:8px}
+@media(max-width:600px){#log th:nth-child(3),#log td:nth-child(3),#log th:nth-child(7),#log td:nth-child(7),#ptTable th:nth-child(6),#ptTable td:nth-child(6),#ptTable th:nth-child(8),#ptTable td:nth-child(8){display:none}td,th{padding:7px 4px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><div class="nb">NB</div><div><h1>Execution Lab</h1><div class="sub">No Brand Baseball Analytics · prototype v0</div></div></header>
+<div class="banner"><b>Sample data.</b> Every pitch on this page is generated to show how the tool works. No real pitcher, game, or league number is on it, and the league line is a placeholder.</div>
+
+<div class="fr"><div class="in">
+  <h2><span id="gTitle"></span><small id="gSub"></small></h2>
+  <div class="ctl"><button id="prev">‹ Prev start</button><button id="next">Next start ›</button><button id="all">Season</button></div>
+  <div class="ctl"><span class="lab">Grade against</span><span id="layerBtns"></span></div>
+  <div class="ctl"><span class="lab">Count</span><span id="countBtns"></span></div>
+  <div class="ctl"><span class="lab">Pitch</span><span id="ptBtns"></span></div>
+  <div class="note" id="layerNote"></div>
+</div></div>
+
+<div class="fr"><div class="in">
+  <h2>Read<small>50 = league line (placeholder)</small></h2>
+  <div class="tiles" id="tiles"></div>
+  <div class="cap" style="font-size:13px;color:var(--ink3);margin-top:14px">Grades vs the plan</div>
+  <div class="bar" id="gbar"></div><div class="legend" id="gleg"></div>
+</div></div>
+
+<div class="two">
+<div class="fr"><div class="in">
+  <h2>Miss pattern<small>inches from target · catcher's view</small></h2>
+  <svg id="miss" viewBox="0 0 360 360"></svg>
+  <div class="legend"><span>◌ rings at 6" and 12"</span><span>⬭ spread (1 sd)</span><span>→ aim offset</span></div>
+</div></div>
+<div class="fr"><div class="in">
+  <h2>Target to plate<small>tap a pitch</small></h2>
+  <svg id="zone" viewBox="0 0 360 400"></svg>
+  <div class="legend" id="ptleg"></div>
+  <div class="legend"><span>○ target</span><span>● plate</span><span>▭ plan box</span><span>┄ middle-middle</span></div>
+</div></div>
+</div>
+
+<div class="fr"><div class="in">
+  <h2>Selected pitch<small id="selHint">tap any dot or row</small></h2>
+  <div class="det"><div class="clip" id="clip">Clip slot — pitch video with the target box drawn on the glove, and an Edit target button to correct it</div><div class="kv" id="kv"></div></div>
+</div></div>
+
+<div class="fr"><div class="in">
+  <h2>Start by start<small>shaded = noise band for that start</small></h2>
+  <div style="overflow:auto"><svg id="trend" viewBox="0 0 720 240" style="min-width:560px"></svg></div>
+</div></div>
+
+<div class="fr"><div class="in">
+  <h2>By pitch</h2>
+  <div style="overflow:auto"><table id="ptTable"></table></div>
+</div></div>
+
+<div class="fr"><div class="in">
+  <h2>Pitch log<small>tap a row</small></h2>
+  <div class="scroll"><table id="log"></table></div>
+</div></div>
+</div>
+
+<script>
+// ---------- seeded sample data ----------
+let seed=20261112;const rnd=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
+const gauss=()=>{let u=0,v=0;while(!u)u=rnd();v=rnd();return Math.sqrt(-2*Math.log(u))*Math.cos(6.283185*v)};
+const PT={FF:'Four-seam',SI:'Sinker',FS:'Splitter',CH:'Changeup',ST:'Sweeper',SL:'Slider'};
+const MIX=[['FF',.38],['SI',.14],['ST',.16],['SL',.10],['FS',.12],['CH',.10]];
+const ZONE={x0:-.83,x1:.83,z0:1.6,z1:3.4}, MID={x0:-.33,x1:.33,z0:2.2,z1:2.8};
+// generic plan boxes (ft, catcher's view, RHP). Real per-pitcher plans load from a private config.
+function plan(pt,twoK){
+  if(pt==='FF')return{x0:-.83,x1:.83,z0:2.95,z1:3.7};
+  if(pt==='SI')return{x0:-.83,x1:.83,z0:1.4,z1:2.2};
+  if(pt==='FS'||pt==='CH')return twoK?{x0:-.83,x1:.6,z0:1.0,z1:2.1}:{x0:-.83,x1:.6,z0:1.6,z1:2.3};
+  if(pt==='ST')return twoK?{x0:.45,x1:1.15,z0:1.6,z1:2.6}:{x0:0,x1:.83,z0:1.6,z1:2.9};
+  return twoK?{x0:-.3,x1:.95,z0:.9,z1:2.1}:{x0:-.3,x1:.9,z0:1.4,z1:2.3};
+}
+const OFF={FF:[0,.22],SI:[-.12,-.05],FS:[0,-.25],CH:[-.08,-.2],ST:[.28,-.05],SL:[.12,-.18]};   // pitcher x pitch habit: where he really aims relative to the glove
+const BIAS={FF:[.05,.04],SI:[-.1,.22],FS:[0,-.06],CH:[-.12,.02],ST:[-.2,.05],SL:[.04,.12]};
+const SC={FF:.5,SI:.55,FS:.55,CH:.62,ST:.7,SL:.66};
+const LEAGUE={glove:10,inferred:9,plan:5};   // placeholder league median miss, inches
+const GAMES=[];
+for(let g=0;g<8;g++){
+  const n=82+Math.floor(rnd()*22), drift=[gauss()*.08,gauss()*.08], wob=.9+rnd()*.3, P=[];
+  for(let i=0;i<n;i++){
+    let r=rnd(),pt='FF';for(const[k,w]of MIX){if((r-=w)<0){pt=k;break}}
+    const balls=Math.floor(rnd()*3.4), strikes=Math.min(2,Math.floor(rnd()*2.9)), twoK=strikes===2;
+    const b=plan(pt,twoK), cx=(b.x0+b.x1)/2, cz=(b.z0+b.z1)/2;
+    const noTarget=rnd()<.04;
+    const gl=[cx+gauss()*.18,cz+gauss()*.16], inf=[gl[0]+OFF[pt][0],gl[1]+OFF[pt][1]];
+    const act=[inf[0]+BIAS[pt][0]+drift[0]+gauss()*SC[pt]*wob, inf[1]+BIAS[pt][1]+drift[1]+gauss()*SC[pt]*wob*.9];
+    P.push({g,i:i+1,pt,balls,strikes,twoK,hand:rnd()<.5?'L':'R',box:b,glove:noTarget?null:gl,inferred:noTarget?null:inf,act});
+  }
+  GAMES.push({id:g,name:'Sample start '+(g+1),P});
+}
+// ---------- scoring ----------
+const IN=12;
+function tgt(p,layer){
+  if(layer==='plan'){const b=p.box;return[Math.min(Math.max(p.act[0],b.x0),b.x1),Math.min(Math.max(p.act[1],b.z0),b.z1)]}
+  return p[layer];
+}
+function missVec(p,layer){const t=tgt(p,layer);return t?[(p.act[0]-t[0])*IN,(p.act[1]-t[1])*IN]:null}
+const inBox=(a,b,pad=0)=>a[0]>=b.x0-pad&&a[0]<=b.x1+pad&&a[1]>=b.z0-pad&&a[1]<=b.z1+pad;
+function grade(p){
+  if(inBox(p.act,MID))return'centered';
+  if(inBox(p.act,p.box))return'executed';
+  if(inBox(p.act,p.box,.25))return'within a ball';
+  return inBox(p.act,ZONE)?'strike off target':'ball off target';
+}
+const GR=['executed','within a ball','centered','strike off target','ball off target'];
+const GC={'executed':'#3fbf7f','within a ball':'#8fd6b0','centered':'#e05252','strike off target':'#d9a400','ball off target':'#6f808c'};
+function score(d,layer){const L=LEAGUE[layer];return 100*Math.exp(-Math.LN2*(d/L)*(d/L))}   // 50 when miss = league median
+GAMES.forEach(G=>G.P.forEach(p=>{p.grade=grade(p);p.m={};p.d={};p.s={};
+  for(const l of['glove','inferred','plan']){const v=missVec(p,l);p.m[l]=v;p.d[l]=v?Math.hypot(v[0],v[1]):null;p.s[l]=v?score(p.d[l],l):null}}));
+const median=a=>{if(!a.length)return NaN;const s=[...a].sort((x,y)=>x-y),m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2};
+const mean=a=>a.reduce((x,y)=>x+y,0)/a.length;
+function stats(P,layer){
+  const S=P.filter(p=>p.m[layer]);if(!S.length)return null;
+  const sc=S.map(p=>p.s[layer]),mu=mean(sc),sd=Math.sqrt(mean(sc.map(x=>(x-mu)**2)));
+  const bx=mean(S.map(p=>p.m[layer][0])),bz=mean(S.map(p=>p.m[layer][1]));
+  const res=S.map(p=>[p.m[layer][0]-bx,p.m[layer][1]-bz]);
+  const sxx=mean(res.map(r=>r[0]*r[0])),szz=mean(res.map(r=>r[1]*r[1])),sxz=mean(res.map(r=>r[0]*r[1]));
+  return{n:S.length,total:P.length,score:mu,band:1.96*sd/Math.sqrt(S.length),med:median(S.map(p=>p.d[layer])),bias:[bx,bz],
+    spread:median(res.map(r=>Math.hypot(r[0],r[1]))),cov:[sxx,szz,sxz],
+    exec:P.filter(p=>p.grade==='executed').length/P.length,cent:P.filter(p=>p.grade==='centered').length/P.length};
+}
+const dirWord=([x,z])=>{const m=Math.hypot(x,z);if(m<.75)return'on target';const a=[];if(Math.abs(z)>m*.38)a.push(z>0?'up':'down');if(Math.abs(x)>m*.38)a.push(x>0?'glove side':'arm side');return a.join(' / ')};
+// ---------- state ----------
+const st={g:7,layer:'inferred',count:'all',pt:'all',sel:null};
+const LAYERS={glove:'Glove',inferred:'Glove + habit',plan:'The plan'};
+const NOTES={glove:'Glove: distance from where the catcher set up. Simple, but it charges the pitcher for every pitch he never meant to throw to the glove.',
+ inferred:'Glove + habit: the glove, moved by where this pitcher really aims that pitch relative to the mitt, learned from his own history. Closer to intent.',
+ plan:'The plan: the pitcher’s own target box for that pitch in that count. Graded even when no glove was readable, and dead-middle never counts.'};
+const cur=()=>{let P=st.g<0?GAMES.flatMap(G=>G.P):GAMES[st.g].P;
+  if(st.count!=='all')P=P.filter(p=>st.count==='2K'?p.twoK:!p.twoK);
+  if(st.pt!=='all')P=P.filter(p=>p.pt===st.pt);return P};
+const $=id=>document.getElementById(id), f1=x=>x==null||isNaN(x)?'–':x.toFixed(1), col=pt=>getComputedStyle(document.documentElement).getPropertyValue('--'+pt).trim();
+function btns(el,opts,key){el.innerHTML='';for(const[v,l,c]of opts){const b=document.createElement('button');b.innerHTML=(c?`<span class="dot" style="background:${c}"></span>`:'')+l;b.className=st[key]===v?'on':'';b.onclick=()=>{st[key]=v;st.sel=null;render()};el.appendChild(b)}}
+function chipCol(s){if(s==null)return'transparent';const t=Math.max(-1,Math.min(1,(s-50)/40));return t>=0?`rgba(63,191,127,${.12+t*.5})`:`rgba(224,82,82,${.12-t*.5})`}
+// ---------- render ----------
+function render(){
+  const P=cur(),S=stats(P,st.layer),G=st.g<0?null:GAMES[st.g];
+  $('gTitle').textContent=G?G.name:'Sample season';
+  $('gSub').textContent=(G?`Start ${st.g+1} of ${GAMES.length} · `:`${GAMES.length} starts · `)+P.length+' pitches in view';
+  $('prev').disabled=st.g===0;$('next').disabled=st.g===GAMES.length-1||st.g<0;$('all').className=st.g<0?'on':'';
+  btns($('layerBtns'),Object.entries(LAYERS),'layer');
+  btns($('countBtns'),[['all','All'],['pre','Before two strikes'],['2K','Two strikes']],'count');
+  btns($('ptBtns'),[['all','All'],...Object.keys(PT).map(k=>[k,k,col(k)])],'pt');
+  $('layerNote').textContent=NOTES[st.layer];
+  // tiles
+  const T=$('tiles');T.innerHTML='';
+  const tile=(k,v,n,bg)=>{T.insertAdjacentHTML('beforeend',`<div class="tile" style="${bg?'background:'+bg:''}"><div class="k">${k}</div><div class="v">${v}</div><div class="n">${n}</div></div>`)};
+  if(S){
+    tile('Location score',f1(S.score),`± ${f1(S.band)} noise band`,chipCol(S.score));
+    tile('Typical miss',f1(S.med)+'"',`median, ${S.n} of ${S.total} pitches graded`);
+    tile('Aim offset',f1(Math.hypot(...S.bias))+'"',dirWord(S.bias)+' — fixable by aim');
+    tile('Spread',f1(S.spread)+'"','around his own center — repeatability');
+    tile('Executed',Math.round(S.exec*100)+'%',`in the plan box · ${Math.round(S.cent*100)}% dead-middle`);
+  }else tile('No pitches','–','nothing in this filter');
+  // grade bar
+  const gb=$('gbar');gb.innerHTML='';$('gleg').innerHTML='';
+  for(const g of GR){const n=P.filter(p=>p.grade===g).length;if(P.length)gb.insertAdjacentHTML('beforeend',`<div title="${g}: ${n}" style="flex:${n};background:${GC[g]}"></div>`);
+    $('gleg').insertAdjacentHTML('beforeend',`<span><i style="background:${GC[g]}"></i>${g} ${n} (${P.length?Math.round(n/P.length*100):0}%)</span>`)}
+  drawMiss(P,S);drawZone(P);drawTrend();drawTables(P);drawSel();
+  $('ptleg').innerHTML=Object.keys(PT).map(k=>`<span><i style="background:${col(k)}"></i>${PT[k]}</span>`).join('');
+}
+const NS='http://www.w3.org/2000/svg';
+function el(svg,tag,a,txt){const e=document.createElementNS(NS,tag);for(const k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;svg.appendChild(e);return e}
+function dot(svg,p,x,y){const sel=st.sel===p;const c=el(svg,'circle',{cx:x,cy:y,r:sel?7:4.5,fill:col(p.pt),stroke:sel?'#fff':'#0b1117','stroke-width':sel?2:1.5,opacity:st.sel&&!sel?.45:.95});
+  const h=el(svg,'circle',{cx:x,cy:y,r:11,fill:'transparent',style:'cursor:pointer'});h.onclick=()=>{st.sel=sel?null:p;render()};
+  el(h,'title',{},`#${p.i} ${p.pt} ${p.balls}-${p.strikes} · ${f1(p.d[st.layer])}" · ${p.grade}`)}
+function drawMiss(P,S){
+  const s=$('miss');s.innerHTML='';const R=24,c=180,k=160/R,X=v=>c+v*k,Y=v=>c-v*k;
+  for(const v of[-24,-12,0,12,24]){el(s,'line',{x1:X(v),x2:X(v),y1:Y(-R),y2:Y(R),stroke:'#1c2a36'});el(s,'line',{y1:Y(v),y2:Y(v),x1:X(-R),x2:X(R),stroke:'#1c2a36'})}
+  for(const r of[6,12])el(s,'circle',{cx:c,cy:c,r:r*k,fill:'none',stroke:'#6f808c','stroke-dasharray':'4 4'});
+  el(s,'text',{x:X(12)+3,y:c-3},'12"');el(s,'text',{x:X(6)+3,y:c-3},'6"');
+  el(s,'text',{x:c,y:14,'text-anchor':'middle'},'up');el(s,'text',{x:c,y:354,'text-anchor':'middle'},'down');
+  el(s,'text',{x:6,y:c-4},'arm side');el(s,'text',{x:354,y:c-4,'text-anchor':'end'},'glove side');
+  const cl=v=>Math.max(-R,Math.min(R,v));
+  for(const p of P){const m=p.m[st.layer];if(m)dot(s,p,X(cl(m[0])),Y(cl(m[1])))}
+  if(S&&S.n>4){const[sxx,szz,sxz]=S.cov,tr=sxx+szz,det=sxx*szz-sxz*sxz,d=Math.sqrt(Math.max(0,tr*tr/4-det)),l1=tr/2+d,l2=Math.max(.01,tr/2-d),ang=Math.atan2(l1-sxx,sxz||1e-9);
+    el(s,'ellipse',{cx:X(S.bias[0]),cy:Y(S.bias[1]),rx:Math.sqrt(l1)*k,ry:Math.sqrt(l2)*k,fill:'rgba(69,208,240,.07)',stroke:'#45d0f0','stroke-width':1.5,transform:`rotate(${-ang*180/Math.PI} ${X(S.bias[0])} ${Y(S.bias[1])})`,'pointer-events':'none'});
+    el(s,'line',{x1:c,y1:c,x2:X(S.bias[0]),y2:Y(S.bias[1]),stroke:'#fff','stroke-width':2.5,'pointer-events':'none'});
+    el(s,'circle',{cx:X(S.bias[0]),cy:Y(S.bias[1]),r:4,fill:'#fff','pointer-events':'none'})}
+}
+function drawZone(P){
+  const s=$('zone');s.innerHTML='';const k=80,X=v=>180+v*k,Y=v=>370-v*k+20;
+  for(let v=-2;v<=2;v++)el(s,'line',{x1:X(v),x2:X(v),y1:0,y2:400,stroke:'#141f29'});
+  for(let v=0;v<=4;v++)el(s,'line',{y1:Y(v),y2:Y(v),x1:0,x2:360,stroke:'#141f29'});
+  const rect=(b,a)=>el(s,'rect',Object.assign({x:X(b.x0),y:Y(b.z1),width:(b.x1-b.x0)*k,height:(b.z1-b.z0)*k,fill:'none'},a));
+  rect(ZONE,{stroke:'#a9b8c2','stroke-width':1.5});
+  if(st.pt!=='all'){const tk=st.count==='2K';rect(plan(st.pt,tk),{stroke:col(st.pt),'stroke-width':1.5,fill:col(st.pt),'fill-opacity':.1});
+    if(st.count==='all'&&['FS','CH','ST','SL'].includes(st.pt))rect(plan(st.pt,true),{stroke:col(st.pt),'stroke-dasharray':'6 3','stroke-width':1.2})}
+  if(st.sel)rect(st.sel.box,{stroke:col(st.sel.pt),'stroke-width':1.5,fill:col(st.sel.pt),'fill-opacity':.12});
+  rect(MID,{stroke:'#e05252','stroke-dasharray':'3 3'});
+  el(s,'path',{d:`M${X(-.71)} 392 L${X(-.71)} 384 L${X(0)} 376 L${X(.71)} 384 L${X(.71)} 392 Z`,fill:'none',stroke:'#6f808c'});
+  const cx=v=>Math.max(-2.2,Math.min(2.2,v)),cz=v=>Math.max(.1,Math.min(4.6,v));
+  for(const p of P){const t=tgt(p,st.layer),c=col(p.pt),dim=st.sel&&st.sel!==p;
+    if(t){el(s,'line',{x1:X(t[0]),y1:Y(t[1]),x2:X(cx(p.act[0])),y2:Y(cz(p.act[1])),stroke:c,'stroke-width':1,opacity:dim?.12:.45});
+      if(st.layer!=='plan')el(s,'circle',{cx:X(t[0]),cy:Y(t[1]),r:4.5,fill:'none',stroke:c,'stroke-width':1.5,opacity:dim?.2:.9})}}
+  for(const p of P)dot(s,p,X(cx(p.act[0])),Y(cz(p.act[1])));
+}
+function drawTrend(){
+  const s=$('trend');s.innerHTML='';const L=40,Rr=700,T=14,B=206,X=i=>L+(Rr-L)*(i+.5)/GAMES.length,Y=v=>B-(v-20)/(80-20)*(B-T);
+  for(const v of[20,35,50,65,80]){el(s,'line',{x1:L,x2:Rr,y1:Y(v),y2:Y(v),stroke:v===50?'#6f808c':'#1c2a36'});el(s,'text',{x:L-6,y:Y(v)+4,'text-anchor':'end'},v)}
+  const pts=GAMES.map((G,i)=>{let P=G.P;if(st.count!=='all')P=P.filter(p=>st.count==='2K'?p.twoK:!p.twoK);if(st.pt!=='all')P=P.filter(p=>p.pt===st.pt);return{i,S:stats(P,st.layer)}}).filter(o=>o.S);
+  if(pts.length>1){el(s,'path',{d:'M'+pts.map(o=>`${X(o.i)} ${Y(o.S.score+o.S.band)}`).join(' L')+' L'+pts.slice().reverse().map(o=>`${X(o.i)} ${Y(o.S.score-o.S.band)}`).join(' L')+' Z',fill:'rgba(69,208,240,.12)'});
+    el(s,'path',{d:'M'+pts.map(o=>`${X(o.i)} ${Y(o.S.score)}`).join(' L'),fill:'none',stroke:'#45d0f0','stroke-width':2})}
+  for(const o of pts){const on=o.i===st.g;el(s,'circle',{cx:X(o.i),cy:Y(o.S.score),r:on?7:5,fill:on?'#fff':'#45d0f0',stroke:'#0b1117','stroke-width':2});
+    if(on)el(s,'text',{x:X(o.i),y:Y(o.S.score+o.S.band)-6,'text-anchor':'middle',style:'fill:#eef4f7;font-weight:600'},f1(o.S.score));
+    el(s,'text',{x:X(o.i),y:226,'text-anchor':'middle'},'S'+(o.i+1));
+    const h=el(s,'rect',{x:X(o.i)-36,y:T,width:72,height:B-T+24,fill:'transparent',style:'cursor:pointer'});h.onclick=()=>{st.g=o.i;st.sel=null;render()};el(h,'title',{},`Start ${o.i+1}: ${f1(o.S.score)} ± ${f1(o.S.band)} · ${o.S.n} pitches`)}
+}
+function drawTables(P){
+  const base=st.g<0?GAMES.flatMap(G=>G.P):GAMES[st.g].P, cf=p=>st.count==='all'||(st.count==='2K'?p.twoK:!p.twoK);
+  let h='<thead><tr><th>Pitch</th><th>N</th><th>Score</th><th>Miss</th><th>Aim offset</th><th>Spread</th><th>Executed</th><th>Middle</th></tr></thead><tbody>';
+  for(const k of Object.keys(PT)){const Q=base.filter(p=>p.pt===k&&cf(p)),S=stats(Q,st.layer);if(!S)continue;
+    h+=`<tr data-pt="${k}" class="${st.pt===k?'sel':''}"><td><span class="dot" style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${col(k)};margin-right:6px"></span>${PT[k]}</td><td>${Q.length}</td><td><span class="chip" style="background:${chipCol(S.score)}">${f1(S.score)}</span></td><td>${f1(S.med)}"</td><td>${f1(Math.hypot(...S.bias))}" ${dirWord(S.bias)}</td><td>${f1(S.spread)}"</td><td>${Math.round(S.exec*100)}%</td><td>${Math.round(S.cent*100)}%</td></tr>`}
+  $('ptTable').innerHTML=h+'</tbody>';
+  $('ptTable').querySelectorAll('tbody tr').forEach(r=>r.onclick=()=>{st.pt=st.pt===r.dataset.pt?'all':r.dataset.pt;st.sel=null;render()});
+  h='<thead><tr><th>#</th><th>Count</th><th>Bat</th><th>Pitch</th><th>Score</th><th>Miss</th><th>Where</th><th>Grade</th></tr></thead><tbody>';
+  P.forEach((p,ix)=>{h+=`<tr data-ix="${ix}" class="${st.sel===p?'sel':''}"><td>${st.g<0?'S'+(p.g+1)+'·':''}${p.i}</td><td>${p.balls}-${p.strikes}</td><td>${p.hand}</td><td><span style="color:${col(p.pt)}">●</span> ${p.pt}</td><td><span class="chip" style="background:${chipCol(p.s[st.layer])}">${f1(p.s[st.layer])}</span></td><td>${p.d[st.layer]==null?'–':f1(p.d[st.layer])+'"'}</td><td>${p.m[st.layer]?dirWord(p.m[st.layer]):'no glove read'}</td><td><span class="g" style="border-color:${GC[p.grade]}">${p.grade}</span></td></tr>`});
+  $('log').innerHTML=h+'</tbody>';
+  $('log').querySelectorAll('tbody tr').forEach(r=>r.onclick=()=>{const p=P[+r.dataset.ix];st.sel=st.sel===p?null:p;render()});
+}
+function drawSel(){
+  const p=st.sel,k=$('kv');if(!p){k.innerHTML='<span>Pitch</span><span>none selected</span>';$('selHint').textContent='tap any dot or row';return}
+  $('selHint').textContent=`${GAMES[p.g].name} · pitch ${p.i}`;
+  const row=(a,b)=>`<span>${a}</span><span>${b}</span>`;
+  k.innerHTML=row('Pitch',`${PT[p.pt]}, ${p.balls}-${p.strikes} to a ${p.hand}HH`)+row('Grade vs plan',p.grade)+
+   ['glove','inferred','plan'].map(l=>row('vs '+LAYERS[l].toLowerCase(),p.m[l]?`${f1(p.d[l])}" ${dirWord(p.m[l])} · score ${f1(p.s[l])}`:'no glove read — tag by hand')).join('')+
+   row('Lab mode','body and mound-force data for this pitch attach here');
+}
+$('prev').onclick=()=>{if(st.g>0){st.g--;st.sel=null;render()}};
+$('next').onclick=()=>{if(st.g>=0&&st.g<GAMES.length-1){st.g++;st.sel=null;render()}};
+$('all').onclick=()=>{st.g=st.g<0?GAMES.length-1:-1;st.sel=null;render()};
+render();
+</script>
+</body>
+</html>
