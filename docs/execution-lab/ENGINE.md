@@ -156,11 +156,17 @@ hitter's zone, the plan target ring, where the pitch went and the miss line.
 When the park's camera is calibrated for that angle, it also draws the
 target ring and the pitch location on the picture itself (dashed ring,
 marked approximate). A calibration is four taps on a paused frame from
-Calibrate camera: left and right edge of the plate, then the bottom and top
-of the hitter's zone, whose heights in feet the data already carries. That
-fixes an axis-aligned map from plate coordinates to picture fractions, one
-per park and angle, keyed `<park>|<angle>` (park = the pitcher's team when
-at home, else the opponent). Calibrations live in the browser and are seeded
+Calibrate camera: the first-base and third-base edges of the plate, then the
+bottom and top of the hitter's zone, whose heights in feet the data already
+carries. Naming the plate edges by base rather than left and right is what
+makes the map come out right for any camera: a center-field broadcast
+camera sees first base on the left, a camera behind the plate sees it on the
+right, and the sign of the horizontal scale records which. That fixes an
+axis-aligned map from plate coordinates to picture fractions, one per park
+and angle, keyed `<park>|<angle>` (park = the pitcher's team when at home,
+else the opponent). The pitch dot on the picture is where the ball crossed
+the front of the plate; the catcher receives it a couple of feet later and
+lower, so it does not sit in the mitt. Calibrations live in the browser and are seeded
 from `data/<id>-cal.json`, which is committed (it holds no URLs). The home
 broadcast camera for the pitcher's park was calibrated on 2026-11-13; away
 parks need a coach to tap once each. This is a flat map, so it is good near

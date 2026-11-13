@@ -463,7 +463,11 @@ function drawGameLog(SS) {
 // (x, z in feet) to picture fractions with four taps on a paused frame:
 // both plate edges, then the bottom and top of the hitter's zone. One per
 // park and camera angle; kept in the browser and seeded from data/<id>-cal.json.
-const CAL_STEPS = ['Tap the LEFT edge of home plate', 'Tap the RIGHT edge of home plate', 'Tap the BOTTOM of the hitter’s zone (hollow of the knees)', 'Tap the TOP of the hitter’s zone (letters)'];
+// The first two taps are the plate's first-base and third-base edges, not
+// left and right: a center-field camera sees first base on the left and a
+// camera behind the plate sees it on the right, and this way the map comes
+// out right for either.
+const CAL_STEPS = ['Tap the FIRST-BASE edge of home plate (the side a left-handed hitter stands on)', 'Tap the THIRD-BASE edge of home plate', 'Tap the BOTTOM of the hitter’s zone (hollow of the knees)', 'Tap the TOP of the hitter’s zone (letters)'];
 let CAL = {};
 try { const r = await fetch(`data/${PID}-cal.json`, { cache: 'no-store' }); if (r.ok) CAL = await r.json(); } catch (e) { /* none seeded */ }
 try { Object.assign(CAL, JSON.parse(localStorage.getItem('nb_cal_' + PID) || '{}')); } catch (e) { /* storage off */ }
@@ -498,7 +502,7 @@ function drawOverlay(p) {
   // in-frame ring, when this park and angle are calibrated
   if (c && t && !cal.on) {
     const [u, vv] = project(c, t[0], t[1]), [ua, va] = project(c, p.x, p.z);
-    const r = Math.max(14, 0.5 * c.ax * R.w * W);          // about a glove on the picture, never smaller than a fingertip
+    const r = Math.max(14, 0.5 * Math.abs(c.ax) * R.w * W);   // about a glove on the picture, never smaller than a fingertip
     el(s, 'circle', { cx: U(u), cy: V(vv), r, fill: 'none', stroke: 'var(--gold)', 'stroke-width': 3, 'stroke-dasharray': '6 4' });
     el(s, 'circle', { cx: U(ua), cy: V(va), r: Math.max(3, r * .35), fill: col(p.fam), stroke: '#0b0b0d', 'stroke-width': 1.5 });
     el(s, 'line', { x1: U(u), y1: V(vv), x2: U(ua), y2: V(va), stroke: col(p.fam), 'stroke-width': 2, opacity: .8 });
@@ -526,7 +530,9 @@ function drawOverlay(p) {
     if (edit.glove) el(s, 'circle', { cx: X2(edit.glove[0]), cy: Y2(edit.glove[1]), r: 11, fill: 'none', stroke: '#fff', 'stroke-width': 3 });
   }
   const note = $('ovNote'); note.hidden = false;
-  note.textContent = (c ? 'Dashed ring = the plan target drawn on the picture (approximate, from this park’s camera calibration). Inset: zone, target ring, where it went.' : 'Inset: zone, target ring, where it went. The ring is not drawn in the picture yet: this park’s camera is not calibrated.' + (COACH ? ' A coach can do it from Calibrate camera with four taps.' : '')) + (p.glove ? ' White circle = the glove read.' : '');
+  note.textContent = (c ? 'Dashed ring = the plan target drawn on the picture (approximate, from this park’s camera calibration). Inset: zone, target ring, where it went.' : 'Inset: zone, target ring, where it went. The ring is not drawn in the picture yet: this park’s camera is not calibrated.' + (COACH ? ' A coach can do it from Calibrate camera with four taps.' : ''))
+    + (p.glove ? ' White circle = the glove read.' : '')
+    + ' The dot is where the ball crossed the front of the plate; the catcher receives it a couple of feet later, lower and still moving, so it will not sit in the mitt on the picture.';
   $('calBtn').hidden = !COACH; $('calBtn').textContent = cal.on ? 'Cancel' : c ? 'Recalibrate camera' : 'Calibrate camera';
 }
 
@@ -590,10 +596,11 @@ $('overlay').addEventListener('click', ev => {
   const u = ((ev.clientX - b.left) / b.width - R.x) / R.w, vv = ((ev.clientY - b.top) / b.height - R.y) / R.h;
   cal.taps.push([u, vv]); cal.step++;
   if (cal.step < 4) { calMsg(); drawOverlay(st.sel); return; }
-  const [L, Rt, Bo, To] = cal.taps, zone = st.sel.zone || [1.6, 3.4];
-  const ax = (Rt[0] - L[0]) / 1.417, u0 = (L[0] + Rt[0]) / 2, az = (Bo[1] - To[1]) / (zone[1] - zone[0]), v0 = Bo[1] + az * zone[0];
+  const [B1, B3, Bo, To] = cal.taps, zone = st.sel.zone || [1.6, 3.4];
+  // +x in the data is the first-base side (catcher's right), so ax carries the camera's orientation in its sign.
+  const ax = (B1[0] - B3[0]) / 1.417, u0 = (B1[0] + B3[0]) / 2, az = (Bo[1] - To[1]) / (zone[1] - zone[0]), v0 = Bo[1] + az * zone[0];
   const key = calKey(st.sel);
-  if (ax <= 0 || az <= 0) { $('calMsg').textContent = 'Those taps do not make sense (left must be left of right, knees below letters). Start again.'; cal.step = 0; cal.taps = []; setTimeout(calMsg, 2500); return; }
+  if (Math.abs(ax) < 1e-4 || az <= 0) { $('calMsg').textContent = 'Those taps do not make sense (the two plate edges sit on one spot, or the knees are above the letters). Start again.'; cal.step = 0; cal.taps = []; setTimeout(calMsg, 2500); return; }
   CAL[key] = { u0, ax, v0, az, pitch: st.sel.pid, taps: cal.taps, zone };
   try { localStorage.setItem('nb_cal_' + PID, JSON.stringify(CAL)); } catch (e) { /* storage off */ }
   stopCal();
