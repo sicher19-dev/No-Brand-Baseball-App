@@ -48,7 +48,8 @@ in place.
 | Inline player: play / pause, scrubber, time, unmute, close | yes | yes | page |
 | Target drawn on the catcher in the clip (circle on the glove) | yes | yes: plan target ring on the picture (camera calibrated per park) plus a zone inset on every clip | done |
 | Pitch dot at the catch point, not the plate crossing | yes (dot sits on the glove) | yes: filled dot at the catch point (release point and bend extrapolated three feet past the plate front), small ring at the plate crossing | done |
-| Edit target button on the clip to correct the glove read | yes | yes: tap on the picture or in a zone panel, saves the read, rescores the glove and glove + habit layers at once | done (browser storage until the backend) |
+| Edit target button on the clip to correct the glove read | yes | yes: tap on the picture or in a zone panel, saves the read, rescores the glove and glove + habit layers at once | done (team store) |
+| Glove reads for every pitch | yes (reads come with the feed) | Tag gloves: each untagged pitch opens paused on its set-up frame, zoomed on the plate, plan target proposed, one tap or Enter per pitch | done (coach tool) |
 | Clip stays open while scrolling the chart above it | yes | yes | page |
 
 ## Season page

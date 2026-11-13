@@ -85,6 +85,9 @@ tr.sel td{background:var(--gold-soft)}
 .video .calmsg{position:absolute;left:10px;top:10px;right:120px;background:rgba(11,11,13,.85);border:1px solid var(--gold);color:var(--ink);padding:8px 10px;border-radius:8px;font-size:13px;pointer-events:none}
 .video.cal video,.video.edit video{pointer-events:none}
 .video.edit .ov{pointer-events:auto;cursor:crosshair}
+.video.zoom video,.video.zoom .ov{transform:scale(2.4);transform-origin:var(--zx,50%) var(--zy,55%)}
+.tagbar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px}
+.tagbar .prog{font-size:12px;color:var(--mute);margin-right:auto}
 .editbar{margin-top:8px;border:1px solid var(--gold-dim);background:var(--gold-soft);border-radius:10px;padding:10px 12px;font-size:13px}
 .vbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:6px;font-size:12px;color:var(--mute)}
 .vbar a,.vbar button{color:var(--ink);background:none;border:0;padding:0;font-size:12px;text-decoration:underline;cursor:pointer}
@@ -162,8 +165,9 @@ tr.sel td{background:var(--gold-soft)}
     <div class="calmsg" id="calMsg" hidden></div>
     <button class="btn edit" id="editTarget" hidden title="Coach tool: set or correct where the catcher set up">Edit target</button>
   </div>
-  <div class="vbar"><span id="clipInfo"></span><span id="angles"></span><span><button id="calBtn" hidden>Calibrate camera</button> <button id="closeClip" hidden>Close</button></span></div>
+  <div class="vbar"><span id="clipInfo"></span><span id="angles"></span><span><button id="tagBtn" hidden title="Coach tool: set the glove for every pitch in view, one tap each">Tag gloves</button> <button id="calBtn" hidden>Calibrate camera</button> <button id="closeClip" hidden>Close</button></span></div>
   <div class="editbar" id="editBar" hidden>
+    <div class="tagbar" id="tagBar" hidden><span class="prog" id="tagProg"></span><button class="btn on" id="tagOk">Looks right (Enter)</button><button class="btn" id="tagSkip">Skip (S)</button><button class="btn" id="tagStop">Stop (Esc)</button></div>
     <div id="editMsg"></div>
     <div class="ctl" style="margin-top:6px"><button class="btn" id="editOnPanel">Tap on the zone</button><button class="btn" id="editOnPic">Tap on the picture</button><span style="flex:1"></span><button class="btn" id="editClear">Clear glove</button><button class="btn" id="editCancel">Cancel</button><button class="btn on" id="editSave">Save</button></div>
     <div class="note"><button id="editCopy" style="background:none;border:0;padding:0;color:var(--ink);text-decoration:underline;cursor:pointer;font-size:12px">Copy all glove reads</button> <span id="editCopied"></span> <span id="editStore"></span></div>
@@ -306,6 +310,7 @@ const gloveCount = () => ALL.filter(p => p.glove).length;
 
 // ---------- state ----------
 const st = { season: D.season || SEASONS[SEASONS.length - 1], g: 0, layer: 'plan', count: 'all', pt: 'all', view: 'miss', sel: null, metric: 'score', series: [] };
+let tag = { on: false, list: [], i: 0, saved: 0 };   // the Tag gloves flow (coach tool), further down
 // Tabs: Read, Pitches, Starts. The URL's ?t= wins, then the last tab used on this device.
 const TABS = ['read', 'pitches', 'starts'];
 let tabPick = null; try { tabPick = new URLSearchParams(location.search).get('t') || localStorage.getItem('nb_exec_tab'); } catch (e) {}
@@ -358,6 +363,7 @@ function btns(el, opts, key, disabled = {}) {
 
 // ---------- render ----------
 function render() {
+  if (tag.on && st.sel !== tag.list[tag.i]) stopTag('Tagging stopped');   // the view moved on
   const P = cur(), S = stats(P, st.layer), SS = stats(seasonSet(), st.layer), G = st.g < 0 ? null : D.games[st.g];
   $('who').textContent = `${D.pitcher.name} · ${SEASONS.length > 1 ? SEASONS[0] + '–' + SEASONS[SEASONS.length - 1] : st.season}` + (ROLE === 'coach' ? ' · coach view' : '') + (sbc && BE.status !== 'on' && BE.status !== 'signed out' ? ` · team store ${BE.status}` : '');
   $('gTitle').textContent = G ? gLabel(G) : `${st.season} season`;
@@ -635,7 +641,7 @@ function editMsg() {
   $('editStore').textContent = sbc && ROLE === 'coach' ? '· saves go to the team store' : sbc ? '· not signed in as a coach: saves stay in this browser' : '· no backend configured: saves stay in this browser';
   $('editOnPic').disabled = !c; $('editOnPic').title = c ? '' : 'Calibrate this park’s camera first';
   $('editOnPanel').className = 'btn' + (edit.mode === 'panel' ? ' on' : ''); $('editOnPic').className = 'btn' + (edit.mode === 'pic' ? ' on' : '');
-  $('editMsg').textContent = (edit.mode === 'pic' ? 'Scrub to the frame where the catcher is set and tap the glove on the picture.' : 'Tap in the zone where the catcher set up, catcher’s view.')
+  $('editMsg').textContent = (tag.on ? (edit.mode === 'pic' ? 'Paused on the set-up frame, zoomed on the plate. The ring is the plan target: tap the glove if it sits elsewhere (arrow keys nudge an inch), then Looks right.' : 'Tap in the zone where the catcher set up, catcher’s view, then Looks right.') : edit.mode === 'pic' ? 'Scrub to the frame where the catcher is set and tap the glove on the picture.' : 'Tap in the zone where the catcher set up, catcher’s view.')
     + (edit.glove ? ` Glove at ${edit.glove[0].toFixed(2)} ft, ${edit.glove[1].toFixed(2)} ft.` : ' No glove read yet.');
 }
 function saveGlove() {
@@ -645,7 +651,65 @@ function saveGlove() {
   try { localStorage.setItem('nb_glove_' + PID, JSON.stringify(GLOVE)); } catch (e) { /* storage off */ }
   HABITS = scoreAll(); stopEdit(); render();
   persistGlove(p.pid, xz).then(w => { $('clipInfo').textContent = `Glove read ${storeWord(w)}`; }).catch(e => { $('clipInfo').textContent = 'Glove read saved in this browser; team store said: ' + e.message; });
+  if (tag.on) { tag.saved++; tagNext(); }
 }
+
+// ---------- Tag gloves: every pitch in view, one tap each ----------
+// Opens each pitch without a glove read paused on its set-up frame (from
+// data/<id>-setup.json, found by motion analysis of the clip), zoomed on the
+// plate, with the plan target offered as the glove; the coach taps the glove
+// or accepts, and the next pitch opens.
+let SETUP = {};
+try { const r = await fetch(`data/${PID}-setup.json`, { cache: 'no-store' }); if (r.ok) SETUP = await r.json(); } catch (e) { /* none yet */ }
+$('tagBtn').hidden = !COACH;
+function startTag() {
+  const list = cur().filter(p => !p.glove && clipFor(p));
+  if (!list.length) { $('clipInfo').textContent = 'Every pitch in view with a clip has a glove read'; return; }
+  tag = { on: true, list, i: 0, saved: 0 }; $('tagBtn').textContent = 'Stop tagging'; tagOpen();
+}
+function stopTag(msg) {
+  const was = tag.on; tag = { on: false, list: [], i: 0, saved: 0 };
+  $('video').classList.remove('zoom'); $('tagBar').hidden = true; $('tagBtn').textContent = 'Tag gloves';
+  if (edit.on) stopEdit();
+  if (was && msg) $('clipInfo').textContent = msg;
+}
+function tagOpen() {
+  const p = tag.list[tag.i];
+  select(p); startEdit();
+  if (!edit.glove && p.tgt) edit.glove = [...p.tgt];
+  edit.mode = CAL[calKey(p)] ? 'pic' : 'panel';
+  $('tagBar').hidden = false; $('tagProg').textContent = `Tagging ${tag.i + 1} of ${tag.list.length} · pitch ${p.i}, ${D.fam_name[p.fam] || p.pt}`;
+  editMsg(); drawOverlay(p); zoomTo(p); seekSetup(p);
+}
+function tagNext() { tag.i++; if (tag.i >= tag.list.length) stopTag(`Tagging done: ${tag.saved} glove reads saved`); else tagOpen(); }
+function seekSetup(p) {
+  const v = $('player'), t = SETUP[p.pid] != null ? SETUP[p.pid] : 1.5;
+  const go = () => { v.pause(); v.currentTime = Math.min(t, Math.max(0, (v.duration || 7) - 0.2)); };
+  if (v.readyState >= 1) go(); else v.addEventListener('loadedmetadata', go, { once: true });
+}
+function zoomTo(p) {
+  const c = CAL[calKey(p)], vd = $('video'); if (!c || !$('player').videoWidth) { vd.classList.remove('zoom'); return; }
+  const R = contentRect(), [u, vv] = project(c, 0, 2.2);
+  vd.style.setProperty('--zx', ((R.x + u * R.w) * 100).toFixed(1) + '%'); vd.style.setProperty('--zy', ((R.y + vv * R.h) * 100).toFixed(1) + '%');
+  vd.classList.add('zoom');
+}
+$('tagBtn').onclick = () => tag.on ? stopTag('Tagging stopped') : startTag();
+$('tagOk').onclick = saveGlove;
+$('tagSkip').onclick = tagNext;
+$('tagStop').onclick = () => stopTag('Tagging stopped');
+document.addEventListener('keydown', ev => {
+  if (!tag.on || ev.target.tagName === 'INPUT') return;
+  const g = edit.glove, ori = CAL[calKey(st.sel)] ? Math.sign(CAL[calKey(st.sel)].ax) || 1 : -1, step = 1 / 12;
+  if (ev.key === 'Enter') saveGlove();
+  else if (ev.key === 's' || ev.key === 'S') tagNext();
+  else if (ev.key === 'Escape') stopTag('Tagging stopped');
+  else if (g && ev.key === 'ArrowLeft') { g[0] -= ori * step; editMsg(); drawOverlay(st.sel); }
+  else if (g && ev.key === 'ArrowRight') { g[0] += ori * step; editMsg(); drawOverlay(st.sel); }
+  else if (g && ev.key === 'ArrowUp') { g[1] += step; editMsg(); drawOverlay(st.sel); }
+  else if (g && ev.key === 'ArrowDown') { g[1] -= step; editMsg(); drawOverlay(st.sel); }
+  else return;
+  ev.preventDefault();
+});
 $('overlay').addEventListener('click', ev => {
   if (!edit.on || !st.sel) return;
   const b = $('overlay').getBoundingClientRect(), W = 1000, H = 562;
@@ -691,7 +755,7 @@ $('overlay').addEventListener('click', ev => {
   persistCamera(key, CAL[key]).then(w => { $('clipInfo').textContent = `Camera ${key.split('|')[0]} ${storeWord(w)}`; }).catch(e => { $('clipInfo').textContent = 'Camera saved in this browser; team store said: ' + e.message; });
 });
 $('calBtn').onclick = () => cal.on ? stopCal() : startCal();
-$('player').addEventListener('loadedmetadata', () => drawOverlay(st.sel));
+$('player').addEventListener('loadedmetadata', () => { drawOverlay(st.sel); if (tag.on) zoomTo(st.sel); });
 window.addEventListener('resize', () => drawOverlay(st.sel));
 
 // ---------- selected pitch and video ----------
@@ -735,7 +799,7 @@ function drawSel() {
   if (url) {
     if (v.getAttribute('src') !== url) { v.src = url; v.load(); }
     v.hidden = false; slot.hidden = true; $('closeClip').hidden = false;
-    v.play().catch(() => {});
+    if (!tag.on) v.play().catch(() => {});
     $('clipInfo').textContent = 'Clip of this pitch';
   } else {
     v.hidden = true; v.removeAttribute('src'); slot.hidden = false; $('closeClip').hidden = true; $('calBtn').hidden = true;

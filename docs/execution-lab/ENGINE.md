@@ -314,6 +314,32 @@ sits about 1.6 in toward first base and 3 to 4.5 in lower than the plate
 crossing, fastballs least, off-speed most. Only the catch point ships; the
 release point and velocity stay in `private/`.
 
+## Glove reads at scale: Tag gloves and `setup-times.mjs`
+
+Automatic glove detection was tried and set aside: the broadcast camera is
+the only angle that shows the catcher (the provider's "high home" clip is a
+wide stadium shot), and on it the mitt is a dozen pixels, half behind the
+pitcher. What makes reads cheap instead is removing everything but the tap:
+
+- `tools/execution-lab/setup-times.mjs <id> [--date] [--jobs] [--frames]`
+  finds the set-up moment in every clip with ffmpeg and writes
+  `data/<id>-setup.json` (pitch id to seconds; about 0.8 s a clip, resumable,
+  `--frames` saves the chosen frame to `private/frames/<id>/` to check by
+  eye). Two motion signals per frame (plate region from the park calibration,
+  whole picture); whole-picture jumps are cuts, dissolves or pans, and the
+  runs between them are shots. The wide shot is steady, looks like the park's
+  reference signature (a z-scored 40 x 22 thumbnail taken from the park's
+  first clips), and holds the biggest burst in the plate region; from that
+  burst's peak the detector walks back to the last calm stretch, or to the
+  shot's first frame when it opens mid-delivery. Checked by eye on a full
+  start: every frame showed the catcher set.
+- **Tag gloves** (coach tool on the clip card) walks every pitch in view that
+  has a clip and no read: the clip opens paused on its set-up frame, zoomed
+  2.4x on the plate, with the plan target offered as the glove; tap the mitt
+  if it sits elsewhere (arrow keys nudge an inch), Enter saves and the next
+  pitch opens, S skips, Esc stops. Saves go through the same path as Edit
+  target (team store when a coach is signed in). A start takes a few minutes.
+
 ## What the acceptance test found (2026-11-13)
 
 Engine + rules derived from the built report, run on the internal pitch file:
