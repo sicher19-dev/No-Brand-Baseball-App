@@ -166,9 +166,20 @@ broadcast camera for the pitcher's park was calibrated on 2026-11-13; away
 parks need a coach to tap once each. This is a flat map, so it is good near
 the plate and approximate off it; a true per-camera solve is a later step.
 
-**Layers.** The glove and glove + habit buttons stay disabled until glove
-reads are loaded for the pitcher (`glove` and `inferred` points per pitch in
-the data file).
+**Edit target.** The coach tool under a clip. It sets or corrects the glove
+read for the selected pitch, where the catcher set up, in plate feet: tap on
+the picture (when the park's camera is calibrated, the tap maps back through
+the calibration) or tap in a large zone panel (always). Save stores the read;
+Clear glove removes it. Reads live in the browser (`localStorage`) and are
+seeded from `data/<id>-glove.json`; Copy all glove reads puts the JSON on the
+clipboard so they can be moved until the app backend stores them.
+
+**Layers.** Saving a read rescores the pitch at once: the glove layer is the
+miss from the read, and the glove + habit layer is the miss from the read
+moved by the pitcher's own aim habit for that pitch type, learned from his
+reads (mean of pitch minus glove, needs 5 reads on the type). The layer
+buttons enable as reads come in. Their 50 lines are placeholders until a
+league or season anchor exists for them.
 
 Open design question: a centered pitch inside a plan box scores by how far
 it was from leaving the middle, which is usually a high score. Dead-middle

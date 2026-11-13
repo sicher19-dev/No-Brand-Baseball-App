@@ -75,7 +75,9 @@ tr.sel td{background:var(--gold-soft)}
 .video .ov{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .video.cal .ov{pointer-events:auto;cursor:crosshair}
 .video .calmsg{position:absolute;left:10px;top:10px;right:120px;background:rgba(11,11,13,.85);border:1px solid var(--gold);color:var(--ink);padding:8px 10px;border-radius:8px;font-size:13px;pointer-events:none}
-.video.cal video{pointer-events:none}
+.video.cal video,.video.edit video{pointer-events:none}
+.video.edit .ov{pointer-events:auto;cursor:crosshair}
+.editbar{margin-top:8px;border:1px solid var(--gold-dim);background:var(--gold-soft);border-radius:10px;padding:10px 12px;font-size:13px}
 .vbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:6px;font-size:12px;color:var(--mute)}
 .vbar a,.vbar button{color:var(--ink);background:none;border:0;padding:0;font-size:12px;text-decoration:underline;cursor:pointer}
 .kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px;margin-top:10px}
@@ -129,9 +131,14 @@ tr.sel td{background:var(--gold-soft)}
     <div class="slot" id="slot">Tap a pitch on the chart or in the log to load its clip</div>
     <svg class="ov" id="overlay" viewBox="0 0 1000 562" preserveAspectRatio="none" hidden></svg>
     <div class="calmsg" id="calMsg" hidden></div>
-    <button class="btn edit" id="editTarget" disabled title="Coach tool, coming later">Edit target</button>
+    <button class="btn edit" id="editTarget" hidden title="Coach tool: set or correct where the catcher set up">Edit target</button>
   </div>
   <div class="vbar"><span id="clipInfo"></span><span id="angles"></span><span><button id="calBtn" hidden>Calibrate camera</button> <button id="closeClip" hidden>Close</button></span></div>
+  <div class="editbar" id="editBar" hidden>
+    <div id="editMsg"></div>
+    <div class="ctl" style="margin-top:6px"><button class="btn" id="editOnPanel">Tap on the zone</button><button class="btn" id="editOnPic">Tap on the picture</button><span style="flex:1"></span><button class="btn" id="editClear">Clear glove</button><button class="btn" id="editCancel">Cancel</button><button class="btn on" id="editSave">Save</button></div>
+    <div class="note"><button id="editCopy" style="background:none;border:0;padding:0;color:var(--ink);text-decoration:underline;cursor:pointer;font-size:12px">Copy all glove reads</button> <span id="editCopied"></span> · reads stay in this browser until the app backend stores them</div>
+  </div>
   <div class="note" id="ovNote" hidden></div>
   <div class="kv" id="kv"></div>
 </div>
@@ -178,16 +185,44 @@ const FAMS = Object.keys(D.fam_name).filter(f => D.games.some(g => g.pitches.som
 const col = f => getComputedStyle(document.documentElement).getPropertyValue('--' + f).trim() || '#999';
 const GC = { executed: 'var(--green)', near: '#8fd6b0', centered: 'var(--red)', 'off strike': 'var(--gold)', 'off ball': 'var(--dim)' };
 
-// Score every pitch on every layer. Only the plan layer has data today.
+// Glove reads: pitch id -> [x, z] feet, where the catcher set up. Seeded from
+// data/<id>-glove.json, then whatever a coach saved in this browser.
+let GLOVE = {};
+try { const r = await fetch(`data/${PID}-glove.json`, { cache: 'no-store' }); if (r.ok) GLOVE = await r.json(); } catch (e) { /* none seeded */ }
+try { Object.assign(GLOVE, JSON.parse(localStorage.getItem('nb_glove_' + PID) || '{}')); } catch (e) { /* storage off */ }
+
 D.games.forEach((g, gi) => g.pitches.forEach(p => {
-  p.gi = gi; p.twoK = p.s >= 2; p.grade = p.g;
-  p.m = { glove: p.glove || null, inferred: p.inferred || null, plan: p.m };
-  p.d = {}; p.sc = {};
-  for (const l of LAYERS) { const v = p.m[l]; p.d[l] = v ? Math.hypot(v[0], v[1]) : null; p.sc[l] = v ? score(p.d[l], L[l]) : null; }
-  p.s_ = p.s; p.s = p.sc;   // engine.stats reads p.s[layer]; the count's strikes move to p.s_
+  p.gi = gi; p.twoK = p.s >= 2; p.grade = p.g; p.mplan = p.m;
+  p.s_ = p.s;   // the count's strikes; engine.stats reads p.s[layer] for scores
 }));
 const ALL = D.games.flatMap(g => g.pitches);
+// Aim habit per pitch type: where this pitcher's pitches really go relative
+// to the glove, from his own glove reads. Needs a handful of reads to mean
+// anything. The inferred target = glove + habit.
+const HABIT_MIN = 5;
+function habits() {
+  const by = {};
+  for (const p of ALL) { const g = GLOVE[p.pid]; if (!g) continue; (by[p.fam] = by[p.fam] || []).push([p.x - g[0], p.z - g[1]]); }
+  const out = {};
+  for (const [f, v] of Object.entries(by)) if (v.length >= HABIT_MIN) out[f] = [mean(v.map(d => d[0])), mean(v.map(d => d[1]))];
+  return out;
+}
+// Score every pitch on every layer; run again whenever glove reads change.
+function scoreAll() {
+  const H = habits();
+  for (const p of ALL) {
+    p.glove = GLOVE[p.pid] || null;
+    p.inferred = p.glove && H[p.fam] ? [p.glove[0] + H[p.fam][0], p.glove[1] + H[p.fam][1]] : null;
+    p.m = { glove: p.glove ? [(p.x - p.glove[0]) * 12, (p.z - p.glove[1]) * 12] : null, inferred: p.inferred ? [(p.x - p.inferred[0]) * 12, (p.z - p.inferred[1]) * 12] : null, plan: p.mplan };
+    p.d = {}; p.sc = {};
+    for (const l of LAYERS) { const v = p.m[l]; p.d[l] = v ? Math.hypot(v[0], v[1]) : null; p.sc[l] = v ? score(p.d[l], L[l]) : null; }
+    p.s = p.sc;
+  }
+  return H;
+}
+let HABITS = scoreAll();
 const hasLayer = l => ALL.some(p => p.m[l]);
+const gloveCount = () => ALL.filter(p => p.glove).length;
 
 // ---------- state ----------
 const st = { g: D.games.length - 1, layer: 'plan', count: 'all', pt: 'all', view: 'miss', sel: null, metric: 'score', series: [] };
@@ -237,8 +272,10 @@ function render() {
   $('prev').disabled = st.g <= 0; $('next').disabled = st.g < 0 || st.g === D.games.length - 1; $('season').className = 'btn' + (st.g < 0 ? ' on' : '');
   btns($('countBtns'), [['all', 'All'], ['pre', 'Before two strikes'], ['2K', 'Two strikes']], 'count');
   btns($('ptBtns'), [['all', 'All'], ...FAMS.map(f => [f, D.fam_name[f], col(f)])], 'pt');
-  btns($('layerBtns'), LAYERS.map(l => [l, LAYER_NAME[l]]), 'layer', Object.fromEntries(LAYERS.filter(l => !hasLayer(l)).map(l => [l, 'No glove reads loaded for this pitcher yet'])));
-  $('layerNote').textContent = LAYER_NOTE[st.layer] + (st.layer === 'plan' && D.baseline.kind === 'season-mean' ? ` Score: 100 on target, 50 at a ${D.baseline.plan}" miss (his season average), lower from there.` : '');
+  btns($('layerBtns'), LAYERS.map(l => [l, LAYER_NAME[l]]), 'layer', Object.fromEntries(LAYERS.filter(l => !hasLayer(l)).map(l => [l, l === 'glove' ? 'No glove reads yet: set them with Edit target under a clip' : `Needs at least ${HABIT_MIN} glove reads on a pitch type to learn the habit`])));
+  const gc = gloveCount();
+  $('layerNote').textContent = LAYER_NOTE[st.layer] + (st.layer === 'plan' && D.baseline.kind === 'season-mean' ? ` Score: 100 on target, 50 at a ${D.baseline.plan}" miss (his season average), lower from there.` : '')
+    + (st.layer !== 'plan' ? ` ${gc} of ${ALL.length} pitches have a glove read; the 50 line is a placeholder (${L[st.layer]}") until there are enough.` : '');
   $('readSub').textContent = G ? 'this game vs his season' : 'whole season';
 
   const T = $('tiles'); T.innerHTML = '';
@@ -306,6 +343,7 @@ function drawPlate(P) {
   const cx = v => Math.max(-2.2, Math.min(2.2, v)), cz = v => Math.max(.1, Math.min(4.8, v));
   for (const p of P) {
     const t = st.layer === 'plan' ? p.tgt : p[st.layer], c = col(p.fam), dim = st.sel && st.sel !== p;
+    if (!t && st.layer !== 'plan') continue;
     if (!t) continue;
     el(s, 'line', { x1: X(t[0]), y1: Y(t[1]), x2: X(cx(p.x)), y2: Y(cz(p.z)), stroke: c, 'stroke-width': 1, opacity: dim ? .1 : .45 });
     el(s, 'circle', { cx: X(t[0]), cy: Y(t[1]), r: 4, fill: 'none', stroke: c, 'stroke-width': 1.5, opacity: dim ? .15 : .9 });
@@ -398,8 +436,10 @@ function contentRect() {
 function project(c, x, z) { return [c.u0 + c.ax * x, c.v0 - c.az * z]; }
 function drawOverlay(p) {
   const s = $('overlay'); s.innerHTML = '';
-  const v = $('player'); if (!p || v.hidden) { s.setAttribute('hidden', ''); $('ovNote').hidden = true; return; }
+  const v = $('player'); if (!p) { s.setAttribute('hidden', ''); $('ovNote').hidden = true; $('editTarget').hidden = true; return; }
   s.removeAttribute('hidden');   // SVG elements do not reflect .hidden
+  $('editTarget').hidden = edit.on;
+  if (v.hidden && !edit.on) { s.setAttribute('hidden', ''); $('ovNote').hidden = true; return; }   // no clip: the overlay only shows while editing
   const W = 1000, H = 562, R = contentRect(), U = u => (R.x + u * R.w) * W, V = vv => (R.y + vv * R.h) * H;
   const c = CAL[calKey(p)], t = p.tgt, zone = p.zone || [1.6, 3.4];
   // inset: zone box with target ring, pitch location and miss
@@ -419,10 +459,77 @@ function drawOverlay(p) {
     el(s, 'line', { x1: U(u), y1: V(vv), x2: U(ua), y2: V(va), stroke: col(p.fam), 'stroke-width': 2, opacity: .8 });
   }
   if (cal.on) for (const [i, tp] of cal.taps.entries()) { el(s, 'circle', { cx: U(tp[0]), cy: V(tp[1]), r: 6, fill: 'var(--gold)', stroke: '#0b0b0d' }); el(s, 'text', { x: U(tp[0]) + 9, y: V(tp[1]) + 4, style: 'fill:#fff;font-size:14px;font-weight:700' }, String(i + 1)); }
+  // the glove read: white open circle, in the inset and (calibrated) on the picture
+  const gl = edit.on ? edit.glove : p.glove;
+  if (gl) {
+    el(g, 'circle', { cx: X(gl[0]), cy: Y(gl[1]), r: 5, fill: 'none', stroke: '#fff', 'stroke-width': 2 });
+    if (c && !cal.on) { const [ug, vg] = project(c, gl[0], gl[1]); el(s, 'circle', { cx: U(ug), cy: V(vg), r: 12, fill: 'none', stroke: '#fff', 'stroke-width': 3 }); }
+  }
+  // edit mode: a large zone panel to tap in
+  if (edit.on && edit.mode === 'panel') {
+    const pw = 300, ph = 420, px0 = W / 2 - pw / 2, py0 = H / 2 - ph / 2 + 10, k2 = 78, cx2 = px0 + pw / 2, X2 = x => cx2 + x * k2, Y2 = z => py0 + ph - 40 - z * k2 * 0.95;
+    edit.panel = { X2, Y2, k2, px0, py0, pw, ph };
+    el(s, 'rect', { x: 0, y: 0, width: W, height: H, fill: 'rgba(11,11,13,.55)' });
+    el(s, 'rect', { x: px0, y: py0, width: pw, height: ph, fill: 'rgba(19,19,22,.96)', stroke: 'var(--gold)', rx: 10 });
+    for (let xx = -2; xx <= 2; xx++) el(s, 'line', { x1: X2(xx), x2: X2(xx), y1: py0 + 8, y2: py0 + ph - 8, stroke: '#232328' });
+    el(s, 'rect', { x: X2(-.708), y: Y2(zone[1]), width: 1.417 * k2, height: (zone[1] - zone[0]) * k2 * 0.95, fill: 'none', stroke: '#fff', 'stroke-width': 1.5 });
+    el(s, 'path', { d: `M${X2(-.708)} ${Y2(0.25)} L${X2(.708)} ${Y2(0.25)} L${X2(.708)} ${Y2(0.1)} L${X2(0)} ${Y2(0)} L${X2(-.708)} ${Y2(0.1)} Z`, fill: 'none', stroke: '#8e8e96' });
+    el(s, 'text', { x: px0 + 10, y: py0 + 20, style: 'fill:#efece4;font-size:13px;font-weight:700' }, 'Tap where the glove was set');
+    el(s, 'text', { x: px0 + 10, y: py0 + ph - 10, style: 'fill:#8e8e96;font-size:11px' }, `${p.st}HH · catcher’s view`);
+    if (t) el(s, 'circle', { cx: X2(t[0]), cy: Y2(t[1]), r: 9, fill: 'none', stroke: 'var(--gold)', 'stroke-width': 2, 'stroke-dasharray': '4 3' });
+    el(s, 'circle', { cx: X2(Math.max(-1.6, Math.min(1.6, p.x))), cy: Y2(Math.max(0, Math.min(5, p.z))), r: 7, fill: col(p.fam), stroke: '#0b0b0d' });
+    if (edit.glove) el(s, 'circle', { cx: X2(edit.glove[0]), cy: Y2(edit.glove[1]), r: 11, fill: 'none', stroke: '#fff', 'stroke-width': 3 });
+  }
   const note = $('ovNote'); note.hidden = false;
-  note.textContent = c ? 'Dashed ring = the plan target drawn on the picture (approximate, from this park’s camera calibration). Inset: zone, target ring, where it went.' : 'Inset: zone, target ring, where it went. The ring is not drawn in the picture yet: this park’s camera is not calibrated. A coach can do it from Calibrate camera with four taps.';
+  note.textContent = (c ? 'Dashed ring = the plan target drawn on the picture (approximate, from this park’s camera calibration). Inset: zone, target ring, where it went.' : 'Inset: zone, target ring, where it went. The ring is not drawn in the picture yet: this park’s camera is not calibrated. A coach can do it from Calibrate camera with four taps.') + (p.glove ? ' White circle = the glove read.' : '');
   $('calBtn').hidden = false; $('calBtn').textContent = cal.on ? 'Cancel' : c ? 'Recalibrate camera' : 'Calibrate camera';
 }
+
+// ---------- Edit target: set or correct the glove read for a pitch ----------
+let edit = { on: false, mode: 'panel', glove: null };
+function startEdit() {
+  const p = st.sel; if (!p) return;
+  const v = $('player'); if (!v.hidden) { v.pause(); if (v.currentTime < 1) v.currentTime = 1.5; }
+  edit = { on: true, mode: CAL[calKey(p)] ? 'pic' : 'panel', glove: p.glove ? [...p.glove] : null };
+  $('video').classList.add('edit'); $('editTarget').hidden = true; editMsg(); drawOverlay(p);
+}
+function stopEdit() { edit = { on: false, mode: 'panel', glove: null }; $('video').classList.remove('edit'); $('editBar').hidden = true; $('editTarget').hidden = false; drawOverlay(st.sel); }
+function editMsg() {
+  const p = st.sel, c = CAL[calKey(p)];
+  $('editBar').hidden = false;
+  $('editOnPic').disabled = !c; $('editOnPic').title = c ? '' : 'Calibrate this park’s camera first';
+  $('editOnPanel').className = 'btn' + (edit.mode === 'panel' ? ' on' : ''); $('editOnPic').className = 'btn' + (edit.mode === 'pic' ? ' on' : '');
+  $('editMsg').textContent = (edit.mode === 'pic' ? 'Scrub to the frame where the catcher is set and tap the glove on the picture.' : 'Tap in the zone where the catcher set up, catcher’s view.')
+    + (edit.glove ? ` Glove at ${edit.glove[0].toFixed(2)} ft, ${edit.glove[1].toFixed(2)} ft.` : ' No glove read yet.');
+}
+function saveGlove() {
+  const p = st.sel; if (!p) return;
+  if (edit.glove) GLOVE[p.pid] = [+edit.glove[0].toFixed(3), +edit.glove[1].toFixed(3)]; else delete GLOVE[p.pid];
+  try { localStorage.setItem('nb_glove_' + PID, JSON.stringify(GLOVE)); } catch (e) { /* storage off */ }
+  HABITS = scoreAll(); stopEdit(); render();
+}
+$('overlay').addEventListener('click', ev => {
+  if (!edit.on || !st.sel) return;
+  const b = $('overlay').getBoundingClientRect(), W = 1000, H = 562;
+  const sx = (ev.clientX - b.left) / b.width * W, sy = (ev.clientY - b.top) / b.height * H;
+  if (edit.mode === 'panel') {
+    const P = edit.panel; if (!P) return;
+    if (sx < P.px0 || sx > P.px0 + P.pw || sy < P.py0 || sy > P.py0 + P.ph) return;
+    edit.glove = [(sx - (P.px0 + P.pw / 2)) / P.k2, (P.py0 + P.ph - 40 - sy) / (P.k2 * 0.95)];
+  } else {
+    const c = CAL[calKey(st.sel)], R = contentRect(); if (!c) return;
+    const u = (sx / W - R.x) / R.w, vv = (sy / H - R.y) / R.h;
+    edit.glove = [(u - c.u0) / c.ax, (c.v0 - vv) / c.az];
+  }
+  editMsg(); drawOverlay(st.sel);
+});
+$('editTarget').onclick = startEdit;
+$('editOnPanel').onclick = () => { edit.mode = 'panel'; editMsg(); drawOverlay(st.sel); };
+$('editOnPic').onclick = () => { if (!CAL[calKey(st.sel)]) return; edit.mode = 'pic'; editMsg(); drawOverlay(st.sel); };
+$('editClear').onclick = () => { edit.glove = null; editMsg(); drawOverlay(st.sel); };
+$('editCancel').onclick = stopEdit;
+$('editSave').onclick = saveGlove;
+$('editCopy').onclick = async () => { try { await navigator.clipboard.writeText(JSON.stringify(GLOVE)); $('editCopied').textContent = `copied ${Object.keys(GLOVE).length} reads`; } catch (e) { $('editCopied').textContent = 'could not copy'; } };
 function startCal() {
   const v = $('player'); v.pause(); if (v.currentTime < 1) v.currentTime = 1.5;
   cal = { on: true, step: 0, taps: [] }; $('video').classList.add('cal'); calMsg(); drawOverlay(st.sel);
@@ -449,6 +556,7 @@ window.addEventListener('resize', () => drawOverlay(st.sel));
 
 // ---------- selected pitch and video ----------
 function select(p) {
+  if (edit.on) stopEdit();
   st.sel = p; render();
   if (p) $('selCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
@@ -477,7 +585,7 @@ function drawSel() {
   if (!p) {
     $('selHint').textContent = 'tap any dot or row'; $('selCap').textContent = 'No pitch selected';
     v.hidden = true; v.removeAttribute('src'); slot.hidden = false; slot.textContent = 'Tap a pitch on the chart or in the log to load its clip';
-    $('clipInfo').textContent = ''; $('angles').innerHTML = ''; $('closeClip').hidden = true; $('calBtn').hidden = true; kv.innerHTML = ''; if (cal.on) stopCal(); drawOverlay(null); return;
+    $('clipInfo').textContent = ''; $('angles').innerHTML = ''; $('closeClip').hidden = true; $('calBtn').hidden = true; kv.innerHTML = ''; if (cal.on) stopCal(); if (edit.on) stopEdit(); drawOverlay(null); return;
   }
   drawAngles(p);
   const G = D.games[p.gi];
@@ -494,7 +602,7 @@ function drawSel() {
     slot.textContent = 'No clip loaded for this pitch yet';
     $('clipInfo').textContent = '';
   }
-  if (cal.on) stopCal(); else drawOverlay(p);
+  if (cal.on) stopCal(); else if (!edit.on) drawOverlay(p);
   const row = (a, b) => `<span>${a}</span><span>${b}</span>`;
   kv.innerHTML = row('Grade vs plan', `${GRADE_LABEL[p.grade]}${p.grade !== 'executed' && p.dir ? ' · missed ' + p.dir : ''}`)
     + LAYERS.map(l => row('vs ' + LAYER_NAME[l].toLowerCase(), p.m[l] ? `${f1(p.d[l])}" ${dirWord(p.m[l])} · score ${f1(p.sc[l])}` : 'no glove read')).join('')

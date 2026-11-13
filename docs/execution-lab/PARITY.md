@@ -19,10 +19,12 @@ noise band, executed %, dead-middle %, typical miss; pitch-type series
 multi-select; tap a start to open it) and a game log with a season row.
 Target on the clip done the same day: a zone inset on every clip, and the
 target ring drawn in the picture wherever the park's camera is calibrated
-(four taps by a coach; home park done). Waiting on data: glove reads (the
-glove layers are disabled until then). Not yet: Edit target, the plan box
-drawn for the selected pitch (rules stay server-side), two seasons side by
-side (one season of data so far), calibrations for the away parks.
+(four taps by a coach; home park done). Edit target done: glove reads per
+pitch from a tap, with the glove and glove + habit layers scoring from them.
+Not yet: a backend for reads and calibrations (browser storage today), the
+plan box drawn for the selected pitch (rules stay server-side), two seasons
+side by side (one season of data so far), calibrations for the away parks,
+coach-only gating of the coach tools.
 
 ## Must have: click a pitch, watch the pitch
 
@@ -39,7 +41,7 @@ in place.
 | Clip caption with pitch number, type, batter, inning, count | yes | yes | page |
 | Inline player: play / pause, scrubber, time, unmute, close | yes | yes | page |
 | Target drawn on the catcher in the clip (circle on the glove) | yes | yes: plan target ring on the picture (camera calibrated per park) plus a zone inset on every clip | done |
-| Edit target button on the clip to correct the glove read | yes | yes, writes back to the inferred layer | later |
+| Edit target button on the clip to correct the glove read | yes | yes: tap on the picture or in a zone panel, saves the read, rescores the glove and glove + habit layers at once | done (browser storage until the backend) |
 | Clip stays open while scrolling the chart above it | yes | yes | page |
 
 ## Season page
