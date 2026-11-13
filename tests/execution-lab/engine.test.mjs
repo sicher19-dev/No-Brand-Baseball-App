@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  IN, GRADES, LAYERS, mean, median, stateOf, familyOf, boxOffset, inBox, nearestPoint, nearestBox,
+  IN, GRADES, LAYERS, mean, median, stateOf, familyOf, boxOffset, inBox, nearestPoint, nearestBox, subtractBox,
   resolveRule, touchesZone, missDirection, gradePlan, missVector, distance, score, scorePitch,
   aimOffset, spread, noiseBand, stats, gradeCounts, dirWord,
 } from '../../www/lab/execution/engine.js';
@@ -62,6 +62,21 @@ test('box geometry', () => {
   assert.deepEqual(boxOffset([-2, 3], box), { dx: 1, dz: 1, sx: -1, sz: 1 });
   assert.deepEqual(nearestPoint([1.5, -1], box), [1, 0]);
   assert.deepEqual(nearestPoint([0, 1], box), [0, 1]);
+});
+
+test('subtractBox cuts the heart out of a plan box', () => {
+  const heart = [-0.35, 0.35, 0.3, 0.75];
+  assert.deepEqual(subtractBox([-0.85, 0.85, 0.75, 1.15], heart), [[-0.85, 0.85, 0.75, 1.15]], 'touching edges do not overlap');
+  assert.deepEqual(subtractBox([-0.85, -0.42, -0.12, 0.75], heart), [[-0.85, -0.42, -0.12, 0.75]], 'column clear of the heart');
+  assert.deepEqual(subtractBox([-0.85, 0.85, -0.12, 0.35], heart).sort(),
+    [[-0.35, 0.35, -0.12, 0.3], [-0.85, -0.35, -0.12, 0.35], [0.35, 0.85, -0.12, 0.35]].sort(), 'low band loses a notch');
+  assert.deepEqual(subtractBox([-0.3, 0.3, 0.4, 0.6], heart), [], 'a box inside the heart vanishes');
+  const pieces = subtractBox([-0.85, 0.85, -0.12, 1.15], heart);
+  assert.equal(pieces.length, 4);
+  for (const pc of pieces) for (const x of [pc[0], pc[1]]) for (const z of [pc[2], pc[3]]) {
+    assert.ok(inBox([x, z], [-0.85, 0.85, -0.12, 1.15]));
+    assert.ok(!(Math.abs(x) < 0.35 && z > 0.3 && z < 0.75), `${x},${z} is inside the heart`);
+  }
 });
 
 test('nearest box picks the closest and scales z into feet', () => {
@@ -137,6 +152,20 @@ test('plan grade: executed, near, off strike, off ball, centered', () => {
   close(g.tdist, 0.25 * IN, 1e-9, 'centered inside a box: shortest way out of the heart, here sideways');
   close(g.target[0], 0.35, 1e-9, 'target is the heart edge on the pitch side'); close(g.target[1], Z.bot + 0.5 * 1.5, 1e-9);
   close(distance(missVector([0.1, Z.bot + 0.5 * 1.5], g.target)), g.tdist, 1e-9, 'miss vector length agrees with tdist');
+  close(g.dgood, 0.25 * IN, 1e-9, 'scoring ground for a centered pitch inside a box is the box beyond the heart edge');
+  close(g.target_good[0], 0.35, 1e-9);
+
+  g = gradePlan(ff(0, 0.5), ZONE_RULE);            // centered, outside every box: nearest box point is the band above
+  close(g.dgood, 0.25 * 1.5 * IN, 1e-9, 'scoring ground equals the nearest box when that point is outside the heart');
+  g = gradePlan(ff(0, 0.2), ZONE_RULE);            // below the heart, not in a box: the edge column (0.42 ft away) beats the band (0.55 units = 0.825 ft up)
+  close(g.dgood, 0.42 * IN, 1e-9, 'scoring ground is the edge column, which never touches the heart');
+  close(g.dgood, g.tdist, 1e-9, 'same as tdist when the nearest box point is outside the heart');
+  assert.equal(g.grade, 'off strike');
+  g = gradePlan(ff(0, 0.74, { family: 'ST' }), ZONE_RULE);   // in the heart, just above the sweeper box (top 0.7): tdist is tiny, but the nearest executed ground is the box beside the heart
+  assert.equal(g.grade, 'centered');
+  close(g.tdist, 0.04 * 1.5 * IN, 1e-9, 'report distance: 0.04 units up to the box top');
+  close(g.dgood, Math.hypot(0.35, 0.04 * 1.5) * IN, 1e-9, 'scoring ground: the box corner beyond the heart edge, 0.35 ft over and 0.04 units down');
+  close(distance(missVector([0, Z.bot + 0.74 * 1.5], g.target_good)), g.dgood, 1e-9);
   g = gradePlan(ff(0, 0.35, { family: 'ST' }), ZONE_RULE);
   close(g.tdist, 0.05 * 1.5 * IN, 1e-9, 'or down through the heart floor');
   close(g.target[1], Z.bot + 0.3 * 1.5, 1e-9, 'target sits on the heart floor');
@@ -192,6 +221,10 @@ test('scorePitch fills every layer and keeps the plan graded without a glove', (
   assert.deepEqual(Object.keys(p.m), LAYERS);
   assert.equal(p.grade, 'near');
   close(p.d.plan, 1.8);
+  const mid = scorePitch({ ...ff(0.1, 0.5, { family: 'ST' }) }, { planRule: ZONE_RULE, league });
+  assert.equal(mid.grade, 'centered');
+  close(mid.d.plan, 0.25 * IN, 1e-9, 'a centered pitch inside a box is scored as the miss out of the middle, not as on target');
+  close(mid.s.plan, score(3, 5), 1e-9);
   close(p.d.glove, Math.hypot(0.25 * IN, (Z.bot + 1.25 * 1.5 - 3.0) * IN));
   assert.equal(p.m.inferred, null); assert.equal(p.s.inferred, null);
   close(p.s.plan, score(1.8, 5));

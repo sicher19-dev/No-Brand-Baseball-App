@@ -73,6 +73,21 @@ export function nearestBox(point, boxes, zScale = 1) {
   return best;
 }
 
+// Cut a rectangle out of a box: the up-to-four boxes left over. Used to take
+// the heart out of the plan boxes, so a score can run to ground that would
+// actually have counted as executed.
+export function subtractBox(box, cut) {
+  const [x0, x1, z0, z1] = box, [cx0, cx1, cz0, cz1] = cut;
+  if (x1 <= cx0 || x0 >= cx1 || z1 <= cz0 || z0 >= cz1) return [box];
+  const out = [];
+  if (x0 < cx0) out.push([x0, cx0, z0, z1]);
+  if (x1 > cx1) out.push([cx1, x1, z0, z1]);
+  const mx0 = Math.max(x0, cx0), mx1 = Math.min(x1, cx1);
+  if (z0 < cz0) out.push([mx0, mx1, z0, cz0]);
+  if (z1 > cz1) out.push([mx0, mx1, cz1, z1]);
+  return out;
+}
+
 // ---------- plan rules ----------
 // A plan rule file (see docs/execution-lab/ENGINE.md) holds rules keyed by
 // family, count state and batter hand. This resolves the one that applies.
@@ -149,9 +164,17 @@ export function gradePlan(pitch, planRule) {
     tp = ways[0][0]; tdist = ways[0][1] * IN;
   }
   const zBase = scale === 1 ? 0 : (pitch.zone ? pitch.zone.bot : pitch.z - z * scale);
+  // Scoring ground: the plan boxes with the heart cut out, the nearest point
+  // that would have counted as executed. A centered pitch is scored as the
+  // miss it is; a pitch whose nearest box point sits in the heart is scored
+  // to the box beyond it. Grades and tdist stay as the report defines them.
+  const ground = heart ? rule.boxes.flatMap(b => subtractBox(b, [-heart.x_half, heart.x_half, heart.lo, heart.hi])) : rule.boxes;
+  const good = ground.length ? nearestBox(p, ground, scale) : near;
+  const gp = nearestPoint(p, good.box);
   return {
     grade, code: GRADE_CODE[grade], tdist, box: near.box, boxIndex: near.i, rule,
     target: [tp[0], zBase + tp[1] * scale],
+    dgood: good.d, target_good: [gp[0], zBase + gp[1] * scale],
     miss_dir: grade === 'executed' ? '' : centered ? 'middle' : missDirection(boxOffset(p, rule.boxes[0]), scale, pitch.stand),
   };
 }
@@ -172,12 +195,14 @@ export function score(d, leagueMedian) {
 // Score a pitch on every layer. Adds p.m (miss vectors), p.d (inches),
 // p.s (scores) and, when a plan rule is given, p.plan and p.grade.
 //   league: { glove, inferred, plan } median miss in inches per layer.
+// The plan layer's miss runs to the nearest executed ground (the heart cut
+// out), so dead-middle scores as a miss.
 export function scorePitch(p, { planRule, league }) {
   const actual = [p.x, p.z];
   const targets = { glove: p.glove || null, inferred: p.inferred || null, plan: null };
   if (planRule) {
     p.plan = gradePlan(p, planRule);
-    if (p.plan) { p.grade = p.plan.grade; targets.plan = p.plan.target; }
+    if (p.plan) { p.grade = p.plan.grade; targets.plan = p.plan.target_good; }
   }
   p.m = {}; p.d = {}; p.s = {};
   for (const l of LAYERS) {

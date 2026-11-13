@@ -201,10 +201,17 @@ reads (mean of pitch minus glove, needs 5 reads on the type). The layer
 buttons enable as reads come in. Their 50 lines are placeholders until a
 league or season anchor exists for them.
 
-Open design question: a centered pitch inside a plan box scores by how far
-it was from leaving the middle, which is usually a high score. Dead-middle
-never counts as executed, but whether it should also be scored as a miss is
-Brian's call.
+**Dead-middle and the score.** The plan-layer miss runs to the nearest
+executed ground: the plan boxes with the heart cut out (`dgood` and
+`target_good` from the engine). A pitch dead in the middle is scored as the
+miss it is, never as on target, while the report's `tdist` and the grades
+are unchanged. On Paul's 2026 this moved 48 pitches and the season score
+from 65.3 to 65.1, because most centered pitches already sat 2 to 3 inches
+from a plan box. Whether the score should punish the middle beyond its
+distance is a policy choice, not a geometry one: capping centered pitches at
+25 would put the season at 61.5, scoring them 0 at 59.4. Today the score
+means one thing, distance to a good spot, and the grade mix and dead-middle
+rate carry the penalty.
 
 ## What the acceptance test found (2026-11-13)
 

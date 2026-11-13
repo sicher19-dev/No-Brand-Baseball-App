@@ -40,14 +40,15 @@ for (const r of rows) {
   const pitch = pitchFromRow(r, zones[r.batter]);
   const res = gradePlan(pitch, planRule);
   if (!res) { console.warn('no rule for', r.game_date, r.pitch_type, r.state, r.stand); continue; }
-  const m = missVector([pitch.x, pitch.z], res.target);
+  // The plan-layer miss runs to the nearest executed ground (heart cut out), so dead-middle scores as a miss.
+  const m = missVector([pitch.x, pitch.z], res.target_good);
   g.pitches.push({
     inn: +r.inning, ab: +r.at_bat_number, pn: +r.pitch_number,
     bat: names[`${r.game_date}|${r.at_bat_number}|${r.pitch_number}`] || '',
     st: r.stand, b: +r.balls, s: +r.strikes, pt: r.pitch_type, fam: r.family,
     x: pitch.x, z: +pitch.z.toFixed(3), zn: pitch.zn,
     g: res.grade, td: +res.tdist.toFixed(2), dir: res.miss_dir, desc: r.description,
-    tgt: [+res.target[0].toFixed(3), +res.target[1].toFixed(3)],
+    tgt: [+res.target_good[0].toFixed(3), +res.target_good[1].toFixed(3)],
     m: [+m[0].toFixed(2), +m[1].toFixed(2)],
     zone: zones[r.batter] ? [+zones[r.batter].bot.toFixed(3), +zones[r.batter].top.toFixed(3)] : null,
     pid: r.play_id,
