@@ -72,6 +72,10 @@ tr.sel td{background:var(--gold-soft)}
 .video video{width:100%;height:100%;display:block;background:#000}
 .video .slot{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--mute);font-size:13px;padding:16px;background:repeating-linear-gradient(135deg,transparent 0 12px,rgba(245,183,0,.05) 12px 24px)}
 .video .edit{position:absolute;top:10px;right:10px}
+.video .ov{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.video.cal .ov{pointer-events:auto;cursor:crosshair}
+.video .calmsg{position:absolute;left:10px;top:10px;right:120px;background:rgba(11,11,13,.85);border:1px solid var(--gold);color:var(--ink);padding:8px 10px;border-radius:8px;font-size:13px;pointer-events:none}
+.video.cal video{pointer-events:none}
 .vbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:6px;font-size:12px;color:var(--mute)}
 .vbar a,.vbar button{color:var(--ink);background:none;border:0;padding:0;font-size:12px;text-decoration:underline;cursor:pointer}
 .kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px;margin-top:10px}
@@ -123,9 +127,12 @@ tr.sel td{background:var(--gold-soft)}
   <div class="video" id="video">
     <video id="player" playsinline controls preload="metadata" hidden></video>
     <div class="slot" id="slot">Tap a pitch on the chart or in the log to load its clip</div>
+    <svg class="ov" id="overlay" viewBox="0 0 1000 562" preserveAspectRatio="none" hidden></svg>
+    <div class="calmsg" id="calMsg" hidden></div>
     <button class="btn edit" id="editTarget" disabled title="Coach tool, coming later">Edit target</button>
   </div>
-  <div class="vbar"><span id="clipInfo"></span><span id="angles"></span><span><button id="closeClip" hidden>Close</button></span></div>
+  <div class="vbar"><span id="clipInfo"></span><span id="angles"></span><span><button id="calBtn" hidden>Calibrate camera</button> <button id="closeClip" hidden>Close</button></span></div>
+  <div class="note" id="ovNote" hidden></div>
   <div class="kv" id="kv"></div>
 </div>
 
@@ -367,6 +374,79 @@ function drawGameLog(SS) {
   $('glog').querySelectorAll('tbody tr[data-gi]').forEach(r => r.onclick = () => openGame(+r.dataset.gi));
 }
 
+// ---------- target drawn on the clip ----------
+// The overlay draws, on top of the clip, a small zone inset (target ring,
+// where the pitch went, the miss) and, when the camera is calibrated, the
+// target ring in the picture itself. A calibration maps plate coordinates
+// (x, z in feet) to picture fractions with four taps on a paused frame:
+// both plate edges, then the bottom and top of the hitter's zone. One per
+// park and camera angle; kept in the browser and seeded from data/<id>-cal.json.
+const CAL_STEPS = ['Tap the LEFT edge of home plate', 'Tap the RIGHT edge of home plate', 'Tap the BOTTOM of the hitter’s zone (hollow of the knees)', 'Tap the TOP of the hitter’s zone (letters)'];
+let CAL = {};
+try { const r = await fetch(`data/${PID}-cal.json`, { cache: 'no-store' }); if (r.ok) CAL = await r.json(); } catch (e) { /* none seeded */ }
+try { Object.assign(CAL, JSON.parse(localStorage.getItem('nb_cal_' + PID) || '{}')); } catch (e) { /* storage off */ }
+const parkOf = G => G.home ? D.pitcher.team || 'HOME' : G.opp;
+const calKey = p => parkOf(D.games[p.gi]) + '|' + st.angle;
+let cal = { on: false, step: 0, taps: [] };
+// Where the picture sits inside the player box (letterboxing), as fractions.
+function contentRect() {
+  const v = $('player'), bw = v.clientWidth, bh = v.clientHeight;
+  if (!v.videoWidth || !bw) return { x: 0, y: 0, w: 1, h: 1 };
+  const s = Math.min(bw / v.videoWidth, bh / v.videoHeight), w = v.videoWidth * s / bw, h = v.videoHeight * s / bh;
+  return { x: (1 - w) / 2, y: (1 - h) / 2, w, h };
+}
+function project(c, x, z) { return [c.u0 + c.ax * x, c.v0 - c.az * z]; }
+function drawOverlay(p) {
+  const s = $('overlay'); s.innerHTML = '';
+  const v = $('player'); if (!p || v.hidden) { s.setAttribute('hidden', ''); $('ovNote').hidden = true; return; }
+  s.removeAttribute('hidden');   // SVG elements do not reflect .hidden
+  const W = 1000, H = 562, R = contentRect(), U = u => (R.x + u * R.w) * W, V = vv => (R.y + vv * R.h) * H;
+  const c = CAL[calKey(p)], t = p.tgt, zone = p.zone || [1.6, 3.4];
+  // inset: zone box with target ring, pitch location and miss
+  const ix = 14, iy = H - 14, k = 42, cx = ix + 1.2 * k, X = x => cx + x * k, Y = z => iy - z * k * 0.9;
+  const g = el(s, 'g', { opacity: .95 });
+  el(g, 'rect', { x: ix - 4, y: Y(5.0), width: 2.4 * k + 8, height: iy - Y(5.0) + 4, fill: 'rgba(11,11,13,.6)', rx: 6 });
+  el(g, 'rect', { x: X(-.708), y: Y(zone[1]), width: 1.417 * k, height: (zone[1] - zone[0]) * k * 0.9, fill: 'none', stroke: '#fff', 'stroke-opacity': .8 });
+  el(g, 'path', { d: `M${X(-.708)} ${Y(0.25)} L${X(.708)} ${Y(0.25)} L${X(.708)} ${Y(0.1)} L${X(0)} ${Y(0)} L${X(-.708)} ${Y(0.1)} Z`, fill: 'none', stroke: '#8e8e96' });
+  if (t) { el(g, 'line', { x1: X(t[0]), y1: Y(t[1]), x2: X(p.x), y2: Y(p.z), stroke: col(p.fam), 'stroke-width': 1.5 }); el(g, 'circle', { cx: X(t[0]), cy: Y(t[1]), r: 5, fill: 'none', stroke: 'var(--gold)', 'stroke-width': 2 }); }
+  el(g, 'circle', { cx: X(Math.max(-1.2, Math.min(1.2, p.x))), cy: Y(Math.max(0, Math.min(4.8, p.z))), r: 4, fill: col(p.fam), stroke: '#0b0b0d' });
+  // in-frame ring, when this park and angle are calibrated
+  if (c && t && !cal.on) {
+    const [u, vv] = project(c, t[0], t[1]), [ua, va] = project(c, p.x, p.z);
+    const r = Math.max(14, 0.5 * c.ax * R.w * W);          // about a glove on the picture, never smaller than a fingertip
+    el(s, 'circle', { cx: U(u), cy: V(vv), r, fill: 'none', stroke: 'var(--gold)', 'stroke-width': 3, 'stroke-dasharray': '6 4' });
+    el(s, 'circle', { cx: U(ua), cy: V(va), r: Math.max(3, r * .35), fill: col(p.fam), stroke: '#0b0b0d', 'stroke-width': 1.5 });
+    el(s, 'line', { x1: U(u), y1: V(vv), x2: U(ua), y2: V(va), stroke: col(p.fam), 'stroke-width': 2, opacity: .8 });
+  }
+  if (cal.on) for (const [i, tp] of cal.taps.entries()) { el(s, 'circle', { cx: U(tp[0]), cy: V(tp[1]), r: 6, fill: 'var(--gold)', stroke: '#0b0b0d' }); el(s, 'text', { x: U(tp[0]) + 9, y: V(tp[1]) + 4, style: 'fill:#fff;font-size:14px;font-weight:700' }, String(i + 1)); }
+  const note = $('ovNote'); note.hidden = false;
+  note.textContent = c ? 'Dashed ring = the plan target drawn on the picture (approximate, from this park’s camera calibration). Inset: zone, target ring, where it went.' : 'Inset: zone, target ring, where it went. The ring is not drawn in the picture yet: this park’s camera is not calibrated. A coach can do it from Calibrate camera with four taps.';
+  $('calBtn').hidden = false; $('calBtn').textContent = cal.on ? 'Cancel' : c ? 'Recalibrate camera' : 'Calibrate camera';
+}
+function startCal() {
+  const v = $('player'); v.pause(); if (v.currentTime < 1) v.currentTime = 1.5;
+  cal = { on: true, step: 0, taps: [] }; $('video').classList.add('cal'); calMsg(); drawOverlay(st.sel);
+}
+function stopCal() { cal = { on: false, step: 0, taps: [] }; $('video').classList.remove('cal'); $('calMsg').hidden = true; drawOverlay(st.sel); }
+function calMsg() { const m = $('calMsg'); m.hidden = false; m.textContent = `Step ${cal.step + 1} of 4: ${CAL_STEPS[cal.step]}. The clip is paused; scrub to a frame where the hitter is set.`; }
+$('overlay').addEventListener('click', ev => {
+  if (!cal.on || !st.sel) return;
+  const b = $('overlay').getBoundingClientRect(), R = contentRect();
+  const u = ((ev.clientX - b.left) / b.width - R.x) / R.w, vv = ((ev.clientY - b.top) / b.height - R.y) / R.h;
+  cal.taps.push([u, vv]); cal.step++;
+  if (cal.step < 4) { calMsg(); drawOverlay(st.sel); return; }
+  const [L, Rt, Bo, To] = cal.taps, zone = st.sel.zone || [1.6, 3.4];
+  const ax = (Rt[0] - L[0]) / 1.417, u0 = (L[0] + Rt[0]) / 2, az = (Bo[1] - To[1]) / (zone[1] - zone[0]), v0 = Bo[1] + az * zone[0];
+  const key = calKey(st.sel);
+  if (ax <= 0 || az <= 0) { $('calMsg').textContent = 'Those taps do not make sense (left must be left of right, knees below letters). Start again.'; cal.step = 0; cal.taps = []; setTimeout(calMsg, 2500); return; }
+  CAL[key] = { u0, ax, v0, az, pitch: st.sel.pid, taps: cal.taps, zone };
+  try { localStorage.setItem('nb_cal_' + PID, JSON.stringify(CAL)); } catch (e) { /* storage off */ }
+  stopCal();
+});
+$('calBtn').onclick = () => cal.on ? stopCal() : startCal();
+$('player').addEventListener('loadedmetadata', () => drawOverlay(st.sel));
+window.addEventListener('resize', () => drawOverlay(st.sel));
+
 // ---------- selected pitch and video ----------
 function select(p) {
   st.sel = p; render();
@@ -397,7 +477,7 @@ function drawSel() {
   if (!p) {
     $('selHint').textContent = 'tap any dot or row'; $('selCap').textContent = 'No pitch selected';
     v.hidden = true; v.removeAttribute('src'); slot.hidden = false; slot.textContent = 'Tap a pitch on the chart or in the log to load its clip';
-    $('clipInfo').textContent = ''; $('angles').innerHTML = ''; $('closeClip').hidden = true; kv.innerHTML = ''; return;
+    $('clipInfo').textContent = ''; $('angles').innerHTML = ''; $('closeClip').hidden = true; $('calBtn').hidden = true; kv.innerHTML = ''; if (cal.on) stopCal(); drawOverlay(null); return;
   }
   drawAngles(p);
   const G = D.games[p.gi];
@@ -410,16 +490,17 @@ function drawSel() {
     v.play().catch(() => {});
     $('clipInfo').textContent = 'Clip of this pitch';
   } else {
-    v.hidden = true; v.removeAttribute('src'); slot.hidden = false; $('closeClip').hidden = true;
+    v.hidden = true; v.removeAttribute('src'); slot.hidden = false; $('closeClip').hidden = true; $('calBtn').hidden = true;
     slot.textContent = 'No clip loaded for this pitch yet';
     $('clipInfo').textContent = '';
   }
+  if (cal.on) stopCal(); else drawOverlay(p);
   const row = (a, b) => `<span>${a}</span><span>${b}</span>`;
   kv.innerHTML = row('Grade vs plan', `${GRADE_LABEL[p.grade]}${p.grade !== 'executed' && p.dir ? ' · missed ' + p.dir : ''}`)
     + LAYERS.map(l => row('vs ' + LAYER_NAME[l].toLowerCase(), p.m[l] ? `${f1(p.d[l])}" ${dirWord(p.m[l])} · score ${f1(p.sc[l])}` : 'no glove read')).join('')
     + row('Result', (p.desc || '').replace(/_/g, ' '));
 }
-$('closeClip').onclick = () => { const v = $('player'); v.pause(); v.hidden = true; v.removeAttribute('src'); $('slot').hidden = false; $('closeClip').hidden = true; };
+$('closeClip').onclick = () => { const v = $('player'); v.pause(); v.hidden = true; v.removeAttribute('src'); $('slot').hidden = false; $('closeClip').hidden = true; $('calBtn').hidden = true; if (cal.on) stopCal(); drawOverlay(null); };
 $('prev').onclick = () => { if (st.g > 0) { st.g--; st.sel = null; render(); } };
 $('next').onclick = () => { if (st.g >= 0 && st.g < D.games.length - 1) { st.g++; st.sel = null; render(); } };
 $('season').onclick = () => { st.g = st.g < 0 ? D.games.length - 1 : -1; st.sel = null; render(); };

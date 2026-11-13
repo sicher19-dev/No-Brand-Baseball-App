@@ -19,8 +19,8 @@ import { gradePlan, missVector, median, score } from '../../www/lab/execution/en
 import { readCsv, hitterZones, pitchFromRow, reportData } from './lib.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
-const [id, name, hand] = process.argv.slice(2);
-if (!id || !name) { console.error('usage: build-game-data.mjs <id> "<Name>" [RHP|LHP]'); process.exit(2); }
+const [id, name, hand, team] = process.argv.slice(2);
+if (!id || !name) { console.error('usage: build-game-data.mjs <id> "<Name>" [RHP|LHP] [TEAM]'); process.exit(2); }
 
 const rows = readCsv(join(ROOT, 'private', `${id}_execution_pitch_level_INTERNAL.csv`));
 const planRule = JSON.parse(readFileSync(join(ROOT, 'private', 'plan_rules', `${id}.json`), 'utf8'));
@@ -67,7 +67,7 @@ const baseline = { plan: +meanMiss.toFixed(2), kind: 'season-mean', median_miss:
 
 const out = {
   schema: 'nb.execution_page/1',
-  pitcher: { id, name, hand: hand || '' },
+  pitcher: { id, name, hand: hand || '', team: team || '' },   // team = home park key for camera calibrations
   season: list[0].date.slice(0, 4),
   built: new Date().toISOString().slice(0, 10),
   rules_version: planRule.version,
