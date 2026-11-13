@@ -32,6 +32,10 @@ h1{font-size:22px;margin:2px 0 0;font-weight:900;letter-spacing:-.3px;line-heigh
 .card h2 small{letter-spacing:0;text-transform:none;font-weight:500;font-size:12px;color:var(--dim);text-align:right}
 .card .q{margin-left:8px;width:22px;height:22px;border-radius:50%;border:1px solid var(--line);background:var(--panel2);color:var(--mute);font:700 12px/20px 'Archivo',sans-serif;cursor:pointer;padding:0;min-height:0;vertical-align:1px;letter-spacing:0;text-transform:none;flex:0 0 auto;align-self:center}
 .card .q.on{background:var(--gold);color:#0b0b0d;border-color:var(--gold)}
+.tabs{position:sticky;top:0;z-index:5;display:flex;gap:6px;padding:calc(6px + var(--sat)) 0 10px;margin:-6px 0 2px;background:linear-gradient(var(--bg) 85%,transparent)}
+.tab{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer;min-height:40px;color:var(--mute);letter-spacing:.2px}
+.tab.on{background:var(--gold);color:#0b0b0d;border-color:var(--gold)}
+.tab small{display:block;font-weight:500;font-size:11px;letter-spacing:0;opacity:.75;margin-top:1px}
 .help{font-size:13px;line-height:1.5;color:var(--ink);background:var(--gold-soft);border:1px solid var(--gold-dim);border-radius:10px;padding:10px 12px;margin:0 0 12px}
 .help b{color:var(--gold)}
 .row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
@@ -115,6 +119,13 @@ tr.sel td{background:var(--gold-soft)}
   <div class="note" id="layerNote"></div>
 </div>
 
+<div class="tabs" id="tabs" role="tablist">
+  <button class="tab" data-tab="read" role="tab">Read<small>scores and the grade mix</small></button>
+  <button class="tab" data-tab="pitches" role="tab">Pitches<small>chart, log and video</small></button>
+  <button class="tab" data-tab="starts" role="tab">Starts<small>start by start, game log</small></button>
+</div>
+
+<div class="pane" data-pane="read">
 <div class="card" data-help="read">
   <h2>Read<small id="readSub"></small></h2>
   <div class="tiles" id="tiles"></div>
@@ -127,6 +138,13 @@ tr.sel td{background:var(--gold-soft)}
   <div class="note" id="summaryNote"></div>
 </div>
 
+<div class="card" data-help="bypitch">
+  <h2>By pitch<small>this view vs season</small></h2>
+  <div style="overflow:auto"><table id="ptTable"></table></div>
+</div>
+</div>
+
+<div class="pane" data-pane="pitches">
 <div class="card" data-help="location">
   <h2>Location<small>tap a pitch for video</small></h2>
   <div class="seg"><button class="btn on" id="vMiss">Miss pattern</button><button class="btn" id="vPlate">Target to plate</button></div>
@@ -154,16 +172,13 @@ tr.sel td{background:var(--gold-soft)}
   <div class="kv" id="kv"></div>
 </div>
 
-<div class="card" data-help="bypitch">
-  <h2>By pitch<small>this view vs season</small></h2>
-  <div style="overflow:auto"><table id="ptTable"></table></div>
-</div>
-
 <div class="card" data-help="log">
   <h2>Pitch log<small>tap a row for video</small></h2>
   <div class="scroll"><table id="log"></table></div>
 </div>
+</div>
 
+<div class="pane" data-pane="starts">
 <div class="card" data-help="trend">
   <h2>Start by start<small>shaded = noise band · tap a start to open it</small></h2>
   <div class="ctl" style="margin-top:0"><span class="lab">Show</span><span id="metricBtns"></span></div>
@@ -175,6 +190,7 @@ tr.sel td{background:var(--gold-soft)}
 <div class="card" data-help="games">
   <h2>Game log<small>tap a game to open it</small></h2>
   <div class="scroll"><table id="glog"></table></div>
+</div>
 </div>
 
 <div class="foot" id="foot"></div>
@@ -290,6 +306,17 @@ const gloveCount = () => ALL.filter(p => p.glove).length;
 
 // ---------- state ----------
 const st = { season: D.season || SEASONS[SEASONS.length - 1], g: 0, layer: 'plan', count: 'all', pt: 'all', view: 'miss', sel: null, metric: 'score', series: [] };
+// Tabs: Read, Pitches, Starts. The URL's ?t= wins, then the last tab used on this device.
+const TABS = ['read', 'pitches', 'starts'];
+let tabPick = null; try { tabPick = new URLSearchParams(location.search).get('t') || localStorage.getItem('nb_exec_tab'); } catch (e) {}
+st.tab = TABS.includes(tabPick) ? tabPick : 'read';
+function setTab(t, scroll) {
+  st.tab = t; try { localStorage.setItem('nb_exec_tab', t); } catch (e) {}
+  for (const b of document.querySelectorAll('#tabs .tab')) b.classList.toggle('on', b.dataset.tab === t);
+  for (const p of document.querySelectorAll('.pane')) p.hidden = p.dataset.pane !== t;
+  if (scroll) $('tabs').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+for (const b of document.querySelectorAll('#tabs .tab')) b.onclick = () => setTab(b.dataset.tab);
 setSeason(st.season); st.g = D.games.length - 1;
 const METRICS = {
   score: { label: 'Command', get: S => S.score, band: S => S.band, fmt: v => f1(v), lo: 0, hi: 100 },
@@ -455,7 +482,7 @@ EVERY.forEach(g => g.pitches.forEach(p => { p.season = g.season; }));
 // ---------- season: start by start, game log ----------
 const cf = p => st.count === 'all' || (st.count === '2K' ? p.twoK : !p.twoK);
 function gameStats(G, fam) { return stats(G.pitches.filter(p => cf(p) && (!fam || p.fam === fam)), st.layer); }
-function openGame(gi) { st.g = gi; st.sel = null; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function openGame(gi) { st.g = gi; st.sel = null; setTab('read'); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 function drawTrend() {
   const M = METRICS[st.metric];
   const mb = $('metricBtns'); mb.innerHTML = '';
@@ -665,7 +692,7 @@ window.addEventListener('resize', () => drawOverlay(st.sel));
 // ---------- selected pitch and video ----------
 function select(p) {
   if (edit.on) stopEdit();
-  st.sel = p; render();
+  st.sel = p; if (p && st.tab !== 'pitches') setTab('pitches'); render();
   if (p) $('selCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 // Clips: data/<id>-clips.json maps pitch id -> { h: broadcast, hh: high home } (or a plain URL).
@@ -742,6 +769,7 @@ $('next').onclick = () => { if (st.g >= 0 && st.g < D.games.length - 1) { st.g++
 $('season').onclick = () => { st.g = st.g < 0 ? D.games.length - 1 : -1; st.sel = null; render(); };
 $('vMiss').onclick = () => { st.view = 'miss'; render(); };
 $('vPlate').onclick = () => { st.view = 'plate'; render(); };
+setTab(st.tab);
 render();
 </script>
 </body>
