@@ -673,7 +673,7 @@ function drawSel() {
   if (cal.on) stopCal(); else if (!edit.on) drawOverlay(p);
   const row = (a, b) => `<span>${a}</span><span>${b}</span>`;
   kv.innerHTML = row('Grade vs plan', `${GRADE_LABEL[p.grade]}${p.grade !== 'executed' && p.dir ? ' · missed ' + p.dir : ''}`)
-    + LAYERS.map(l => row('vs ' + LAYER_NAME[l].toLowerCase(), p.m[l] ? `${f1(p.d[l])}" ${dirWord(p.m[l])} · score ${f1(p.sc[l])}` : 'no glove read')).join('')
+    + LAYERS.map(l => row('vs ' + LAYER_NAME[l].toLowerCase(), p.m[l] ? `${f1(p.d[l])}" ${l === 'plan' && p.grade === 'centered' ? 'dead middle' : dirWord(p.m[l])} · score ${f1(p.sc[l])}` : 'no glove read')).join('')
     + row('Result', (p.desc || '').replace(/_/g, ' '));
 }
 $('closeClip').onclick = () => { const v = $('player'); v.pause(); v.hidden = true; v.removeAttribute('src'); $('slot').hidden = false; $('closeClip').hidden = true; $('calBtn').hidden = true; if (cal.on) stopCal(); drawOverlay(null); };
