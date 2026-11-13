@@ -12,3 +12,4 @@ android/.idea/
 
 # Execution Lab: plan rules, internal pitch data and internal reports stay local
 private/
+.claude/

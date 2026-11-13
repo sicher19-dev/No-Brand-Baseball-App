@@ -72,9 +72,10 @@ Checked in this order, inches measured in real feet:
    ball radius.
 5. `off ball`: everything else.
 
-`tdist` is the distance to the nearest plan box in inches. A centered pitch
-that sits inside a plan box reports the shortest way out of the middle
-instead. `miss_dir` is read
+`tdist` is the distance to the nearest plan box in inches, and `target` is
+that nearest point in feet. A centered pitch that sits inside a plan box
+reports the shortest way out of the middle instead, with the target on the
+heart edge, so its miss vector and its distance agree. `miss_dir` is read
 against the rule's primary (first) box: `up` / `down` when the vertical miss in
 feet is at least the horizontal one, otherwise `in` / `away` for the hitter's
 side; `middle` for centered pitches.
@@ -114,6 +115,36 @@ off target`, ...) are exported from the engine so pages never hard-code them.
 The file for a pitcher stays in `private/`. It never ships in the client bundle
 and never goes in a public repo. Grading a pitcher's live data against the
 plan will happen server-side; that is a later build step.
+
+## The page (`www/lab/execution/index.html`)
+
+One page per pitcher, opened as `lab/execution/?p=<id>`. It reads
+`data/<id>.json`, which `tools/execution-lab/build-game-data.mjs` writes from
+the private pitch file and plan rules:
+
+```
+node tools/execution-lab/build-game-data.mjs skenes "Paul Skenes" RHP
+```
+
+What the data file carries per pitch: location, count, batter name, pitch
+type, grade, miss vector and plan target, hitter zone, pitch id. What it does
+not: the plan rules, velocity, or any other internal column. The score anchor
+(`baseline`) is the pitcher's own season average miss until a league line is
+available: a miss of that size scores 50, on target scores 100.
+
+**Clips.** The page looks for `data/<id>-clips.json`, a map from pitch id to
+clip URL. When a pitch has one, tapping the pitch plays it inline with a
+caption; otherwise the slot says no clip is loaded. No provider is named on
+the page.
+
+**Layers.** The glove and glove + habit buttons stay disabled until glove
+reads are loaded for the pitcher (`glove` and `inferred` points per pitch in
+the data file).
+
+Open design question: a centered pitch inside a plan box scores by how far
+it was from leaving the middle, which is usually a high score. Dead-middle
+never counts as executed, but whether it should also be scored as a miss is
+Brian's call.
 
 ## What the acceptance test found (2026-11-13)
 

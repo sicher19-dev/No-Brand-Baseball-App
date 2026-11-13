@@ -139,13 +139,16 @@ export function gradePlan(pitch, planRule) {
   else if (near.d === 0) grade = 'executed';
   else if (near.d < planRule.near_in) grade = 'near';
   else grade = touchesZone(pitch, planRule) ? 'off strike' : 'off ball';
-  const tp = nearestPoint(p, near.box);
+  let tp = nearestPoint(p, near.box), tdist = near.d;
+  if (centered && near.d === 0) {
+    // A centered pitch inside a plan box: the target is the nearest way out
+    // of the middle, and the distance is how far that was.
+    const side = pitch.x < 0 ? -heart.x_half : heart.x_half;
+    const ways = [[[side, z], Math.abs(side - pitch.x)], [[pitch.x, heart.lo], (z - heart.lo) * scale], [[pitch.x, heart.hi], (heart.hi - z) * scale]];
+    ways.sort((a, b) => a[1] - b[1]);
+    tp = ways[0][0]; tdist = ways[0][1] * IN;
+  }
   const zBase = scale === 1 ? 0 : (pitch.zone ? pitch.zone.bot : pitch.z - z * scale);
-  // A centered pitch that sits inside a plan box reports how far it was from
-  // getting out of the middle; otherwise the distance to the nearest box.
-  const tdist = centered && near.d === 0
-    ? Math.min(heart.x_half - Math.abs(pitch.x), (z - heart.lo) * scale, (heart.hi - z) * scale) * IN
-    : near.d;
   return {
     grade, code: GRADE_CODE[grade], tdist, box: near.box, boxIndex: near.i, rule,
     target: [tp[0], zBase + tp[1] * scale],

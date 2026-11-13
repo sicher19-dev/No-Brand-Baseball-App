@@ -10,34 +10,13 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { gradePlan, stateOf, familyOf } from '../../www/lab/execution/engine.js';
+import { readCsv, hitterZones, pitchFromRow } from '../../tools/execution-lab/lib.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const CSV = join(ROOT, 'private', 'skenes_execution_pitch_level_INTERNAL.csv');
 const RULES = join(ROOT, 'private', 'plan_rules', 'skenes.json');
 const REPORT = join(ROOT, 'private', 'acceptance_report.md');
 const have = existsSync(CSV) && existsSync(RULES);
-
-function readCsv(path) {
-  const lines = readFileSync(path, 'utf8').trim().split(/\r?\n/);
-  const head = lines[0].split(',');
-  return lines.slice(1).map(l => Object.fromEntries(l.split(',').map((v, i) => [head[i], v])));
-}
-
-// The file carries plate_z (feet) and zn (zone units) but not the hitter's
-// zone. zn is linear in plate_z per hitter, so each hitter's zone bottom and
-// height come back from a least-squares fit of plate_z on zn.
-function hitterZones(rows) {
-  const by = {};
-  for (const r of rows) (by[r.batter] = by[r.batter] || []).push([+r.zn, +r.plate_z]);
-  const zones = {};
-  for (const [b, pts] of Object.entries(by)) {
-    const n = pts.length, mx = pts.reduce((s, p) => s + p[0], 0) / n, my = pts.reduce((s, p) => s + p[1], 0) / n;
-    const sxx = pts.reduce((s, p) => s + (p[0] - mx) ** 2, 0);
-    const h = sxx > 1e-6 ? pts.reduce((s, p) => s + (p[0] - mx) * (p[1] - my), 0) / sxx : null;
-    zones[b] = h ? { bot: my - h * mx, top: my - h * mx + h, fit: n } : null;
-  }
-  return zones;
-}
 
 // The file rounds x and zn to three decimals. A pitch within half a unit of
 // that rounding of any box or heart edge cannot be placed on one side or the
@@ -61,10 +40,7 @@ test('grades match the built report pitch for pitch', { skip: !have && 'private/
   for (const r of rows) {
     const zone = zones[r.batter];
     if (!zone) noZone++;
-    const pitch = {
-      x: +r.plate_x, z: +r.plate_z, zn: +r.zn, zone: zone || undefined,
-      family: r.family, pitch_type: r.pitch_type, balls: +r.balls, strikes: +r.strikes, stand: r.stand,
-    };
+    const pitch = pitchFromRow(r, zone);
     assert.equal(stateOf(pitch.balls, pitch.strikes), r.state, `state column disagrees with the count on ${r.play_id}`);
     assert.equal(familyOf(r.pitch_type, planRule), r.family, `family column disagrees with the family map on ${r.play_id}`);
     const g = gradePlan(pitch, planRule);

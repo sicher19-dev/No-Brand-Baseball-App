@@ -7,7 +7,16 @@ is named on a player-facing page.
 
 Status column: `engine` = the step 1 engine already computes it; `page` =
 needs the page; `data` = needs a feed or pipeline we do not have wired yet;
-`later` = a later build step.
+`later` = a later build step; `done` = on the game page as of 2026-11-13.
+
+Game page status (2026-11-13): built at `www/lab/execution/`, on real data
+for one pitcher. Done: header with prev / next / season, tiles vs season,
+grade bar, count and pitch filters, miss pattern and target-to-plate charts,
+selected pitch with caption and inline player, by-pitch table, pitch log.
+Waiting on data: clip URLs per pitch (the player is wired, the map is empty),
+glove reads (the glove layers are disabled until then). Not yet: Edit target,
+the plan box drawn for the selected pitch (rules stay server-side), season
+trends.
 
 ## Must have: click a pitch, watch the pitch
 

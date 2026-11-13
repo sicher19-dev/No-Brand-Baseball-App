@@ -135,7 +135,11 @@ test('plan grade: executed, near, off strike, off ball, centered', () => {
   g = gradePlan(ff(0.1, 0.5, { family: 'ST' }), ZONE_RULE);
   assert.equal(g.grade, 'centered', 'inside the sweeper box but in the heart');
   close(g.tdist, 0.25 * IN, 1e-9, 'centered inside a box: shortest way out of the heart, here sideways');
-  close(gradePlan(ff(0, 0.35, { family: 'ST' }), ZONE_RULE).tdist, 0.05 * 1.5 * IN, 1e-9, 'or down through the heart floor');
+  close(g.target[0], 0.35, 1e-9, 'target is the heart edge on the pitch side'); close(g.target[1], Z.bot + 0.5 * 1.5, 1e-9);
+  close(distance(missVector([0.1, Z.bot + 0.5 * 1.5], g.target)), g.tdist, 1e-9, 'miss vector length agrees with tdist');
+  g = gradePlan(ff(0, 0.35, { family: 'ST' }), ZONE_RULE);
+  close(g.tdist, 0.05 * 1.5 * IN, 1e-9, 'or down through the heart floor');
+  close(g.target[1], Z.bot + 0.3 * 1.5, 1e-9, 'target sits on the heart floor');
   assert.equal(gradePlan(ff(0, 0.2, { family: 'ST' }), ZONE_RULE).grade, 'executed', 'below the heart, inside the box');
 
   g = gradePlan(ff(-0.6, 0.5), ZONE_RULE);

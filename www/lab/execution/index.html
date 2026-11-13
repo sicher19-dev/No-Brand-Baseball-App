@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Execution Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0b0d; --panel:#131316; --panel2:#191920; --raise:#202027;
+  --ink:#efece4; --mute:#8e8e96; --dim:#5c5c63;
+  --gold:#f5b700; --gold-dim:#b58400; --gold-soft:rgba(245,183,0,.12);
+  --line:#232328; --line-soft:#1b1b1f;
+  --green:#4caf6d; --blue:#6aa5d6; --red:#d65c5c;
+  --FF:#e85d75; --SI:#f08c2e; --FS:#3fb8a8; --CH:#4ccc6a; --ST:#c9a227; --SL:#e5e05a; --CU:#5bc8f5;
+  --sat:env(safe-area-inset-top,0px); --sab:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font-family:'Archivo',system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.4;-webkit-font-smoothing:antialiased}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+button{font-family:inherit;color:inherit}
+.wrap{max-width:760px;margin:0 auto;padding:calc(14px + var(--sat)) 14px calc(50px + var(--sab))}
+header.top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.mark{width:40px;height:40px;border-radius:10px;background:var(--gold);color:#0b0b0d;font-weight:900;font-size:17px;letter-spacing:-1px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.kicker{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--gold);font-weight:700}
+h1{font-size:22px;margin:2px 0 0;font-weight:900;letter-spacing:-.3px;line-height:1.1}
+.sub{color:var(--mute);font-size:13px;margin-top:3px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.card h2{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--mute);margin:0 0 10px;font-weight:700;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.card h2 small{letter-spacing:0;text-transform:none;font-weight:500;font-size:12px;color:var(--dim);text-align:right}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.gtitle{font-weight:800;font-size:19px}
+.gmeta{color:var(--mute);font-size:12px;margin-top:2px}
+.nav{display:flex;gap:6px}
+.btn{background:transparent;border:1px solid var(--line);border-radius:9px;padding:8px 12px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;min-height:36px}
+.btn:active{background:var(--raise)}
+.btn[disabled]{opacity:.35;cursor:default}
+.btn.on{background:var(--gold);color:#0b0b0d;border-color:var(--gold)}
+.ctl{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px}
+.ctl .lab{font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim);font-weight:700;width:100%}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:1px}
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+@media(min-width:620px){.tiles{grid-template-columns:repeat(5,1fr)}}
+.tile{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px}
+.tile .k{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--mute);font-weight:700}
+.tile .v{font-weight:900;font-size:28px;line-height:1.1;margin-top:4px;font-variant-numeric:tabular-nums}
+.tile .n{font-size:12px;color:var(--mute);margin-top:3px}
+.d{font-family:'JetBrains Mono',monospace;font-size:12px}
+.d.up{color:var(--green)}.d.dn{color:var(--red)}.d.flat{color:var(--dim)}
+.bar{display:flex;height:14px;gap:2px;margin:10px 0 8px;border-radius:4px;overflow:hidden}
+.bar div{min-width:2px}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--mute)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.note{font-size:12px;color:var(--dim);margin-top:8px;line-height:1.45}
+svg{display:block;width:100%;height:auto;touch-action:manipulation}
+svg text{font-family:'Archivo',system-ui,sans-serif;fill:var(--dim);font-size:11px}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--mute);text-align:right;padding:6px 6px;border-bottom:1px solid var(--line);font-weight:700;position:sticky;top:0;background:var(--panel)}
+td{padding:8px 6px;border-bottom:1px solid var(--line-soft);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th.l,td.l{text-align:left}
+tbody tr{cursor:pointer}
+tr.sel td{background:var(--gold-soft)}
+.scroll{max-height:420px;overflow:auto;-webkit-overflow-scrolling:touch;margin:0 -14px;padding:0 14px}
+.chip{display:inline-block;min-width:42px;text-align:center;padding:2px 6px;border-radius:6px;font-weight:700;font-family:'JetBrains Mono',monospace;font-size:12px}
+.g{display:inline-block;padding:1px 7px;border-radius:999px;font-size:11px;font-weight:700;white-space:nowrap;border:1px solid var(--line);color:var(--mute)}
+.sel-cap{font-weight:700;font-size:14px}
+.video{position:relative;margin-top:10px;background:#000;border-radius:10px;overflow:hidden;aspect-ratio:16/9}
+.video video{width:100%;height:100%;display:block;background:#000}
+.video .slot{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--mute);font-size:13px;padding:16px;background:repeating-linear-gradient(135deg,transparent 0 12px,rgba(245,183,0,.05) 12px 24px)}
+.video .edit{position:absolute;top:10px;right:10px}
+.vbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:6px;font-size:12px;color:var(--mute)}
+.vbar a,.vbar button{color:var(--ink);background:none;border:0;padding:0;font-size:12px;text-decoration:underline;cursor:pointer}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px;margin-top:10px}
+.kv span:nth-child(odd){color:var(--mute)}
+.two{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:700px){.two{grid-template-columns:1fr 1fr}}
+.foot{margin-top:28px;color:var(--dim);font-size:11px;text-align:center}
+@media(max-width:600px){#log th:nth-child(7),#log td:nth-child(7),#ptTable th:nth-child(5),#ptTable td:nth-child(5),#ptTable th:nth-child(6),#ptTable td:nth-child(6){display:none}td,th{padding:7px 4px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <div class="mark">NB</div>
+  <div>
+    <div class="kicker">No Brand Baseball Analytics</div>
+    <h1>Execution Lab</h1>
+    <div class="sub" id="who"></div>
+  </div>
+</header>
+
+<div class="card">
+  <div class="row">
+    <div><div class="gtitle" id="gTitle">Loading…</div><div class="gmeta" id="gMeta"></div></div>
+    <div class="nav"><button class="btn" id="prev">‹ Prev</button><button class="btn" id="next">Next ›</button><button class="btn" id="season">Season</button></div>
+  </div>
+  <div class="ctl"><span class="lab">Count</span><span id="countBtns"></span></div>
+  <div class="ctl"><span class="lab">Pitch</span><span id="ptBtns"></span></div>
+  <div class="ctl"><span class="lab">Graded against</span><span id="layerBtns"></span></div>
+  <div class="note" id="layerNote"></div>
+</div>
+
+<div class="card">
+  <h2>Read<small id="readSub"></small></h2>
+  <div class="tiles" id="tiles"></div>
+  <div class="bar" id="gbar"></div><div class="legend" id="gleg"></div>
+</div>
+
+<div class="card">
+  <h2>Location<small>tap a pitch for video</small></h2>
+  <div class="seg"><button class="btn on" id="vMiss">Miss pattern</button><button class="btn" id="vPlate">Target to plate</button></div>
+  <svg id="chart" viewBox="0 0 360 380"></svg>
+  <div class="legend" id="chartLeg"></div>
+</div>
+
+<div class="card" id="selCard">
+  <h2>Selected pitch<small id="selHint">tap any dot or row</small></h2>
+  <div class="sel-cap" id="selCap">No pitch selected</div>
+  <div class="video" id="video">
+    <video id="player" playsinline controls preload="metadata" hidden></video>
+    <div class="slot" id="slot">Tap a pitch on the chart or in the log to load its clip</div>
+    <button class="btn edit" id="editTarget" disabled title="Coach tool, coming later">Edit target</button>
+  </div>
+  <div class="vbar"><span id="clipInfo"></span><span><button id="closeClip" hidden>Close</button></span></div>
+  <div class="kv" id="kv"></div>
+</div>
+
+<div class="card">
+  <h2>By pitch<small>this view vs season</small></h2>
+  <div style="overflow:auto"><table id="ptTable"></table></div>
+</div>
+
+<div class="card">
+  <h2>Pitch log<small>tap a row for video</small></h2>
+  <div class="scroll"><table id="log"></table></div>
+</div>
+
+<div class="foot" id="foot"></div>
+</div>
+
+<script type="module">
+import { LAYERS, GRADES, GRADE_LABEL, score, stats, gradeCounts, dirWord, median } from './engine.js';
+
+// ---------- data ----------
+const qs = new URLSearchParams(location.search);
+const PID = (qs.get('p') || 'skenes').replace(/[^a-z0-9_-]/gi, '');
+const D = await (await fetch(`data/${PID}.json`, { cache: 'no-store' })).json();
+let CLIPS = {};
+try { const r = await fetch(`data/${PID}-clips.json`, { cache: 'no-store' }); if (r.ok) CLIPS = await r.json(); } catch (e) { /* no clips yet */ }
+
+const L = { glove: 10, inferred: 9, plan: D.baseline.plan };   // glove/inferred placeholders until glove reads load
+const RHP = (D.pitcher.hand || 'RHP') === 'RHP';
+const FAMS = Object.keys(D.fam_name).filter(f => D.games.some(g => g.pitches.some(p => p.fam === f)));
+const col = f => getComputedStyle(document.documentElement).getPropertyValue('--' + f).trim() || '#999';
+const GC = { executed: 'var(--green)', near: '#8fd6b0', centered: 'var(--red)', 'off strike': 'var(--gold)', 'off ball': 'var(--dim)' };
+
+// Score every pitch on every layer. Only the plan layer has data today.
+D.games.forEach((g, gi) => g.pitches.forEach(p => {
+  p.gi = gi; p.twoK = p.s >= 2; p.grade = p.g;
+  p.m = { glove: p.glove || null, inferred: p.inferred || null, plan: p.m };
+  p.d = {}; p.sc = {};
+  for (const l of LAYERS) { const v = p.m[l]; p.d[l] = v ? Math.hypot(v[0], v[1]) : null; p.sc[l] = v ? score(p.d[l], L[l]) : null; }
+  p.s_ = p.s; p.s = p.sc;   // engine.stats reads p.s[layer]; the count's strikes move to p.s_
+}));
+const ALL = D.games.flatMap(g => g.pitches);
+const hasLayer = l => ALL.some(p => p.m[l]);
+
+// ---------- state ----------
+const st = { g: D.games.length - 1, layer: 'plan', count: 'all', pt: 'all', view: 'miss', sel: null };
+const LAYER_NAME = { glove: 'Glove', inferred: 'Glove + habit', plan: 'The plan' };
+const LAYER_NOTE = {
+  glove: 'Glove: distance from where the catcher set up. Charges every pitch that was never meant to go to the glove.',
+  inferred: 'Glove + habit: the glove, moved by where this pitcher really aims that pitch. Closer to intent.',
+  plan: 'The plan: the pitcher’s own target box for that pitch in that count. Every pitch is graded, and dead-middle never counts.',
+};
+const $ = id => document.getElementById(id);
+const f1 = x => x == null || isNaN(x) ? '–' : x.toFixed(1);
+const pct = x => x == null || isNaN(x) ? '–' : Math.round(x * 100) + '%';
+const fmtDate = s => { const [y, m, d] = s.split('-'); return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m - 1] + ' ' + (+d); };
+const gLabel = g => fmtDate(g.date) + (g.home ? ' vs ' : ' at ') + g.opp;
+const filt = P => { if (st.count !== 'all') P = P.filter(p => st.count === '2K' ? p.twoK : !p.twoK); if (st.pt !== 'all') P = P.filter(p => p.fam === st.pt); return P; };
+const cur = () => filt(st.g < 0 ? ALL : D.games[st.g].pitches);
+const seasonSet = () => filt(ALL);
+function delta(v, ref, dec = 1, suffix = '') {
+  if (v == null || ref == null || isNaN(v) || isNaN(ref)) return '';
+  const d = v - ref, cls = d > 0.05 ? 'up' : d < -0.05 ? 'dn' : 'flat';
+  return `<span class="d ${cls}">${d > 0 ? '+' : ''}${d.toFixed(dec)}${suffix} vs season</span>`;
+}
+function chipBg(s) { if (s == null) return 'transparent'; const t = Math.max(-1, Math.min(1, (s - 50) / 35)); return t >= 0 ? `rgba(76,175,109,${.15 + t * .55})` : `rgba(214,92,92,${.15 - t * .55})`; }
+function btns(el, opts, key, disabled = {}) {
+  el.innerHTML = '';
+  for (const [v, label, c] of opts) {
+    const b = document.createElement('button'); b.className = 'btn' + (st[key] === v ? ' on' : '');
+    b.innerHTML = (c ? `<span class="dot" style="background:${c}"></span>` : '') + label;
+    if (disabled[v]) { b.disabled = true; b.title = disabled[v]; }
+    b.onclick = () => { st[key] = v; st.sel = null; render(); };
+    el.appendChild(b);
+  }
+}
+
+// ---------- render ----------
+function render() {
+  const P = cur(), S = stats(P, st.layer), SS = stats(seasonSet(), st.layer), G = st.g < 0 ? null : D.games[st.g];
+  $('who').textContent = `${D.pitcher.name} · ${D.season} season`;
+  $('gTitle').textContent = G ? gLabel(G) : `${D.season} season`;
+  $('gMeta').textContent = (G ? `Game ${st.g + 1} of ${D.games.length} · ` : `${D.games.length} games · `) + `${P.length} pitches in view`;
+  $('prev').disabled = st.g <= 0; $('next').disabled = st.g < 0 || st.g === D.games.length - 1; $('season').className = 'btn' + (st.g < 0 ? ' on' : '');
+  btns($('countBtns'), [['all', 'All'], ['pre', 'Before two strikes'], ['2K', 'Two strikes']], 'count');
+  btns($('ptBtns'), [['all', 'All'], ...FAMS.map(f => [f, D.fam_name[f], col(f)])], 'pt');
+  btns($('layerBtns'), LAYERS.map(l => [l, LAYER_NAME[l]]), 'layer', Object.fromEntries(LAYERS.filter(l => !hasLayer(l)).map(l => [l, 'No glove reads loaded for this pitcher yet'])));
+  $('layerNote').textContent = LAYER_NOTE[st.layer] + (st.layer === 'plan' && D.baseline.kind === 'season-mean' ? ` Score: 100 on target, 50 at a ${D.baseline.plan}" miss (his season average), lower from there.` : '');
+  $('readSub').textContent = G ? 'this game vs his season' : 'whole season';
+
+  const T = $('tiles'); T.innerHTML = '';
+  const tile = (k, v, n, bg) => T.insertAdjacentHTML('beforeend', `<div class="tile" style="${bg ? 'background:' + bg : ''}"><div class="k">${k}</div><div class="v">${v}</div><div class="n">${n}</div></div>`);
+  if (S) {
+    tile('Command', f1(S.score), `± ${f1(S.band)} noise · ${G && SS ? delta(S.score, SS.score) : 'season'}`, chipBg(S.score));
+    tile('Typical miss', f1(S.med) + '"', `median · ${S.n} of ${S.total} graded`);
+    tile('Aim offset', f1(Math.hypot(...S.bias)) + '"', dirWord(S.bias) + ' · fixable by aim');
+    tile('Spread', f1(S.spread) + '"', 'around his own center');
+    tile('Executed', pct(S.exec), `${pct(S.cent)} dead-middle ${G && SS ? delta(S.exec * 100, SS.exec * 100, 0, ' pts') : ''}`);
+  } else tile('No pitches', '–', 'nothing in this view');
+
+  const gb = $('gbar'); gb.innerHTML = ''; $('gleg').innerHTML = '';
+  const C = gradeCounts(P);
+  for (const g of GRADES) {
+    if (P.length && C[g]) gb.insertAdjacentHTML('beforeend', `<div title="${GRADE_LABEL[g]}: ${C[g]}" style="flex:${C[g]};background:${GC[g]}"></div>`);
+    $('gleg').insertAdjacentHTML('beforeend', `<span><i style="background:${GC[g]}"></i>${GRADE_LABEL[g]} ${C[g]} (${P.length ? Math.round(C[g] / P.length * 100) : 0}%)</span>`);
+  }
+  $('vMiss').className = 'btn' + (st.view === 'miss' ? ' on' : ''); $('vPlate').className = 'btn' + (st.view === 'plate' ? ' on' : '');
+  if (st.view === 'miss') drawMiss(P, S); else drawPlate(P);
+  $('chartLeg').innerHTML = (st.view === 'miss' ? '<span>◌ rings at 6" and 12"</span><span>⬭ spread (1 sd)</span><span>→ aim offset</span>' : '<span>○ target</span><span>● plate</span><span>─ miss</span><span>┌ zone</span>')
+    + FAMS.map(f => `<span><i style="background:${col(f)}"></i>${D.fam_name[f]}</span>`).join('');
+  drawTables(P, SS); drawSel();
+  $('foot').textContent = `No Brand Baseball Analytics · plan rules ${D.rules_version ? 'v' + D.rules_version.split(':')[0].replace(/^v/, '') : ''} · built ${D.built}`;
+}
+
+const NS = 'http://www.w3.org/2000/svg';
+function el(svg, tag, a, txt) { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); if (txt != null) e.textContent = txt; svg.appendChild(e); return e; }
+function dot(svg, p, x, y) {
+  const sel = st.sel === p;
+  el(svg, 'circle', { cx: x, cy: y, r: sel ? 7 : 4.5, fill: col(p.fam), stroke: sel ? '#fff' : '#0b0b0d', 'stroke-width': sel ? 2 : 1.2, opacity: st.sel && !sel ? .35 : .95 });
+  const h = el(svg, 'circle', { cx: x, cy: y, r: 12, fill: 'transparent', style: 'cursor:pointer' });
+  h.onclick = () => select(sel ? null : p);
+  el(h, 'title', {}, `#${p.i} ${p.pt} ${p.b}-${p.s_} · ${f1(p.d[st.layer])}" · ${GRADE_LABEL[p.grade]}`);
+}
+const sideWord = x => (x > 0) === RHP ? 'glove side' : 'arm side';
+function drawMiss(P, S) {
+  const s = $('chart'); s.innerHTML = ''; s.setAttribute('viewBox', '0 0 360 360');
+  const R = 24, c = 180, k = 160 / R, X = v => c + v * k, Y = v => c - v * k;
+  for (const v of [-24, -12, 0, 12, 24]) { el(s, 'line', { x1: X(v), x2: X(v), y1: Y(-R), y2: Y(R), stroke: '#1b1b1f' }); el(s, 'line', { y1: Y(v), y2: Y(v), x1: X(-R), x2: X(R), stroke: '#1b1b1f' }); }
+  for (const r of [6, 12]) el(s, 'circle', { cx: c, cy: c, r: r * k, fill: 'none', stroke: '#5c5c63', 'stroke-dasharray': '4 4' });
+  el(s, 'text', { x: X(12) + 3, y: c - 3 }, '12"'); el(s, 'text', { x: X(6) + 3, y: c - 3 }, '6"');
+  el(s, 'text', { x: c, y: 14, 'text-anchor': 'middle' }, 'up'); el(s, 'text', { x: c, y: 354, 'text-anchor': 'middle' }, 'down');
+  el(s, 'text', { x: 6, y: c - 4 }, sideWord(-1)); el(s, 'text', { x: 354, y: c - 4, 'text-anchor': 'end' }, sideWord(1));
+  const cl = v => Math.max(-R, Math.min(R, v));
+  const inside = P.filter(p => p.m[st.layer] && Math.hypot(...p.m[st.layer]) <= 12).length;
+  el(s, 'text', { x: 6, y: 354 }, `${inside} of ${P.length} inside 12"`);
+  for (const p of P) { const m = p.m[st.layer]; if (m) dot(s, p, X(cl(m[0])), Y(cl(m[1]))); }
+  if (S && S.n > 4) {
+    const [sxx, szz, sxz] = S.cov, tr = sxx + szz, det = sxx * szz - sxz * sxz, d = Math.sqrt(Math.max(0, tr * tr / 4 - det)), l1 = tr / 2 + d, l2 = Math.max(.01, tr / 2 - d), ang = Math.atan2(l1 - sxx, sxz || 1e-9);
+    el(s, 'ellipse', { cx: X(S.bias[0]), cy: Y(S.bias[1]), rx: Math.sqrt(l1) * k, ry: Math.sqrt(l2) * k, fill: 'rgba(245,183,0,.07)', stroke: 'var(--gold)', 'stroke-width': 1.5, transform: `rotate(${-ang * 180 / Math.PI} ${X(S.bias[0])} ${Y(S.bias[1])})`, 'pointer-events': 'none' });
+    el(s, 'line', { x1: c, y1: c, x2: X(S.bias[0]), y2: Y(S.bias[1]), stroke: '#fff', 'stroke-width': 2.5, 'pointer-events': 'none' });
+    el(s, 'circle', { cx: X(S.bias[0]), cy: Y(S.bias[1]), r: 4, fill: '#fff', 'pointer-events': 'none' });
+  }
+}
+function drawPlate(P) {
+  const s = $('chart'); s.innerHTML = ''; s.setAttribute('viewBox', '0 0 360 400');
+  const k = 80, X = v => 180 + v * k, Y = v => 390 - v * k;
+  for (let v = -2; v <= 2; v++) el(s, 'line', { x1: X(v), x2: X(v), y1: 0, y2: 400, stroke: '#141418' });
+  for (let v = 0; v <= 4; v++) el(s, 'line', { y1: Y(v), y2: Y(v), x1: 0, x2: 360, stroke: '#141418' });
+  // the zone of the hitter in view: median zone of the pitches shown
+  const zb = median(P.filter(p => p.zone).map(p => p.zone[0])) || 1.6, zt = median(P.filter(p => p.zone).map(p => p.zone[1])) || 3.4;
+  el(s, 'rect', { x: X(-.708), y: Y(zt), width: 1.417 * k, height: (zt - zb) * k, fill: 'none', stroke: '#8e8e96', 'stroke-width': 1.5 });
+  el(s, 'path', { d: `M${X(-.708)} 396 L${X(.708)} 396 L${X(.708)} 391 L${X(0)} 386 L${X(-.708)} 391 Z`, fill: 'none', stroke: '#5c5c63' });
+  const cx = v => Math.max(-2.2, Math.min(2.2, v)), cz = v => Math.max(.1, Math.min(4.8, v));
+  for (const p of P) {
+    const t = st.layer === 'plan' ? p.tgt : p[st.layer], c = col(p.fam), dim = st.sel && st.sel !== p;
+    if (!t) continue;
+    el(s, 'line', { x1: X(t[0]), y1: Y(t[1]), x2: X(cx(p.x)), y2: Y(cz(p.z)), stroke: c, 'stroke-width': 1, opacity: dim ? .1 : .45 });
+    el(s, 'circle', { cx: X(t[0]), cy: Y(t[1]), r: 4, fill: 'none', stroke: c, 'stroke-width': 1.5, opacity: dim ? .15 : .9 });
+  }
+  for (const p of P) dot(s, p, X(cx(p.x)), Y(cz(p.z)));
+}
+function drawTables(P, SS) {
+  const base = st.g < 0 ? ALL : D.games[st.g].pitches, cf = p => st.count === 'all' || (st.count === '2K' ? p.twoK : !p.twoK);
+  let h = '<thead><tr><th class="l">Pitch</th><th>N</th><th>Score</th><th>Miss</th><th>Aim offset</th><th>Spread</th><th>Executed</th><th>Middle</th></tr></thead><tbody>';
+  for (const f of FAMS) {
+    const Q = base.filter(p => p.fam === f && cf(p)), S = stats(Q, st.layer); if (!S) continue;
+    const SF = stats(ALL.filter(p => p.fam === f && cf(p)), st.layer);
+    h += `<tr data-pt="${f}" class="${st.pt === f ? 'sel' : ''}"><td class="l"><span class="dot" style="background:${col(f)}"></span>${D.fam_name[f]}</td><td>${Q.length}</td><td><span class="chip" style="background:${chipBg(S.score)}">${f1(S.score)}</span> ${st.g >= 0 && SF ? delta(S.score, SF.score) : ''}</td><td>${f1(S.med)}"</td><td>${f1(Math.hypot(...S.bias))}" ${dirWord(S.bias)}</td><td>${f1(S.spread)}"</td><td>${pct(S.exec)}</td><td>${pct(S.cent)}</td></tr>`;
+  }
+  $('ptTable').innerHTML = h + '</tbody>';
+  $('ptTable').querySelectorAll('tbody tr').forEach(r => r.onclick = () => { st.pt = st.pt === r.dataset.pt ? 'all' : r.dataset.pt; st.sel = null; render(); });
+  h = '<thead><tr><th>#</th><th>Inn</th><th>Count</th><th class="l">Batter</th><th class="l">Pitch</th><th>Score</th><th>Miss</th><th>Where</th><th>Grade</th></tr></thead><tbody>';
+  P.forEach((p, ix) => { h += `<tr data-ix="${ix}" class="${st.sel === p ? 'sel' : ''}"><td>${st.g < 0 ? 'G' + (p.gi + 1) + '·' : ''}${p.i}</td><td>${p.inn}</td><td>${p.b}-${p.s_}</td><td class="l">${p.bat || '–'} <span style="color:var(--dim)">${p.st}HH</span></td><td class="l"><span class="dot" style="background:${col(p.fam)}"></span>${p.pt}</td><td><span class="chip" style="background:${chipBg(p.sc[st.layer])}">${f1(p.sc[st.layer])}</span></td><td>${p.d[st.layer] == null ? '–' : f1(p.d[st.layer]) + '"'}</td><td>${p.m[st.layer] ? (p.grade === 'executed' ? 'on target' : p.dir || dirWord(p.m[st.layer])) : 'no glove read'}</td><td><span class="g" style="border-color:${GC[p.grade]}">${GRADE_LABEL[p.grade]}</span></td></tr>`; });
+  $('log').innerHTML = h + '</tbody>';
+  $('log').querySelectorAll('tbody tr').forEach(r => r.onclick = () => { const p = P[+r.dataset.ix]; select(st.sel === p ? null : p); });
+}
+
+// ---------- selected pitch and video ----------
+function select(p) {
+  st.sel = p; render();
+  if (p) $('selCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+function clipFor(p) { return (p.pid && CLIPS[p.pid]) || p.clip || null; }
+function drawSel() {
+  const p = st.sel, v = $('player'), slot = $('slot'), kv = $('kv');
+  if (!p) {
+    $('selHint').textContent = 'tap any dot or row'; $('selCap').textContent = 'No pitch selected';
+    v.hidden = true; v.removeAttribute('src'); slot.hidden = false; slot.textContent = 'Tap a pitch on the chart or in the log to load its clip';
+    $('clipInfo').textContent = ''; $('closeClip').hidden = true; kv.innerHTML = ''; return;
+  }
+  const G = D.games[p.gi];
+  $('selHint').textContent = gLabel(G);
+  $('selCap').textContent = `Pitch ${p.i}, ${D.fam_name[p.fam] || p.pt} to ${p.bat || 'the hitter'}, inning ${p.inn}, count ${p.b}-${p.s_}`;
+  const url = clipFor(p);
+  if (url) {
+    if (v.getAttribute('src') !== url) { v.src = url; v.load(); }
+    v.hidden = false; slot.hidden = true; $('closeClip').hidden = false;
+    v.play().catch(() => {});
+    $('clipInfo').textContent = 'Clip of this pitch';
+  } else {
+    v.hidden = true; v.removeAttribute('src'); slot.hidden = false; $('closeClip').hidden = true;
+    slot.textContent = 'No clip loaded for this pitch yet';
+    $('clipInfo').textContent = '';
+  }
+  const row = (a, b) => `<span>${a}</span><span>${b}</span>`;
+  kv.innerHTML = row('Grade vs plan', `${GRADE_LABEL[p.grade]}${p.grade !== 'executed' && p.dir ? ' · missed ' + p.dir : ''}`)
+    + LAYERS.map(l => row('vs ' + LAYER_NAME[l].toLowerCase(), p.m[l] ? `${f1(p.d[l])}" ${dirWord(p.m[l])} · score ${f1(p.sc[l])}` : 'no glove read')).join('')
+    + row('Result', (p.desc || '').replace(/_/g, ' '));
+}
+$('closeClip').onclick = () => { const v = $('player'); v.pause(); v.hidden = true; v.removeAttribute('src'); $('slot').hidden = false; $('closeClip').hidden = true; };
+$('prev').onclick = () => { if (st.g > 0) { st.g--; st.sel = null; render(); } };
+$('next').onclick = () => { if (st.g >= 0 && st.g < D.games.length - 1) { st.g++; st.sel = null; render(); } };
+$('season').onclick = () => { st.g = st.g < 0 ? D.games.length - 1 : -1; st.sel = null; render(); };
+$('vMiss').onclick = () => { st.view = 'miss'; render(); };
+$('vPlate').onclick = () => { st.view = 'plate'; render(); };
+render();
+</script>
+</body>
+</html>
