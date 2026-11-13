@@ -491,14 +491,22 @@ function drawOverlay(p) {
   if (v.hidden && !edit.on) { s.setAttribute('hidden', ''); $('ovNote').hidden = true; return; }   // no clip: the overlay only shows while editing
   const W = 1000, H = 562, R = contentRect(), U = u => (R.x + u * R.w) * W, V = vv => (R.y + vv * R.h) * H;
   const c = CAL[calKey(p)], t = p.tgt, zone = p.zone || [1.6, 3.4];
-  // inset: zone box with target ring, pitch location and miss
-  const ix = 14, iy = H - 14, k = 42, cx = ix + 1.2 * k, X = x => cx + x * k, Y = z => iy - z * k * 0.9;
+  // Orientation: +1 = catcher's view (first base on the right), -1 = looking
+  // in from center field (first base on the left). Follow the calibrated
+  // camera; otherwise assume the broadcast angle looks in from center field.
+  const ori = c ? Math.sign(c.ax) || 1 : (st.angle === 'hh' ? 1 : -1);
+  const hitterX = (p.st === 'L' ? 1 : -1) * 1.25;   // a left-handed hitter stands on the first-base side
+  // inset: zone box with target ring, pitch location and miss, oriented like the picture
+  const ix = 14, iy = H - 84, k = 54, cx = ix + 1.55 * k, X = x => cx + ori * x * k, Y = z => iy - z * k * 0.9;   // sits above the player's control bar
   const g = el(s, 'g', { opacity: .95 });
-  el(g, 'rect', { x: ix - 4, y: Y(5.0), width: 2.4 * k + 8, height: iy - Y(5.0) + 4, fill: 'rgba(11,11,13,.6)', rx: 6 });
-  el(g, 'rect', { x: X(-.708), y: Y(zone[1]), width: 1.417 * k, height: (zone[1] - zone[0]) * k * 0.9, fill: 'none', stroke: '#fff', 'stroke-opacity': .8 });
+  el(g, 'rect', { x: ix - 4, y: Y(4.6) - 4, width: 3.1 * k + 8, height: iy - Y(4.6) + 22, fill: 'rgba(11,11,13,.62)', rx: 6 });
+  el(g, 'rect', { x: Math.min(X(-.708), X(.708)), y: Y(zone[1]), width: 1.417 * k, height: (zone[1] - zone[0]) * k * 0.9, fill: 'none', stroke: '#fff', 'stroke-opacity': .8 });
   el(g, 'path', { d: `M${X(-.708)} ${Y(0.25)} L${X(.708)} ${Y(0.25)} L${X(.708)} ${Y(0.1)} L${X(0)} ${Y(0)} L${X(-.708)} ${Y(0.1)} Z`, fill: 'none', stroke: '#8e8e96' });
-  if (t) { el(g, 'line', { x1: X(t[0]), y1: Y(t[1]), x2: X(p.x), y2: Y(p.z), stroke: col(p.fam), 'stroke-width': 1.5 }); el(g, 'circle', { cx: X(t[0]), cy: Y(t[1]), r: 5, fill: 'none', stroke: 'var(--gold)', 'stroke-width': 2 }); }
-  el(g, 'circle', { cx: X(Math.max(-1.2, Math.min(1.2, p.x))), cy: Y(Math.max(0, Math.min(4.8, p.z))), r: 4, fill: col(p.fam), stroke: '#0b0b0d' });
+  el(g, 'line', { x1: X(hitterX), x2: X(hitterX), y1: Y(0.2), y2: Y(zone[1] + 0.6), stroke: '#8e8e96', 'stroke-dasharray': '3 3' });
+  el(g, 'text', { x: X(hitterX), y: Y(zone[1] + 0.9), 'text-anchor': 'middle', style: 'fill:#8e8e96;font-size:10px' }, p.st + 'HH');
+  el(g, 'text', { x: ix, y: iy + 16, style: 'fill:#8e8e96;font-size:10px' }, ori > 0 ? 'catcher’s view' : 'from center field');
+  if (t) { el(g, 'line', { x1: X(t[0]), y1: Y(t[1]), x2: X(p.x), y2: Y(p.z), stroke: col(p.fam), 'stroke-width': 1.5 }); el(g, 'circle', { cx: X(t[0]), cy: Y(t[1]), r: 6, fill: 'none', stroke: 'var(--gold)', 'stroke-width': 2 }); }
+  el(g, 'circle', { cx: X(Math.max(-1.45, Math.min(1.45, p.x))), cy: Y(Math.max(0, Math.min(4.4, p.z))), r: 5, fill: col(p.fam), stroke: '#0b0b0d' });
   // in-frame ring, when this park and angle are calibrated
   if (c && t && !cal.on) {
     const [u, vv] = project(c, t[0], t[1]), [ua, va] = project(c, p.x, p.z);
@@ -511,20 +519,22 @@ function drawOverlay(p) {
   // the glove read: white open circle, in the inset and (calibrated) on the picture
   const gl = edit.on ? edit.glove : p.glove;
   if (gl) {
-    el(g, 'circle', { cx: X(gl[0]), cy: Y(gl[1]), r: 5, fill: 'none', stroke: '#fff', 'stroke-width': 2 });
+    el(g, 'circle', { cx: X(gl[0]), cy: Y(gl[1]), r: 6, fill: 'none', stroke: '#fff', 'stroke-width': 2 });
     if (c && !cal.on) { const [ug, vg] = project(c, gl[0], gl[1]); el(s, 'circle', { cx: U(ug), cy: V(vg), r: 12, fill: 'none', stroke: '#fff', 'stroke-width': 3 }); }
   }
   // edit mode: a large zone panel to tap in
   if (edit.on && edit.mode === 'panel') {
-    const pw = 300, ph = 420, px0 = W / 2 - pw / 2, py0 = H / 2 - ph / 2 + 10, k2 = 78, cx2 = px0 + pw / 2, X2 = x => cx2 + x * k2, Y2 = z => py0 + ph - 40 - z * k2 * 0.95;
-    edit.panel = { X2, Y2, k2, px0, py0, pw, ph };
+    const pw = 300, ph = 420, px0 = W / 2 - pw / 2, py0 = H / 2 - ph / 2 + 10, k2 = 78, cx2 = px0 + pw / 2, X2 = x => cx2 + ori * x * k2, Y2 = z => py0 + ph - 40 - z * k2 * 0.95;
+    edit.panel = { X2, Y2, k2, px0, py0, pw, ph, ori };
     el(s, 'rect', { x: 0, y: 0, width: W, height: H, fill: 'rgba(11,11,13,.55)' });
     el(s, 'rect', { x: px0, y: py0, width: pw, height: ph, fill: 'rgba(19,19,22,.96)', stroke: 'var(--gold)', rx: 10 });
     for (let xx = -2; xx <= 2; xx++) el(s, 'line', { x1: X2(xx), x2: X2(xx), y1: py0 + 8, y2: py0 + ph - 8, stroke: '#232328' });
-    el(s, 'rect', { x: X2(-.708), y: Y2(zone[1]), width: 1.417 * k2, height: (zone[1] - zone[0]) * k2 * 0.95, fill: 'none', stroke: '#fff', 'stroke-width': 1.5 });
+    el(s, 'rect', { x: Math.min(X2(-.708), X2(.708)), y: Y2(zone[1]), width: 1.417 * k2, height: (zone[1] - zone[0]) * k2 * 0.95, fill: 'none', stroke: '#fff', 'stroke-width': 1.5 });
     el(s, 'path', { d: `M${X2(-.708)} ${Y2(0.25)} L${X2(.708)} ${Y2(0.25)} L${X2(.708)} ${Y2(0.1)} L${X2(0)} ${Y2(0)} L${X2(-.708)} ${Y2(0.1)} Z`, fill: 'none', stroke: '#8e8e96' });
+    el(s, 'line', { x1: X2(hitterX), x2: X2(hitterX), y1: Y2(0.2), y2: Y2(zone[1] + 0.6), stroke: '#8e8e96', 'stroke-dasharray': '3 3' });
+    el(s, 'text', { x: X2(hitterX), y: Y2(zone[1] + 0.9), 'text-anchor': 'middle', style: 'fill:#8e8e96;font-size:11px' }, p.st + 'HH');
     el(s, 'text', { x: px0 + 10, y: py0 + 20, style: 'fill:#efece4;font-size:13px;font-weight:700' }, 'Tap where the glove was set');
-    el(s, 'text', { x: px0 + 10, y: py0 + ph - 10, style: 'fill:#8e8e96;font-size:11px' }, `${p.st}HH · catcher’s view`);
+    el(s, 'text', { x: px0 + 10, y: py0 + ph - 10, style: 'fill:#8e8e96;font-size:11px' }, ori > 0 ? 'catcher’s view, like the picture' : 'from center field, like the picture');
     if (t) el(s, 'circle', { cx: X2(t[0]), cy: Y2(t[1]), r: 9, fill: 'none', stroke: 'var(--gold)', 'stroke-width': 2, 'stroke-dasharray': '4 3' });
     el(s, 'circle', { cx: X2(Math.max(-1.6, Math.min(1.6, p.x))), cy: Y2(Math.max(0, Math.min(5, p.z))), r: 7, fill: col(p.fam), stroke: '#0b0b0d' });
     if (edit.glove) el(s, 'circle', { cx: X2(edit.glove[0]), cy: Y2(edit.glove[1]), r: 11, fill: 'none', stroke: '#fff', 'stroke-width': 3 });
@@ -532,7 +542,7 @@ function drawOverlay(p) {
   const note = $('ovNote'); note.hidden = false;
   note.textContent = (c ? 'Dashed ring = the plan target drawn on the picture (approximate, from this park’s camera calibration). Inset: zone, target ring, where it went.' : 'Inset: zone, target ring, where it went. The ring is not drawn in the picture yet: this park’s camera is not calibrated.' + (COACH ? ' A coach can do it from Calibrate camera with four taps.' : ''))
     + (p.glove ? ' White circle = the glove read.' : '')
-    + ' The dot is where the ball crossed the front of the plate; the catcher receives it a couple of feet later, lower and still moving, so it will not sit in the mitt on the picture.';
+    + ' The inset is oriented like the picture. The dot is where the ball crossed the front of the plate; the catcher receives it about two feet later and a few inches lower.';
   $('calBtn').hidden = !COACH; $('calBtn').textContent = cal.on ? 'Cancel' : c ? 'Recalibrate camera' : 'Calibrate camera';
 }
 
@@ -569,7 +579,7 @@ $('overlay').addEventListener('click', ev => {
   if (edit.mode === 'panel') {
     const P = edit.panel; if (!P) return;
     if (sx < P.px0 || sx > P.px0 + P.pw || sy < P.py0 || sy > P.py0 + P.ph) return;
-    edit.glove = [(sx - (P.px0 + P.pw / 2)) / P.k2, (P.py0 + P.ph - 40 - sy) / (P.k2 * 0.95)];
+    edit.glove = [P.ori * (sx - (P.px0 + P.pw / 2)) / P.k2, (P.py0 + P.ph - 40 - sy) / (P.k2 * 0.95)];
   } else {
     const c = CAL[calKey(st.sel)], R = contentRect(); if (!c) return;
     const u = (sx / W - R.x) / R.w, vv = (sy / H - R.y) / R.h;
