@@ -167,10 +167,13 @@ and angle, keyed `<park>|<angle>` (park = the pitcher's team when at home,
 else the opponent). The pitch dot on the picture is where the ball crossed
 the front of the plate; the catcher receives it a couple of feet later and
 lower, so it does not sit in the mitt. Calibrations live in the browser and are seeded
-from `data/<id>-cal.json`, which is committed (it holds no URLs). The home
-broadcast camera for the pitcher's park was calibrated on 2026-11-13; away
-parks need a coach to tap once each. This is a flat map, so it is good near
-the plate and approximate off it; a true per-camera solve is a later step.
+from `data/<id>-cal.json`, which is committed (it holds no URLs). All 13
+parks in the 2026 schedule have a broadcast-camera calibration (home plus
+NYM, CIN, MIL, AZ, TOR, HOU, COL, PHI, CLE, MIA, SD, CHC), tapped on
+2026-11-13 from magnified paused frames, so expect a few inches of slop;
+Recalibrate camera on any clip from that park replaces one. This is a flat
+map, so it is good near the plate and approximate off it; a true per-camera
+solve is a later step.
 
 **Edit target.** The coach tool under a clip. It sets or corrects the glove
 read for the selected pitch, where the catcher set up, in plate feet: tap on

@@ -22,10 +22,11 @@ target ring drawn in the picture wherever the park's camera is calibrated
 (four taps by a coach; home park done). Edit target done: glove reads per
 pitch from a tap, with the glove and glove + habit layers scoring from them.
 Reads and calibrations go to the team store (the app's backend) when a coach
-is signed in, and the coach tools are hidden from everyone else. Not yet:
-the plan box drawn for the selected pitch (rules stay server-side), two
-seasons side by side (one season of data so far), calibrations for the away
-parks.
+is signed in, and the coach tools are hidden from everyone else. Every park
+in the 2026 schedule has a broadcast-camera calibration in the store (13
+parks, tapped from magnified paused frames, approximate). Not yet: the plan
+box drawn for the selected pitch (rules stay server-side), two seasons side
+by side (one season of data so far).
 
 ## Must have: click a pitch, watch the pitch
 
