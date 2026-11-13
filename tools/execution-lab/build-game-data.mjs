@@ -61,6 +61,16 @@ if (existsSync(relPath)) for (const line of gunzipSync(readFileSync(relPath)).to
   const [pid, rs, rh, bl] = line.split('\t');
   if (pid && rs !== '' && rh !== '') REL[pid] = [+rs, +rh, bl === '' ? 0 : +bl];
 }
+// Situation per pitch (private/harvest/<id>-sit.tsv.gz: pitch id, inning,
+// outs, game at-bat number, own runs, opponent runs, pitch number in game,
+// count). Ships as outs and the score from the pitcher's side; times through
+// the order is counted below from the at-bat order of each start.
+const SIT = {};
+const sitPath = join(ROOT, 'private', 'harvest', `${id}-sit.tsv.gz`);
+if (existsSync(sitPath)) for (const line of gunzipSync(readFileSync(sitPath)).toString('utf8').trim().split('\n')) {
+  const [pid, , outs, , runsFor, runsAgainst] = line.split('\t');
+  if (pid && outs !== '') SIT[pid] = { o: +outs, sd: (+runsFor) - (+runsAgainst) };
+}
 function catchPoint(pid, x, z) {
   const r = REL[pid]; if (!r) return null;
   const sx = (x - r[0]) / FLIGHT, sz = (z - r[1]) / FLIGHT - 4 * (r[2] / 12) / FLIGHT;
@@ -88,10 +98,15 @@ for (const r of rows) {
     zone: pitch.zone ? [+pitch.zone.bot.toFixed(3), +pitch.zone.top.toFixed(3)] : null,
     pid: r.play_id,
     cp: catchPoint(r.play_id, pitch.x, pitch.z) || undefined,
+    o: SIT[r.play_id] ? SIT[r.play_id].o : undefined, sd: SIT[r.play_id] ? SIT[r.play_id].sd : undefined,
   });
 }
 const everyGame = Object.values(games).sort((a, b) => a.date.localeCompare(b.date));
-everyGame.forEach(g => { g.pitches.sort((a, b) => a.inn - b.inn || a.ab - b.ab || a.pn - b.pn); g.pitches.forEach((p, i) => p.i = i + 1); g.n = g.pitches.length; });
+everyGame.forEach(g => {
+  g.pitches.sort((a, b) => a.inn - b.inn || a.ab - b.ab || a.pn - b.pn); g.pitches.forEach((p, i) => p.i = i + 1); g.n = g.pitches.length;
+  let bf = 0, lastAb = null;   // batters faced, in order: times through the order = ceil(bf / 9)
+  for (const p of g.pitches) { if (p.ab !== lastAb) { bf++; lastAb = p.ab; } p.tto = Math.ceil(bf / 9); }
+});
 const seasons = [...new Set(everyGame.map(g => g.season))].sort();
 const latest = seasons[seasons.length - 1];
 const list = everyGame.filter(g => g.season === latest);
@@ -129,4 +144,5 @@ const out = {
 const outPath = join(ROOT, 'www', 'lab', 'execution', 'data', `${id}.json`);
 writeFileSync(outPath, JSON.stringify(out));
 const withCp = everyGame.reduce((n, g) => n + g.pitches.filter(p => p.cp).length, 0);
-console.log(`wrote ${outPath}: ${everyGame.length} games over ${seasons.join(', ')}; anchor ${latest} ${baseline.plan} in; catch points on ${withCp} pitches; ${JSON.stringify(out.seasons)}`);
+const withSit = everyGame.reduce((n, g) => n + g.pitches.filter(p => p.o != null).length, 0);
+console.log(`wrote ${outPath}: ${everyGame.length} games over ${seasons.join(', ')}; anchor ${latest} ${baseline.plan} in; catch points on ${withCp}, situations on ${withSit} pitches; ${JSON.stringify(out.seasons)}`);

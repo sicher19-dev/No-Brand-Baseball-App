@@ -86,6 +86,10 @@ tr.sel td{background:var(--gold-soft)}
 .video.cal video,.video.edit video{pointer-events:none}
 .video.edit .ov{pointer-events:auto;cursor:crosshair}
 .video.zoom video,.video.zoom .ov{transform:scale(2.4);transform-origin:var(--zx,50%) var(--zy,55%)}
+tr.grp td{color:var(--gold);font-size:11px;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;padding-top:12px;border-bottom:0}
+tr.thin td{opacity:.45}
+small.real{color:var(--gold);font-weight:700;font-size:11px}
+small.noise{color:var(--dim);font-size:11px}
 .tagbar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px}
 .tagbar .prog{font-size:12px;color:var(--mute);margin-right:auto}
 .editbar{margin-top:8px;border:1px solid var(--gold-dim);background:var(--gold-soft);border-radius:10px;padding:10px 12px;font-size:13px}
@@ -126,6 +130,7 @@ tr.sel td{background:var(--gold-soft)}
   <button class="tab" data-tab="read" role="tab">Read<small>scores and the grade mix</small></button>
   <button class="tab" data-tab="pitches" role="tab">Pitches<small>chart, log and video</small></button>
   <button class="tab" data-tab="starts" role="tab">Starts<small>start by start, game log</small></button>
+  <button class="tab" data-tab="situations" role="tab">Situations<small>outs, score, times through</small></button>
 </div>
 
 <div class="pane" data-pane="read">
@@ -194,6 +199,14 @@ tr.sel td{background:var(--gold-soft)}
 <div class="card" data-help="games">
   <h2>Game log<small>tap a game to open it</small></h2>
   <div class="scroll"><table id="glog"></table></div>
+</div>
+</div>
+
+<div class="pane" data-pane="situations">
+<div class="card" data-help="situations">
+  <h2>By situation<small id="sitSub">this view, split six ways</small></h2>
+  <div style="overflow:auto"><table id="sitTable"></table></div>
+  <div class="note" id="sitNote"></div>
 </div>
 </div>
 
@@ -312,7 +325,7 @@ const gloveCount = () => ALL.filter(p => p.glove).length;
 const st = { season: D.season || SEASONS[SEASONS.length - 1], g: 0, layer: 'plan', count: 'all', pt: 'all', view: 'miss', sel: null, metric: 'score', series: [] };
 let tag = { on: false, list: [], i: 0, saved: 0 };   // the Tag gloves flow (coach tool), further down
 // Tabs: Read, Pitches, Starts. The URL's ?t= wins, then the last tab used on this device.
-const TABS = ['read', 'pitches', 'starts'];
+const TABS = ['read', 'pitches', 'starts', 'situations'];
 let tabPick = null; try { tabPick = new URLSearchParams(location.search).get('t') || localStorage.getItem('nb_exec_tab'); } catch (e) {}
 st.tab = TABS.includes(tabPick) ? tabPick : 'read';
 function setTab(t, scroll) {
@@ -461,6 +474,37 @@ function drawTables(P, SS) {
   }
   $('ptTable').innerHTML = h + '</tbody>';
   $('ptTable').querySelectorAll('tbody tr').forEach(r => r.onclick = () => { st.pt = st.pt === r.dataset.pt ? 'all' : r.dataset.pt; st.sel = null; render(); });
+  drawSituations(P);
+}
+// ---------- by situation ----------
+// Six cuts of the pitches in view. Runners on base are not in the feed, so
+// "late and close" (sixth inning on, within a run) stands in for leverage.
+const SIT = [
+  { name: 'Times through the order', cats: ['1st time through', '2nd time through', '3rd time and later'], of: p => p.tto == null ? null : p.tto >= 3 ? 2 : p.tto - 1 },
+  { name: 'Outs', cats: ['0 outs', '1 out', '2 outs'], of: p => p.o == null ? null : p.o },
+  { name: 'Score', cats: ['Ahead', 'Tied', 'Behind'], of: p => p.sd == null ? null : p.sd > 0 ? 0 : p.sd === 0 ? 1 : 2 },
+  { name: 'Late and close', cats: ['6th inning on, within a run', 'Everything else'], of: p => p.sd == null ? null : (p.inn >= 6 && Math.abs(p.sd) <= 1) ? 0 : 1 },
+  { name: 'Inning', cats: ['Innings 1–3', 'Innings 4–6', '7th inning on'], of: p => p.inn <= 3 ? 0 : p.inn <= 6 ? 1 : 2 },
+  { name: 'Count', cats: ['Ahead in the count', 'Even count', 'Behind in the count'], of: p => p.b < p.s_ ? 0 : p.b === p.s_ ? 1 : 2 },
+];
+function drawSituations(P) {
+  const S0 = stats(P, st.layer), tb = $('sitTable');
+  $('sitSub').textContent = (st.g < 0 ? 'whole season' : 'this game') + ' · each row vs everything in view';
+  if (!S0) { tb.innerHTML = ''; $('sitNote').textContent = 'No graded pitches in view on this layer.'; return; }
+  let h = '<thead><tr><th class="l">Situation</th><th>N</th><th>Score</th><th>Executed</th><th>Middle</th><th>Miss</th></tr></thead><tbody>', rows = 0;
+  for (const dim of SIT) {
+    const groups = dim.cats.map(() => []);
+    for (const p of P) { const k = dim.of(p); if (k != null) groups[k].push(p); }
+    if (groups.filter(Q => Q.length).length < 2) continue;
+    h += `<tr class="grp"><td class="l" colspan="6">${dim.name}</td></tr>`;
+    dim.cats.forEach((cat, k) => {
+      const Q = groups[k], S = stats(Q, st.layer); if (!S) return; rows++;
+      const d = S.score - S0.score, real = Math.abs(d) > S.band && Q.length >= 10;
+      h += `<tr class="${Q.length < 10 ? 'thin' : ''}"><td class="l">${cat}</td><td>${Q.length}</td><td><span class="chip" style="background:${chipBg(S.score)}">${f1(S.score)}</span> ${delta(S.score, S0.score, 1, '', 'view')}${Q.length >= 10 ? ` <small class="${real ? 'real' : 'noise'}">${real ? 'beyond noise' : 'within noise'}</small>` : ''}</td><td>${pct(S.exec)}</td><td>${pct(S.cent)}</td><td>${f1(S.med)}"</td></tr>`;
+    });
+  }
+  tb.innerHTML = rows ? h + '</tbody>' : '';
+  $('sitNote').textContent = rows ? `Whole view: ${P.length} pitches, Command ${f1(S0.score)}, executed ${pct(S0.exec)}, dead-middle ${pct(S0.cent)}, typical miss ${f1(S0.med)}". Rows under 10 pitches are faded. Runners on base are not in the feed yet, so "late and close" stands in for pressure.` : 'Situation data is not built for these pitches yet.';
   h = '<thead><tr><th>#</th><th>Inn</th><th>Count</th><th class="l">Batter</th><th class="l">Pitch</th><th>Score</th><th>Miss</th><th>Where</th><th>Grade</th></tr></thead><tbody>';
   P.forEach((p, ix) => { h += `<tr data-ix="${ix}" class="${st.sel === p ? 'sel' : ''}"><td>${st.g < 0 ? 'G' + (p.gi + 1) + '·' : ''}${p.i}</td><td>${p.inn}</td><td>${p.b}-${p.s_}</td><td class="l">${p.bat || '–'} <span style="color:var(--dim)">${p.st}HH</span></td><td class="l"><span class="dot" style="background:${col(p.fam)}"></span>${p.pt}</td><td><span class="chip" style="background:${chipBg(p.sc[st.layer])}">${f1(p.sc[st.layer])}</span></td><td>${p.d[st.layer] == null ? '–' : f1(p.d[st.layer]) + '"'}</td><td>${p.m[st.layer] ? (p.grade === 'executed' ? 'on target' : p.dir || dirWord(p.m[st.layer])) : 'no glove read'}</td><td><span class="g" style="border-color:${GC[p.grade]}">${GRADE_LABEL[p.grade]}</span></td></tr>`; });
   $('log').innerHTML = h + '</tbody>';
@@ -824,6 +868,7 @@ const HELP = {
   log: 'Every pitch in order. <b>Where</b> is which way it missed. <b>Grade</b> is one of executed (in the box), within one ball (under 3 inches), centered (dead middle), strike off target, or ball off target. Tap a row to watch it.',
   trend: 'Your Command score start by start. The shaded band is noise: a point that leaves the previous band is a real change, a point inside it is not. Add pitch types to see which one moved. Tap a start to open it.',
   games: 'One line per start with pitches, Command, executed and dead-middle shares and the typical miss. Tap a start to open it.',
+  situations: 'The same pitches cut six ways: how many times through the order, outs, the score, late-and-close spots, the inning, and whether you were ahead or behind in the count. Each row’s change is against everything in view. <b>Beyond noise</b> means the gap is bigger than luck alone would make with that many pitches, so it is a real pattern; <b>within noise</b> means it could be nothing. Rows with fewer than 10 pitches are faded.',
 };
 for (const card of document.querySelectorAll('[data-help]')) {
   const key = card.dataset.help, h2 = card.querySelector('h2'), host = h2 ? h2.firstChild : null;

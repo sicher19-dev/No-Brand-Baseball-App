@@ -340,6 +340,25 @@ pitcher. What makes reads cheap instead is removing everything but the tap:
   pitch opens, S skips, Esc stops. Saves go through the same path as Edit
   target (team store when a coach is signed in). A start takes a few minutes.
 
+## By situation (`o`, `sd`, `tto` on each pitch)
+
+The Situations tab cuts the pitches in view six ways: times through the
+order, outs, score, late-and-close, inning, and ahead or behind in the
+count. Each row shows pitches, Command with the change against everything in
+view, executed and dead-middle shares and the typical miss; the change is
+marked "beyond noise" when it exceeds that row's own noise band
+(1.96 sd / sqrt n) and the row has at least 10 pitches, else "within noise".
+
+Inputs: `private/harvest/<id>-sit.tsv.gz` from the provider's pitch log
+(pitch id, inning, outs, game at-bat number, own runs, opponent runs at that
+moment, pitch number in game, count; 5,887 of 5,887 joined). The build ships
+`o` (outs) and `sd` (own runs minus opponent runs, so positive is ahead), and
+counts `tto` itself from the at-bat order of each start (batters faced, nine
+per time through), because the provider's at-bat number counts both teams.
+Runners on base are not in the feed, so there is no leverage index yet;
+"late and close" (sixth inning on, within a run) stands in for pressure and
+the page says so.
+
 ## What the acceptance test found (2026-11-13)
 
 Engine + rules derived from the built report, run on the internal pitch file:

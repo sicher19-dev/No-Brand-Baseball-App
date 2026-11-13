@@ -92,6 +92,12 @@ in place.
   repeatability.
 - Noise band on every start so a one-game swing reads as noise when it is.
 - Count split (before two strikes / with two strikes) everywhere.
+- Situations tab: times through the order, outs, score, late and close,
+  inning, ahead or behind in the count, each marked beyond or within noise.
+- Catch point on every pitch, so the clip's dot sits where the catcher
+  takes the ball.
+- Tag gloves: glove reads for a whole start in a few minutes.
+- Tabs (Read, Pitches, Starts, Situations) so the page is not one scroll.
 - Edit target writes back and re-scores, instead of a one-off correction.
 - Lab mode: body and mound-force data attach to a pitch when a lab session
   exists (later step).
