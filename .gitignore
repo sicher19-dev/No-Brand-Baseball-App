@@ -16,3 +16,11 @@ private/
 
 # Execution Lab: clip maps carry provider video URLs; local only
 www/lab/execution/data/*-clips.json
+
+# Tip Detection python env
+.venv-tip/
+
+# Tip Detection: rendered video frames stay local
+www/lab/tip/data/*/frames/
+# broadcast frames used for the angle survey stay local
+docs/tip-detection/angles/
