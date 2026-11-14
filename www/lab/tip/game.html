@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tip Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0b0d; --panel:#131316; --panel2:#191920; --raise:#202027;
+  --ink:#efece4; --mute:#8e8e96; --dim:#5c5c63;
+  --gold:#f5b700; --gold-dim:#b58400; --gold-soft:rgba(245,183,0,.12);
+  --line:#232328; --line-soft:#1b1b1f;
+  --green:#4caf6d; --blue:#6aa5d6; --red:#d65c5c;
+  --FF:#e85d75; --SI:#f08c2e; --FS:#3fb8a8; --CH:#4ccc6a; --ST:#c9a227; --SL:#e5e05a; --CU:#5bc8f5; --FC:#b48cf0;
+  --hitter:#f5b700; --cf:#6aa5d6;
+  --sat:env(safe-area-inset-top,0px); --sab:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font-family:'Archivo',system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.4;-webkit-font-smoothing:antialiased}
+a{color:var(--gold);text-decoration:none}
+button{font-family:inherit;color:inherit}
+.wrap{max-width:760px;margin:0 auto;padding:calc(14px + var(--sat)) 14px calc(50px + var(--sab))}
+header.top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.mark{width:40px;height:40px;border-radius:10px;background:var(--gold);color:#0b0b0d;font-weight:900;font-size:17px;letter-spacing:-1px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.kicker{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--gold);font-weight:700}
+h1{font-size:22px;margin:2px 0 0;font-weight:900;letter-spacing:-.3px;line-height:1.1}
+.sub{color:var(--mute);font-size:13px;margin-top:3px}
+.back{font-size:13px;color:var(--mute);margin-bottom:10px;display:inline-block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.card h2{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--mute);margin:0 0 10px;font-weight:700;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.card h2 small{letter-spacing:0;text-transform:none;font-weight:500;font-size:12px;color:var(--dim);text-align:right}
+.tag{display:inline-block;padding:1px 7px;border-radius:999px;font-size:11px;font-weight:700;border:1px solid var(--line);color:var(--mute);vertical-align:1px;margin-left:6px}
+.tag.game{border-color:var(--blue);color:var(--blue)}
+.grade{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;border:1px solid var(--line);color:var(--mute)}
+.grade.clear{background:rgba(214,92,92,.15);border-color:var(--red);color:#ff8a8a}
+.grade.weak{background:var(--gold-soft);border-color:var(--gold-dim);color:var(--gold)}
+.grade.none{background:rgba(76,175,109,.12);border-color:var(--green);color:#7fd49a}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--mute);text-align:right;padding:6px 6px;border-bottom:1px solid var(--line);font-weight:700}
+td{padding:8px 6px;border-bottom:1px solid var(--line-soft);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+.note{font-size:12px;color:var(--dim);margin-top:8px;line-height:1.45}
+.pitch{border-top:1px solid var(--line-soft);padding:14px 0}
+.pitch:first-child{border-top:0;padding-top:0}
+.pitch .head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.pitch .head b{font-size:15px}
+.pitch .head b i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px;vertical-align:0}
+.pitch .head span{font-size:12px;color:var(--mute)}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.vid{background:#000;border:1px solid var(--line);border-radius:10px;overflow:hidden;position:relative}
+.vid video,.vid img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;background:#000}
+.vid .cap{position:absolute;left:0;right:0;bottom:0;padding:6px 8px;font-size:12px;font-weight:700;background:linear-gradient(transparent,rgba(0,0,0,.75))}
+.vid .cap small{display:block;font-weight:500;color:#cfcfd4;font-size:11px}
+.vid .mark2{position:absolute;top:6px;left:6px;padding:2px 7px;border-radius:999px;font-size:10px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;background:rgba(0,0,0,.6);color:var(--gold)}
+.tell{margin-top:8px;font-size:14px;line-height:1.45}
+.tell small{display:block;color:var(--dim);font-size:12px;margin-top:2px}
+.cue{font-size:16px;line-height:1.5;font-weight:600;white-space:pre-wrap}
+.cue.empty-cue{color:var(--dim);font-weight:500;font-size:13px}
+.fixes{list-style:none;margin:8px 0 0;padding:0}
+.fixes li{padding:6px 0;border-top:1px solid var(--line-soft);font-size:14px}
+.empty{color:var(--dim);font-size:13px;padding:14px 0;text-align:center}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.btn{background:transparent;border:1px solid var(--line);border-radius:9px;padding:8px 12px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;min-height:36px}
+.btn.on{background:var(--gold);color:#0b0b0d;border-color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <div class="mark">NB</div>
+  <div>
+    <div class="kicker">No Brand Baseball Analytics</div>
+    <h1 id="title">Tip Report</h1>
+    <div class="sub" id="who"></div>
+  </div>
+</header>
+<a class="back" id="back" href="#">← All games</a>
+
+<div class="card">
+  <h2>This game <small>how readable he was, by angle and delivery</small></h2>
+  <div id="summary"></div>
+  <div class="note">Readable: how often a model that never saw this game named the pitch type from the video alone at the chosen moment. Usual pitch: guessing his most common type. Count only: what the situation gave with no video.</div>
+</div>
+
+<div class="card">
+  <h2>Pitches with a cue <small id="flagCount"></small></h2>
+  <div class="seg" id="flagSeg" hidden></div>
+  <div id="pitches"></div>
+  <div class="note">Left: the flagged pitch, set through release, cropped to the pitcher. Right: a typical pitch of a different type from the same game and angle, for comparison. Only pitches where the video said the type at least half a second before release, with the count and runners unable to explain it, are listed. Tap a clip to play or pause.</div>
+</div>
+
+<div class="card">
+  <h2>Quick fix</h2>
+  <div class="cue" id="cue"></div>
+  <ul class="fixes" id="fixes"></ul>
+  <div class="note">The coach's cue comes first. The lines under it are drafted from the strongest tells and are a starting point, not a prescription.</div>
+</div>
+</div>
+
+<script type="module">
+const $ = id => document.getElementById(id);
+const qs = new URLSearchParams(location.search);
+const PID = (qs.get('p') || 'skenes').replace(/[^a-z0-9_-]/gi, '');
+const G = (qs.get('g') || '').replace(/[^0-9-]/g, '');
+$('back').href = `index.html?p=${PID}`;
+const pct = x => (x == null ? '–' : Math.round(x * 100) + '%');
+const famColor = f => `var(--${f}, var(--mute))`;
+const [D, GM] = await Promise.all([
+  fetch(`data/${PID}.json`, { cache: 'no-store' }).then(r => r.json()),
+  fetch(`data/${PID}/games/${G}.json`, { cache: 'no-store' }).then(r => r.ok ? r.json() : null),
+]);
+const longDate = d => { const [y, m, dd] = d.split('-').map(Number); return new Date(y, m - 1, dd).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }); };
+if (!GM) {
+  $('title').textContent = 'Tip Report';
+  $('who').textContent = `${D.pitcher.name} · ${G ? longDate(G) : 'game'} · not processed yet`;
+  $('summary').innerHTML = '<div class="empty">This game has not been run through the model yet.</div>';
+  $('pitches').innerHTML = ''; $('cue').textContent = '';
+} else {
+  $('title').textContent = `${GM.home ? 'vs' : 'at'} ${GM.opp} · ${longDate(GM.date)}`;
+  $('who').innerHTML = `${D.pitcher.name} · ${GM.pitches} pitches <span class="tag game">${GM.label}</span>`;
+  // summary
+  $('summary').innerHTML = GM.entries.length ? `<table><tr><th>Angle</th><th>Moment</th><th>Readable</th><th>Usual pitch</th><th>Count only</th><th>Cues</th></tr>` +
+    GM.entries.map(e => `<tr><td><span class="grade ${e.grade}">${e.grade === 'none' ? 'no tell' : e.grade}</span> ${e.label}</td><td style="white-space:normal">${e.when}</td><td><b>${pct(e.acc)}</b></td><td>${pct(e.baseline)}</td><td>${pct(e.situation)}</td><td>${e.flagged == null ? '–' : e.flagged}</td></tr>`).join('') + '</table>'
+    : '<div class="empty">No model output for this game yet.</div>';
+  // flagged pitches, with an angle filter when more than one angle flagged
+  const keys = [...new Set(GM.flagged.map(f => f.label))];
+  let cur = 'all';
+  function draw() {
+    const list = GM.flagged.filter(f => cur === 'all' || f.label === cur);
+    $('flagCount').textContent = `${GM.flagged.length} of ${GM.pitches} pitches`;
+    if (keys.length > 1) {
+      $('flagSeg').hidden = false;
+      $('flagSeg').innerHTML = [`<button class="btn ${cur === 'all' ? 'on' : ''}" data-k="all">All angles</button>`].concat(keys.map(k => `<button class="btn ${cur === k ? 'on' : ''}" data-k="${k}">${k}</button>`)).join('');
+    }
+    $('pitches').innerHTML = list.length ? list.map(f => {
+      const media = (src, still, fam, famName, capTop, capSub, mark) => `<div class="vid">${mark ? `<span class="mark2">${mark}</span>` : ''}${src ? `<video src="data/${src}" muted loop playsinline preload="metadata" poster="${still ? 'data/' + still : ''}"></video>` : still ? `<img src="data/${still}" alt="">` : '<div style="aspect-ratio:3/4"></div>'}<div class="cap" style="border-bottom:3px solid ${famColor(fam)}">${capTop}<small>${capSub}</small></div></div>`;
+      const sit = [f.inning ? `inning ${f.inning}` : '', f.count ? `count ${f.count}` : '', f.outs != null ? `${f.outs} out` : '', f.bat_side ? `${f.bat_side}HH` : ''].filter(Boolean).join(' · ');
+      return `<div class="pitch"><div class="head"><b><i style="background:${famColor(f.family)}"></i>${f.family_name}</b><span>${sit}</span><span>${f.label}</span></div>
+        <div class="pair">${media(f.clip, f.still, f.family, f.family_name, f.family_name, `cue ${f.when}`, 'flagged')}${f.compare ? media(f.compare.clip, f.compare.still, f.compare.family, f.compare.family_name, f.compare.family_name, 'typical, same game', 'compare') : '<div class="vid"><div style="aspect-ratio:3/4"></div><div class="cap">no comparison<small>only one pitch type read this game</small></div></div>'}</div>
+        <div class="tell">${f.tell || ''}<small>The video read ${f.family_name} at ${pct(f.conf)} ${f.when}; the count and runners alone gave ${pct(f.conf_sit)}.</small></div></div>`;
+    }).join('') : '<div class="empty">No pitch in this game was read early enough to count as a cue.</div>';
+    // play on tap, pause when out of view
+    const vids = [...$('pitches').querySelectorAll('video')];
+    vids.forEach(v => v.addEventListener('click', () => v.paused ? v.play() : v.pause()));
+    const io = new IntersectionObserver(es => es.forEach(e => { const v = e.target; if (e.isIntersecting) v.play().catch(() => {}); else v.pause(); }), { threshold: 0.4 });
+    vids.forEach(v => io.observe(v));
+  }
+  draw();
+  $('flagSeg').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; cur = b.dataset.k; draw(); });
+  // quick fix: shared coach cue (same storage as the dashboard) and drafted lines from this game's tells
+  let cue = D.fix_cue || '';
+  try { cue = localStorage.getItem('nb_tip_cue_' + PID) || cue; } catch (e) {}
+  $('cue').textContent = cue || 'No coach cue yet.'; $('cue').classList.toggle('empty-cue', !cue);
+  const fixes = [...new Set(GM.flagged.map(f => f.fix).filter(Boolean))].slice(0, 3);
+  const all = fixes.length ? fixes : (D.fix_suggestions || []);
+  $('fixes').innerHTML = all.map(x => `<li>${x}</li>`).join('') || '<li class="empty">Nothing to fix from this game.</li>';
+}
+</script>
+</body>
+</html>

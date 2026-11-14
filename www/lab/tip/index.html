@@ -104,6 +104,12 @@ th:first-child,td:first-child{text-align:left}
 </div>
 
 <div class="card">
+  <h2>Games <small>tap a game for the pitches with a cue</small></h2>
+  <div class="scroll"><table id="games"></table></div>
+  <div class="note">Readable: how often a model that never saw that game named the pitch type from the video alone, at the moment the tell shows earliest. Cues: pitches where the video said the type at least half a second before release and the count could not explain it.</div>
+</div>
+
+<div class="card">
   <h2>Tip timeline <small>how often pitch type was readable, by time before release</small></h2>
   <div class="seg delivseg" id="delivSeg" hidden></div>
   <div id="chart"></div>
@@ -199,6 +205,19 @@ $('verdicts').innerHTML = D.views.map(v => {
     <div class="fine">${v.clips} pitches in ${v.games} games${v.verdict && v.verdict.p != null && g !== 'pending' ? ` · chance of this by luck: ${luck(v.verdict.p)}` : ''}</div></div></div>`;
 }).join('');
 $('verdictNote').textContent = `Every finding here is ${D.label.replace('-', ' ')}: ${lab[1].toLowerCase()}. Weak means a small but real edge; clear means a hitter who knows what to look for would use it.`;
+
+// ---------- games ----------
+const games = D.games || [];
+const shortDate = d => { const [y, m, dd] = d.split('-').map(Number); return new Date(y, m - 1, dd).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); };
+$('games').innerHTML = games.length ? `<tr><th>Game</th><th>Pitches</th><th>Readable</th><th>Usual pitch</th><th>Count only</th><th>Cues</th></tr>` +
+  games.map(g => {
+    const b = g.best;
+    const row = g.processed
+      ? `<td><b>${pct(b.acc)}</b> <span style="color:var(--dim);font-size:11px">${b.view_label}${multi ? ', ' + b.delivery : ''}</span></td><td>${pct(b.baseline)}</td><td>${pct(b.situation)}</td><td>${g.n_flagged ? `<b style="color:var(--gold)">${g.n_flagged}</b>` : '0'}</td>`
+      : `<td colspan="4" style="color:var(--dim);text-align:left">not processed yet</td>`;
+    return `<tr style="cursor:pointer" data-g="${g.date}"><td>${shortDate(g.date)} <span style="color:var(--mute)">${g.home ? 'vs' : 'at'} ${g.opp}</span></td><td>${g.pitches}</td>${row}</tr>`;
+  }).join('') + '</table>' : '<div class="empty">No games yet.</div>';
+$('games').addEventListener('click', e => { const tr = e.target.closest('tr[data-g]'); if (tr) location.href = `game.html?p=${PID}&g=${tr.dataset.g}`; });
 
 // ---------- timeline chart ----------
 const W = 720, H = 300, PL = 44, PR = 30, PT = 16, PB = 54;

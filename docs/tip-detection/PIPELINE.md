@@ -15,9 +15,12 @@ tools/tip/
   py/events.py                set, leg lift, hand break, release per clip -> events/<view>.csv
   py/features.py              pose features at time slices -> features/<view>.csv
   py/train.py                 per-slice models with all checks -> models/<view>/timeline.json, report.md
-  py/report.py                page data + side-by-side frames -> www/lab/tip/data/<id>.json, data/<id>/frames/
+  py/report.py                dashboard + game pages + stills + cropped clips -> www/lab/tip/data/<id>.json,
+                              data/<id>/games/<date>.json, data/<id>/frames/, data/<id>/clips/
+  pose-loop.sh                coarse + pose over both views until everything downloaded is processed
 
-www/lab/tip/index.html?p=<id>   the player-facing Tip Report page (reads data/<id>.json)
+www/lab/tip/index.html?p=<id>            dashboard: verdicts, games list, timeline, tells, frames, fix cue
+www/lab/tip/game.html?p=<id>&g=<date>    one game: readability by angle, flagged pitches with clips, quick fix
 ```
 
 Views by team-server letter: `D` hitter view (open-side plate camera), `J` its
@@ -81,3 +84,16 @@ Lessons that shaped events.py:
   where no candidate passed.
 - Hands wiggle in the set (glove taps at 0.3-0.5 heights/s), so the set is
   defined by hands together and a quiet lead knee, not by stillness alone.
+
+## Game pages
+
+`train.py` writes `pitches.csv` per view and delivery: for every pitch and slice,
+the held-out video read (predicted type and the probability of the true type)
+next to the situation-only read. `report.py` turns that into a games list and
+one JSON per game. A pitch is flagged when, at least 0.5 s before release, the
+video named the type with p >= 0.6 and beat the situation read by 0.15 or more;
+only views and deliveries with a weak or clear verdict flag pitches
+(`--force-flags` overrides that for previews). Each flagged pitch gets a 2.6 s
+pitcher-only clip (ffmpeg crop from the tracked box, 480 px, no sound, no
+scorebug) and a comparison clip of the most common other type in that game.
+Clips and stills are gitignored; the JSON files hold only aggregates and play ids.

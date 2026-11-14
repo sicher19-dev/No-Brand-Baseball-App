@@ -7,7 +7,8 @@ the brief requires, and the tip timeline.
 Reads  private/tip/<id>/features/<view>.csv, events/<view>.csv
        private/<id>_execution_pitch_level_INTERNAL.csv   (pitch type, game, park, batter side)
        private/tip/<id>/situations-<season>.csv            (count, outs, runners, score, order)
-Writes private/tip/<id>/models/<view>/<delivery>/timeline.json, report.md, clips.csv
+Writes private/tip/<id>/models/<view>/<delivery>/timeline.json, report.md, clips.csv,
+       pitches.csv (per-pitch held-out reads at every slice)
 
 Rules applied here:
   * whole games are held out (leave-one-game-out); never random pitches
@@ -180,7 +181,7 @@ def run(df, delivery):
     dropped = {c: int(counts[c]) for c in counts.index if counts[c] < a.min_n}
     print(f'[{delivery}] {len(clips)} clips, {clips.game_date.nunique()} games; classes {classes}; not enough data: {dropped}', flush=True)
     df = df[df.family.isin(classes)]
-    results = []
+    results = []; pitch_rows = []
     logo = LeaveOneGroupOut()
     slices = [s for s in ORDER if s in set(df.slice)] + [s for s in sorted(set(df.slice)) if s not in ORDER]
     for s in slices:
@@ -200,6 +201,14 @@ def run(df, delivery):
         accg, llg, cmg, recg = summarize(Pg, labels, y)
         r.update(acc_gbm=round(accg, 4), logloss_gbm=round(llg, 4), recall_gbm=recg)
         Ps, _, _ = oof(gbm, Xs, y, groups, logo); r['acc_situation'] = round(summarize(Ps, labels, y)[0], 4)
+        # Per-pitch held-out reads: what the video said about this pitch before release,
+        # and what the situation alone said. Feeds the per-game pages.
+        li = {c: k for k, c in enumerate(labels)}
+        for i in range(len(y)):
+            k = li[y[i]]
+            pitch_rows.append(dict(play_id=d.play_id.iloc[i], game_date=groups[i], family=y[i], slice=s, t_before_release=r['t_before_release'],
+                                   pred=labels[int(P[i].argmax())], p_true=round(float(P[i, k]), 4),
+                                   pred_sit=labels[int(Ps[i].argmax())], p_true_sit=round(float(Ps[i, k]), 4), majority=maj[i]))
         Pc, _, _ = oof(gbm, Xc, y, groups, logo); r['acc_camera'] = round(summarize(Pc, labels, y)[0], 4)
         Pvs, _, _ = oof(gbm, Xvs, y, groups, logo); r['acc_video_plus_situation'] = round(summarize(Pvs, labels, y)[0], 4)
         pairs = {}
@@ -208,7 +217,7 @@ def run(df, delivery):
             m = np.isin(y, pos + neg)
             if m.sum() < 60 or not any(np.isin(y[m], pos)) or not any(np.isin(y[m], neg)):
                 continue
-            yb = np.isin(y[m], pos).astype(int).astype(object)
+            yb = np.isin(y[m], pos).astype(int)
             Pb, lb, mb = oof(lr, Xv[m], yb, groups[m], logo)
             pb = Pb[:, lb.index(1)] if 1 in lb else np.zeros(m.sum())
             pairs[name] = dict(n=int(m.sum()), acc=round(float(accuracy_score(yb.astype(int), (pb > 0.5).astype(int))), 4),
@@ -239,6 +248,7 @@ def run(df, delivery):
                    not_enough_data=dropped, min_n=a.min_n, perms=a.perms, slices=results, label='game-only')
     (out_dir / 'timeline.json').write_text(json.dumps(summary, indent=1))
     clips[['play_id', 'game_date', 'family']].to_csv(out_dir / 'clips.csv', index=False)
+    pd.DataFrame(pitch_rows).to_csv(out_dir / 'pitches.csv', index=False)
     lines = [f'# Tip timeline, {tk.VIEWS[view]["label"]}, {delivery} ({a.pitcher}, {a.season})', '', f'Delivery rule: {rule}.', '',
              f'{len(clips)} clips in {clips.game_date.nunique()} games. Classes: ' + ', '.join(f'{NAMES.get(c, c)} {counts[c]}' for c in classes) +
              (f'. Not enough data: ' + ', '.join(f'{NAMES.get(c, c)} {n}' for c, n in dropped.items()) if dropped else ''), '',

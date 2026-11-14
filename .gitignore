@@ -24,3 +24,4 @@ www/lab/execution/data/*-clips.json
 www/lab/tip/data/*/frames/
 # broadcast frames used for the angle survey stay local
 docs/tip-detection/angles/
+www/lab/tip/data/*/clips/
