@@ -2,7 +2,7 @@
 seconds before the delivery to just after release, for one camera view.
 
   .venv-tip/Scripts/python tools/tip/py/pose_clips.py skenes --view D [--season 2026]
-        [--limit N] [--before 3.5] [--after 0.6] [--fps 30] [--mode balanced] [--debug N]
+        [--limit N] [--before 4.5] [--after 1.2] [--fps 30] [--mode balanced] [--debug N] [--shard k/n]
 
 Reads  private/tip/<id>/coarse/<view>.csv  and the clips
 Writes private/tip/<id>/pose/<view>/<play_id>.npz   (t, box, kp)   resumable
@@ -20,6 +20,7 @@ ap.add_argument('--limit', type=int, default=0); ap.add_argument('--before', typ
 ap.add_argument('--after', type=float, default=1.2); ap.add_argument('--fps', type=int, default=30)
 ap.add_argument('--mode', default='balanced'); ap.add_argument('--det-every', type=int, default=3)
 ap.add_argument('--debug', type=int, default=0)
+ap.add_argument('--shard', default='0/1', help='k/n: process every n-th clip starting at k, so several processes share one view')
 a = ap.parse_args()
 
 view = a.view.upper()
@@ -28,6 +29,8 @@ out_dir = tk.pdir(a.pitcher) / 'pose' / view
 out_dir.mkdir(parents=True, exist_ok=True)
 todo = [pid for pid, r in coarse.items() if float(r['t_peak']) > 0 and not (out_dir / f'{pid}.npz').exists()
         and tk.clip_path(a.pitcher, view, pid).exists()]
+k, n = (int(x) for x in a.shard.split('/'))
+todo = [pid for pid in todo if sum(map(ord, pid)) % n == k]   # stable split, so shards never overlap between rounds
 if a.limit:
     todo = todo[: a.limit]
 print(f'{len(todo)} clips to do', flush=True)

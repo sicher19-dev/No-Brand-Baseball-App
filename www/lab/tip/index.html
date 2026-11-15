@@ -194,15 +194,20 @@ const GRADE = { clear: 'Clear tell', weak: 'Weak tell', none: 'No tell found', p
 function slicePhrase(v, s) { const t = v.timeline.find(x => x.slice === s); return t ? t.when : s; }
 function verdictText(v) {
   const r = v.verdict || {};
-  if (!v.timeline.length) return `Not enough game video from this angle yet.`;
-  if (r.grade === 'none') return `Nothing readable from ${v.who_text}. Best point was ${slicePhrase(v, r.slice)}: ${pct(r.acc)} against ${pct(r.baseline)} by guessing the usual pitch.`;
+  if (v.processing) return `Game video from this angle is still being processed.`;
+  if (!v.timeline.length) {
+    const have = Object.keys(v.n_per_class), short = Object.entries(v.not_enough_data).sort((a, b) => b[1] - a[1]);
+    if (have.length === 1 && short.length) return `Only the ${v.class_names[have[0]]} has ${v.min_n} pitches from the ${v.delivery} on this angle; the ${v.class_names[short[0][0]] || short[0][0]} has ${short[0][1]}. Two types are needed to compare.`;
+    return `Not enough game video from this angle yet.`;
+  }
+  if (r.grade === 'none') return `Nothing readable from ${v.who_text} before release. Best point was ${slicePhrase(v, r.slice)}: ${pct(r.acc)} against ${pct(r.baseline)} by guessing the usual pitch, too small an edge to matter.`;
   return `Pitch type was readable ${pct(r.acc)} of the time ${slicePhrase(v, r.slice)}, against ${pct(r.baseline)} by guessing his usual pitch and ${pct(r.situation)} from the count and runners alone.`;
 }
 $('verdicts').innerHTML = D.views.map(v => {
   const g = v.timeline.length ? (v.verdict.grade || 'none') : 'pending';
-  return `<div class="verdict"><div class="vw"><b style="color:${viewColor(v)}">${v.view_label}</b>${multi ? `<em>${v.delivery}</em>` : ''}<i>seen by ${v.who_text}</i></div>
+  return `<div class="verdict"><div class="vw"><b style="color:${viewColor(v)}">${v.view_label}</b>${multi && !v.processing ? `<em>${v.delivery}</em>` : ''}<i>seen by ${v.who_text}</i></div>
     <div><span class="grade ${g}">${GRADE[g]}</span><p>${verdictText(v)}</p>
-    <div class="fine">${v.clips} pitches in ${v.games} games${v.verdict && v.verdict.p != null && g !== 'pending' ? ` · chance of this by luck: ${luck(v.verdict.p)}` : ''}</div></div></div>`;
+    <div class="fine">${v.clips} pitches in ${v.games} games${v.verdict && v.verdict.p != null && (g === 'weak' || g === 'clear') ? ` · chance of this by luck: ${luck(v.verdict.p)}` : ''}</div></div></div>`;
 }).join('');
 $('verdictNote').textContent = `Every finding here is ${D.label.replace('-', ' ')}: ${lab[1].toLowerCase()}. Weak means a small but real edge; clear means a hitter who knows what to look for would use it.`;
 
@@ -320,8 +325,8 @@ $('facility').innerHTML = fac.length
 // ---------- sizes and method ----------
 const fams = [...new Set(D.views.flatMap(v => Object.keys(v.n_per_class).concat(Object.keys(v.not_enough_data))))];
 $('sizes').innerHTML = `<tr><th>Pitch</th><th>Season</th>${D.views.map(v => `<th>${v.label}</th>`).join('')}</tr>` +
-  fams.map(f => `<tr><td><span class="sw" style="background:${famColor(f)}"></span>${(D.views[0] && D.views[0].class_names[f]) || f}</td><td>${D.season_mix[f] || 0}</td>${D.views.map(v => v.n_per_class[f] != null ? `<td>${v.n_per_class[f]}</td>` : v.not_enough_data[f] != null ? `<td style="color:var(--dim)">${v.not_enough_data[f]} · not enough</td>` : '<td>–</td>').join('')}</tr>`).join('');
-$('method').textContent = `Types with fewer than ${D.views[0] ? D.views[0].min_n : 150} pitches on a view are left out and marked not enough data. ${multi ? 'Windup and stretch are modeled separately; the video decides which delivery each pitch was. ' : ''}Models were trained on one angle at a time and tested on whole games they never saw. A separate model that only sees count, outs, runners, batter side, inning, score and park is reported next to every video number. The scorebug and everyone but the pitcher are cut out of the pictures. Built ${D.built}.`;
+  fams.map(f => `<tr><td><span class="sw" style="background:${famColor(f)}"></span>${D.views.map(v => v.class_names[f]).find(Boolean) || f}</td><td>${D.season_mix[f] || 0}</td>${D.views.map(v => v.n_per_class[f] != null ? `<td>${v.n_per_class[f]}</td>` : v.not_enough_data[f] != null ? `<td style="color:var(--dim)">${v.not_enough_data[f]} · not enough</td>` : '<td>–</td>').join('')}</tr>`).join('');
+$('method').textContent = `Types with fewer than ${D.views[0] ? D.views[0].min_n : 150} pitches on a view are left out and marked not enough data. ${multi ? 'Windup and stretch are modeled separately; the video decides which delivery each pitch was. ' : ''}Only moments at least half a second before release count as a tell; closer to release the arm itself shows the pitch, so those points are drawn for context only. Models were trained on one angle at a time and tested on whole games they never saw. A separate model that only sees count, outs, runners, batter side, inning, score and park is reported next to every video number. The scorebug and everyone but the pitcher are cut out of the pictures. Built ${D.built}.`;
 </script>
 </body>
 </html>

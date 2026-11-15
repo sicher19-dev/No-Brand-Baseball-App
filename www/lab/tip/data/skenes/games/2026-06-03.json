@@ -1,0 +1,44 @@
+{
+"pitcher": {
+"id": "skenes",
+"name": "Paul Skenes"
+},
+"season": "2026",
+"built": "2026-11-14",
+"label": "game-only",
+"date": "2026-06-03",
+"opp": "HOU",
+"home": false,
+"pitches": 109,
+"entries": [
+{
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "none",
+"slice": "lift_start",
+"when": "as the leg starts up",
+"n": 21,
+"acc": 0.714,
+"baseline": 0.619,
+"situation": 0.619
+}
+],
+"flagged": [],
+"n_flagged": 0,
+"best": {
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "none",
+"slice": "lift_start",
+"when": "as the leg starts up",
+"n": 21,
+"acc": 0.714,
+"baseline": 0.619,
+"situation": 0.619
+},
+"processed": true
+}

@@ -1,0 +1,44 @@
+{
+"pitcher": {
+"id": "skenes",
+"name": "Paul Skenes"
+},
+"season": "2026",
+"built": "2026-11-14",
+"label": "game-only",
+"date": "2026-09-24",
+"opp": "STL",
+"home": true,
+"pitches": 96,
+"entries": [
+{
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "none",
+"slice": "lift_start",
+"when": "as the leg starts up",
+"n": 17,
+"acc": 0.588,
+"baseline": 0.647,
+"situation": 0.353
+}
+],
+"flagged": [],
+"n_flagged": 0,
+"best": {
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "none",
+"slice": "lift_start",
+"when": "as the leg starts up",
+"n": 17,
+"acc": 0.588,
+"baseline": 0.647,
+"situation": 0.353
+},
+"processed": true
+}

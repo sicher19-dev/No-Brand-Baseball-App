@@ -1,0 +1,44 @@
+{
+"pitcher": {
+"id": "skenes",
+"name": "Paul Skenes"
+},
+"season": "2026",
+"built": "2026-11-14",
+"label": "game-only",
+"date": "2026-05-28",
+"opp": "CHC",
+"home": true,
+"pitches": 103,
+"entries": [
+{
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "none",
+"slice": "lift_start",
+"when": "as the leg starts up",
+"n": 44,
+"acc": 0.659,
+"baseline": 0.636,
+"situation": 0.636
+}
+],
+"flagged": [],
+"n_flagged": 0,
+"best": {
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "none",
+"slice": "lift_start",
+"when": "as the leg starts up",
+"n": 44,
+"acc": 0.659,
+"baseline": 0.636,
+"situation": 0.636
+},
+"processed": true
+}

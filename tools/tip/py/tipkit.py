@@ -24,8 +24,8 @@ R_HAND = slice(112, 133)
 VIEWS = {
     'D': dict(name='hitter', label='Hitter view', region=(0.30, 0.70, 0.05, 0.95), min_h=250, who='hitter'),
     'J': dict(name='hitter_closed', label='Hitter view (closed side)', region=(0.30, 0.70, 0.05, 0.95), min_h=250, who='hitter'),
-    'V': dict(name='cf_tight', label='Center field', region=(0.20, 0.80, 0.05, 1.00), min_h=250, who='cf'),
-    'C': dict(name='cf', label='Center field (wide)', region=(0.38, 0.62, 0.30, 0.85), min_h=80, who='cf'),
+    'V': dict(name='cf_tight', label='Center field (tight)', region=(0.20, 0.80, 0.05, 1.00), min_h=250, who='cf'),   # broadcast tight shot: zooms to the chest in the set, legs out of frame; not usable for leg-lift events
+    'C': dict(name='cf', label='Center field', region=(0.38, 0.62, 0.30, 0.85), min_h=80, small_h=200, who='cf'),   # steady wide CF camera, full body set through release; the CF pose source
     'F': dict(name='pitcher_front', label='First-base side', region=(0.25, 0.75, 0.0, 0.8), min_h=150, who='hitter'),
 }
 

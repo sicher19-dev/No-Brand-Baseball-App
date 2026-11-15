@@ -17,7 +17,8 @@ tools/tip/
   py/train.py                 per-slice models with all checks -> models/<view>/timeline.json, report.md
   py/report.py                dashboard + game pages + stills + cropped clips -> www/lab/tip/data/<id>.json,
                               data/<id>/games/<date>.json, data/<id>/frames/, data/<id>/clips/
-  pose-loop.sh                coarse + pose over both views until everything downloaded is processed
+  pose-loop.sh                coarse + pose over the given views until everything downloaded is processed;
+                              takes a shard k/n so several loops share the GPU (decode is the bottleneck)
 
 www/lab/tip/index.html?p=<id>            dashboard: verdicts, games list, timeline, tells, frames, fix cue
 www/lab/tip/game.html?p=<id>&g=<date>    one game: readability by angle, flagged pitches with clips, quick fix
@@ -31,15 +32,25 @@ model uses V.
 Order, per pitcher and season:
 
 ```
-node tools/tip/download-clips.mjs skenes --views hitter,tightcf --from 2026-03-26 --jobs 8
+node tools/tip/download-clips.mjs skenes --views hitter,cf --from 2026-03-26 --jobs 8
 node tools/tip/situations-from-feed.mjs skenes --season 2026 --pitcher 694973
 .venv-tip/Scripts/python tools/tip/py/coarse.py skenes --view D
 .venv-tip/Scripts/python tools/tip/py/pose_clips.py skenes --view D
 .venv-tip/Scripts/python tools/tip/py/events.py skenes --view D
 .venv-tip/Scripts/python tools/tip/py/features.py skenes --view D
 .venv-tip/Scripts/python tools/tip/py/train.py skenes --view D
-.venv-tip/Scripts/python tools/tip/py/report.py skenes --views D,V
+.venv-tip/Scripts/python tools/tip/py/report.py skenes --views D,C
 ```
+
+Views that feed the models: `D` (hitter view, open-side plate camera) and `C`
+(wide center field). `C` is a steady camera that holds the whole body from the
+set through release and only cuts away after the pitch. `V` (tight center
+field) is a broadcast shot: it zooms to the chest while the pitcher is in the
+set, so the legs are out of frame and no leg lift or release can be timed, and
+it cuts to the batter or catcher within a second of the pitch. Its pose output
+is kept under `pose/V/` for a later glove-crop stage but is not trained on.
+The coarse pass blanks scene cuts (whole-frame change above 40) and the first
+second so the motion peak lands on the delivery, not on the cut after it.
 
 Preview the page with `.venv-tip/Scripts/python -m http.server 8765 -d www` and open
 `http://localhost:8765/lab/tip/index.html?p=skenes`.
@@ -92,7 +103,10 @@ the held-out video read (predicted type and the probability of the true type)
 next to the situation-only read. `report.py` turns that into a games list and
 one JSON per game. A pitch is flagged when, at least 0.5 s before release, the
 video named the type with p >= 0.6 and beat the situation read by 0.15 or more;
-only views and deliveries with a weak or clear verdict flag pitches
+only views and deliveries with a weak or clear verdict flag pitches. The verdict
+itself only looks at slices at least 0.5 s before release (`TIP_WINDOW` in
+report.py): at and just before release the arm action shows the pitch, which is
+not a tell, so those slices are drawn on the timeline for context only
 (`--force-flags` overrides that for previews). Each flagged pitch gets a 2.6 s
 pitcher-only clip (ffmpeg crop from the tracked box, 480 px, no sound, no
 scorebug) and a comparison clip of the most common other type in that game.

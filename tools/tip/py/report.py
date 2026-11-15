@@ -92,9 +92,13 @@ def phrase(feature, direction, plain):
     return f'{plain} tends to be {"more" if hi else "less"}'
 
 
+TIP_WINDOW = 0.5   # seconds before release; later than this the arm itself shows the pitch, so it is not a tell
+
+
 def verdict(tl):
     best = None
-    for s in tl['slices']:
+    early = [s for s in tl['slices'] if s['t_before_release'] >= TIP_WINDOW]
+    for s in early:
         lift = s['acc_lr'] - s['baseline_majority']
         over_sit = s['acc_lr'] - s['acc_situation']
         p = s['perm_p'] if s['perm_p'] is not None else 1.0
@@ -102,7 +106,7 @@ def verdict(tl):
         if grade != 'none' and (best is None or s['t_before_release'] > best['t']):
             best = dict(grade=grade, slice=s['slice'], t=s['t_before_release'], acc=s['acc_lr'], baseline=s['baseline_majority'], situation=s['acc_situation'], p=p)
     if best is None:
-        top = max(tl['slices'], key=lambda s: s['acc_lr'] - s['baseline_majority']) if tl['slices'] else None
+        top = max(early, key=lambda s: s['acc_lr'] - s['baseline_majority']) if early else None
         return dict(grade='none', **({'slice': top['slice'], 't': top['t_before_release'], 'acc': top['acc_lr'], 'baseline': top['baseline_majority'], 'situation': top['acc_situation'], 'p': top['perm_p']} if top else {}))
     return best
 
@@ -117,6 +121,8 @@ def tell_text(tl, slice_, fam):
 
 def tells(tl, v):
     out = []
+    if v.get('grade', 'none') == 'none':
+        return out
     for s in [x for x in tl['slices'] if x['slice'] == v.get('slice')]:
         for c, lst in s['tells_lr'].items():
             if c not in tl['classes']:
@@ -217,7 +223,11 @@ views = []; entries = []
 for view in [v.strip().upper() for v in a.views.split(',') if v.strip()]:
     found = sorted((D / 'models' / view).glob('*/timeline.json')) if (D / 'models' / view).exists() else []
     if not found:
-        print(f'no model for view {view}, skipping'); continue
+        print(f'no model for view {view}: listed as processing')
+        views.append(dict(key=view, letter=view, view_label=tk.VIEWS[view]['label'], label=tk.VIEWS[view]['label'], delivery='all', who=tk.VIEWS[view]['who'],
+                          who_text=WHO[tk.VIEWS[view]['who']], clips=0, games=0, classes=[], class_names={},
+                          n_per_class={}, not_enough_data={}, min_n=150, verdict={'grade': 'none'}, timeline=[], tells=[], frames=[], processing=True))
+        continue
     ev = {r['play_id']: r for r in tk.read_csv(D / 'events' / f'{view}.csv')}
     for p in found:
         tl = json.loads(p.read_text())
@@ -230,7 +240,7 @@ for view in [v.strip().upper() for v in a.views.split(',') if v.strip()]:
         key = f"{tk.VIEWS[view]['name']}_{dlv}"
         entry = dict(key=key, letter=view, view_label=base, label=base if dlv == 'all' else f'{base}, {dlv}',
                      delivery=dlv, who=tk.VIEWS[view]['who'], who_text=WHO[tk.VIEWS[view]['who']],
-                     clips=tl['n_clips'], games=tl['games'], classes=tl['classes'], class_names=tl['class_names'], n_per_class=tl['n_per_class'],
+                     clips=tl['n_clips'], games=tl['games'], classes=tl['classes'], class_names={c: NAMES.get(c, c) for c in list(tl['classes']) + list(tl['not_enough_data'])}, n_per_class=tl['n_per_class'],
                      not_enough_data={c: n for c, n in tl['not_enough_data'].items()}, min_n=tl['min_n'],
                      verdict=v, timeline=timeline, tells=tells(tl, v), frames=render_frames(view, dlv, tl['classes']) if tl['classes'] else [])
         views.append(entry)

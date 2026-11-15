@@ -51,6 +51,12 @@ def one(r):
     whole = d.mean(axis=(1, 2))
     k = max(1, FPS // 4)
     sm = np.convolve(inside, np.ones(k) / k, mode='same')
+    # Broadcast feeds cut away after the pitch; a cut is a whole-frame change far above any delivery.
+    # Blank the burst around cuts (+-0.3 s) and the first second so the peak lands on the delivery.
+    cut = np.flatnonzero(whole > 40)
+    for c in cut:
+        sm[max(0, c - 6): c + 7] = 0
+    sm[: FPS] = 0
     i = int(np.argmax(sm))
     bg = float(np.median(sm))
     return dict(play_id=pid, duration=round(n / FPS, 2), t_peak=round((i + 1) / FPS, 2), burst=round(float(sm[i]), 2),

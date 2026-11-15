@@ -207,7 +207,7 @@ def analyse(npz):
     if out['found'] < 0.9: flags += ' partial_track'
     if t_rel - t_lift < 0.4 or t_rel - t_lift > 2.5: flags += ' odd_tempo'
     if out['lift_height'] < 0.12: flags += ' low_lift'
-    if out['box_h'] < 400: flags += ' small_pitcher'
+    if out['box_h'] < tk.VIEWS[view].get('small_h', 400): flags += ' small_pitcher'
     out['flag'] = flags.strip()
     return out
 
