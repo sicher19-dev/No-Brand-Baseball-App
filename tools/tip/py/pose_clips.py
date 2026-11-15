@@ -24,6 +24,8 @@ ap.add_argument('--shard', default='0/1', help='k/n: process every n-th clip sta
 a = ap.parse_args()
 
 view = a.view.upper()
+if a.before == 4.5:
+    a.before = tk.VIEWS[view].get('before', 4.5)   # wide views: the coarse peak runs late, so start earlier
 coarse = {r['play_id']: r for r in tk.read_csv(tk.pdir(a.pitcher) / 'coarse' / f'{view}.csv')}
 out_dir = tk.pdir(a.pitcher) / 'pose' / view
 out_dir.mkdir(parents=True, exist_ok=True)

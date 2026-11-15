@@ -54,6 +54,7 @@ svg text{font-family:'Archivo',system-ui,sans-serif;fill:var(--dim);font-size:11
 .legend i{display:inline-block;width:18px;height:0;border-top:3px solid;margin-right:6px;vertical-align:3px}
 .legend i.dash{border-top-style:dashed}
 .legend i.dot{border-top-style:dotted}
+.howto{font-size:13px;line-height:1.5;color:var(--dim);margin:0 0 4px}.howto b{color:var(--fg,#fff)}.howto li{margin:3px 0}.howto ul{margin:6px 0 0 18px;padding:0}
 .note{font-size:12px;color:var(--dim);margin-top:8px;line-height:1.45}
 .pick{font-size:13px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-top:8px;line-height:1.45}
 .pick b{color:var(--gold)}
@@ -96,6 +97,17 @@ th:first-child,td:first-child{text-align:left}
     <div class="sub" id="who"></div>
   </div>
 </header>
+
+<div class="card">
+  <h2>How to read this</h2>
+  <div class="howto">A computer watched every pitch from two camera angles and tracked only the pitcher's body: head, shoulders, elbows, hands, glove, hips, knees and feet. It never sees the scoreboard, the catcher or the batter. It then tried to name the pitch type from his body alone, before release, on games it had never seen.
+    <ul>
+      <li><b>Does he tip?</b> One line per angle and delivery. <b>Clear</b> means a hitter who knows what to look for could use it. <b>Weak</b> means a small but real edge. <b>No tell</b> means his body gave nothing away before release.</li>
+      <li><b>Games.</b> Tap a game to see the pitches where his body gave the type away, with the clip and a typical pitch of another type beside it.</li>
+      <li><b>Every number is tested against guessing.</b> "Usual pitch" is what you get by always guessing his most common pitch. "Count only" is what the count, outs and runners give with no video. A tell has to beat both.</li>
+      <li><b>Fix.</b> Each tell comes with what to change, and each game page has a quick fix under its pitches.</li>
+    </ul></div>
+</div>
 
 <div class="card">
   <h2>Does he tip? <small id="scope"></small></h2>
@@ -218,7 +230,7 @@ $('games').innerHTML = games.length ? `<tr><th>Game</th><th>Pitches</th><th>Read
   games.map(g => {
     const b = g.best;
     const row = g.processed
-      ? `<td><b>${pct(b.acc)}</b> <span style="color:var(--dim);font-size:11px">${b.view_label}${multi ? ', ' + b.delivery : ''}</span></td><td>${pct(b.baseline)}</td><td>${pct(b.situation)}</td><td>${g.n_flagged ? `<b style="color:var(--gold)">${g.n_flagged}</b>` : '0'}</td>`
+      ? `<td><b>${pct(b.acc)}</b> <span style="color:var(--dim);font-size:11px">${b.view_label}${multi ? ', ' + b.delivery : ''}</span></td><td>${pct(b.baseline)}</td><td>${pct(b.situation)}</td><td>${g.n_flagged ? `<b style="color:var(--gold)">${g.n_flagged}</b> <span style="color:var(--dim);font-size:11px">${pct(g.n_flagged / g.pitches)} of pitches</span>` : '0'}</td>`
       : `<td colspan="4" style="color:var(--dim);text-align:left">not processed yet</td>`;
     return `<tr style="cursor:pointer" data-g="${g.date}"><td>${shortDate(g.date)} <span style="color:var(--mute)">${g.home ? 'vs' : 'at'} ${g.opp}</span></td><td>${g.pitches}</td>${row}</tr>`;
   }).join('') + '</table>' : '<div class="empty">No games yet.</div>';

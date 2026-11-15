@@ -42,6 +42,8 @@ table{width:100%;border-collapse:collapse;font-size:13px}
 th{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--mute);text-align:right;padding:6px 6px;border-bottom:1px solid var(--line);font-weight:700}
 td{padding:8px 6px;border-bottom:1px solid var(--line-soft);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 th:first-child,td:first-child{text-align:left}
+.howto{font-size:13px;line-height:1.5;color:var(--dim);margin:0 0 4px}.howto b{color:var(--fg,#fff)}.howto li{margin:3px 0}.howto ul{margin:6px 0 0 18px;padding:0}
+.fixline{margin-top:6px;font-size:13px;color:var(--gold)}.fixline b{color:var(--gold)}
 .note{font-size:12px;color:var(--dim);margin-top:8px;line-height:1.45}
 .pitch{border-top:1px solid var(--line-soft);padding:14px 0}
 .pitch:first-child{border-top:0;padding-top:0}
@@ -81,6 +83,7 @@ th:first-child,td:first-child{text-align:left}
 
 <div class="card">
   <h2>This game <small>how readable he was, by angle and delivery</small></h2>
+  <div class="howto">Each pitch listed below is one where the pitcher's body named the pitch type before release, read by a model that never saw this game. The percentage on each pitch is how sure the video read was; the count-only number beside it is what the situation gave with no video. Under each pitch is what to change.</div>
   <div id="summary"></div>
   <div class="note">Readable: how often a model that never saw this game named the pitch type from the video alone at the chosen moment. Usual pitch: guessing his most common type. Count only: what the situation gave with no video.</div>
 </div>
@@ -140,7 +143,7 @@ if (!GM) {
       const sit = [f.inning ? `inning ${f.inning}` : '', f.count ? `count ${f.count}` : '', f.outs != null ? `${f.outs} out` : '', f.bat_side ? `${f.bat_side}HH` : ''].filter(Boolean).join(' · ');
       return `<div class="pitch"><div class="head"><b><i style="background:${famColor(f.family)}"></i>${f.family_name}</b><span>${sit}</span><span>${f.label}</span></div>
         <div class="pair">${media(f.clip, f.still, f.family, f.family_name, f.family_name, `cue ${f.when}`, 'flagged')}${f.compare ? media(f.compare.clip, f.compare.still, f.compare.family, f.compare.family_name, f.compare.family_name, 'typical, same game', 'compare') : '<div class="vid"><div style="aspect-ratio:3/4"></div><div class="cap">no comparison<small>only one pitch type read this game</small></div></div>'}</div>
-        <div class="tell">${f.tell || ''}<small>The video read ${f.family_name} at ${pct(f.conf)} ${f.when}; the count and runners alone gave ${pct(f.conf_sit)}.</small></div></div>`;
+        <div class="tell">${f.tell || ''}<small>The video read ${f.family_name} at ${pct(f.conf)} ${f.when}; the count and runners alone gave ${pct(f.conf_sit)}.</small>${f.fix ? `<div class="fixline"><b>Fix:</b> ${f.fix}</div>` : ''}</div></div>`;
     }).join('') : '<div class="empty">No pitch in this game was read early enough to count as a cue.</div>';
     // play on tap, pause when out of view
     const vids = [...$('pitches').querySelectorAll('video')];

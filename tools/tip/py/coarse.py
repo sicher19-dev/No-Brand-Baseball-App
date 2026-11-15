@@ -6,7 +6,7 @@ pose pass only decodes the seconds that matter.
 Reads  private/tip/<id>/clips/<view>/<play_id>.mp4
 Writes private/tip/<id>/coarse/<view>.csv   (resumable; one row per clip)
 
-Method: decode the clip to 320x180 grey at 20 fps, take the mean absolute change
+Method (cuts and zooms are blanked; wide views search a fixed window): decode the clip to 320x180 grey at 20 fps, take the mean absolute change
 between frames inside the view's delivery region, smooth it over a quarter
 second, and call the biggest burst the delivery. t_peak lands within about
 0.3 s of release. The whole-frame change is kept to flag cuts or pans.
@@ -53,10 +53,16 @@ def one(r):
     sm = np.convolve(inside, np.ones(k) / k, mode='same')
     # Broadcast feeds cut away after the pitch; a cut is a whole-frame change far above any delivery.
     # Blank the burst around cuts (+-0.3 s) and the first second so the peak lands on the delivery.
-    cut = np.flatnonzero(whole > 40)
+    med = float(np.median(whole))
+    cut = np.flatnonzero(whole > max(15.0, 6.0 * med))
     for c in cut:
         sm[max(0, c - 6): c + 7] = 0
     sm[: FPS] = 0
+    # Wide shots: the pitcher is small, so a runner or a close-up later in the clip can out-move the
+    # delivery. These clips put the pitch at a steady offset, so the view may limit the search window.
+    srch = tk.VIEWS[view].get('search')
+    if srch and n / FPS >= 10:
+        sm[: int(srch[0] * FPS)] = 0; sm[int(srch[1] * FPS):] = 0
     i = int(np.argmax(sm))
     bg = float(np.median(sm))
     return dict(play_id=pid, duration=round(n / FPS, 2), t_peak=round((i + 1) / FPS, 2), burst=round(float(sm[i]), 2),
