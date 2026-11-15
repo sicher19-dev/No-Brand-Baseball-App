@@ -133,7 +133,7 @@ events = tk.read_csv(tk.pdir(a.pitcher) / 'events' / f'{view}.csv')
 pose_dir = tk.pdir(a.pitcher) / 'pose' / view
 rows = []; skipped = 0
 for i, ev in enumerate(events, 1):
-    if not ev['t_release'] or 'not_found' in ev['flag'] or 'no_prerelease' in ev['flag'] or 'release_at_window_end' in ev['flag'] or 'release_unsure' in ev['flag'] or 'small_pitcher' in ev['flag']:
+    if not ev['t_release'] or 'not_found' in ev['flag'] or 'no_prerelease' in ev['flag'] or 'release_at_window_end' in ev['flag'] or 'release_unsure' in ev['flag'] or 'small_pitcher' in ev['flag'] or 'odd_track' in ev['flag']:
         skipped += 1; continue
     rows.extend(clip_features(np.load(pose_dir / f"{ev['play_id']}.npz"), ev))
     if i % 200 == 0:

@@ -19,10 +19,10 @@
 "grade": "weak",
 "slice": "break",
 "when": "at hand break",
-"n": 43,
-"acc": 0.628,
-"baseline": 0.581,
-"situation": 0.349,
+"n": 42,
+"acc": 0.619,
+"baseline": 0.571,
+"situation": 0.381,
 "flagged": 10
 },
 {
@@ -33,42 +33,13 @@
 "grade": "none",
 "slice": "lift_start",
 "when": "as the leg starts up",
-"n": 17,
-"acc": 0.824,
-"baseline": 0.824,
-"situation": 0.765
+"n": 16,
+"acc": 0.875,
+"baseline": 0.812,
+"situation": 0.688
 }
 ],
 "flagged": [
-{
-"play_id": "c18710d7-015b-316d-bd81-790620ba2273",
-"family": "FB",
-"family_name": "fastball",
-"key": "hitter_stretch",
-"label": "Hitter view, stretch",
-"view_label": "Hitter view",
-"delivery": "stretch",
-"slice": "m2000",
-"when": "2.0 s before release",
-"t": 2.0,
-"conf": 1.0,
-"conf_sit": 0.4055,
-"tell": "Before a fastball, hand break to release time tends to be shorter 2.0 s before release.",
-"fix": "Same tempo from the set to release on every pitch.",
-"inning": 5,
-"count": "2-2",
-"outs": 0,
-"bat_side": "R",
-"clip": "skenes/clips/D_c18710d7-015b-316d-bd81-790620ba2273.mp4",
-"still": "skenes/clips/D_c18710d7-015b-316d-bd81-790620ba2273_m2000.jpg",
-"compare": {
-"play_id": "dc3d8f03-488e-3b03-9922-8036c44faab2",
-"family": "BR",
-"family_name": "breaking ball",
-"clip": "skenes/clips/D_dc3d8f03-488e-3b03-9922-8036c44faab2.mp4",
-"still": "skenes/clips/D_dc3d8f03-488e-3b03-9922-8036c44faab2_m2000.jpg"
-}
-},
 {
 "play_id": "3a1e332b-fd98-3853-b342-21d4cf18dad8",
 "family": "FB",
@@ -80,8 +51,8 @@
 "slice": "break",
 "when": "at hand break",
 "t": 0.6,
-"conf": 0.919,
-"conf_sit": 0.5612,
+"conf": 0.9308,
+"conf_sit": 0.5964,
 "tell": "Before a fastball, lead knee forward/back tends to sit further right on screen at hand break.",
 "fix": "Same leg lift height and path on every pitch.",
 "inning": 3,
@@ -91,11 +62,11 @@
 "clip": "skenes/clips/D_3a1e332b-fd98-3853-b342-21d4cf18dad8.mp4",
 "still": "skenes/clips/D_3a1e332b-fd98-3853-b342-21d4cf18dad8_break.jpg",
 "compare": {
-"play_id": "dc3d8f03-488e-3b03-9922-8036c44faab2",
+"play_id": "5e5dfaa6-877c-300d-af67-9dd5c1ec2abb",
 "family": "BR",
 "family_name": "breaking ball",
-"clip": "skenes/clips/D_dc3d8f03-488e-3b03-9922-8036c44faab2.mp4",
-"still": "skenes/clips/D_dc3d8f03-488e-3b03-9922-8036c44faab2_break.jpg"
+"clip": "skenes/clips/D_5e5dfaa6-877c-300d-af67-9dd5c1ec2abb.mp4",
+"still": "skenes/clips/D_5e5dfaa6-877c-300d-af67-9dd5c1ec2abb_break.jpg"
 }
 },
 {
@@ -109,8 +80,8 @@
 "slice": "break",
 "when": "at hand break",
 "t": 0.6,
-"conf": 0.8737,
-"conf_sit": 0.6424,
+"conf": 0.9095,
+"conf_sit": 0.5555,
 "tell": "Before a fastball, lead knee forward/back tends to sit further right on screen at hand break.",
 "fix": "Same leg lift height and path on every pitch.",
 "inning": 3,
@@ -120,11 +91,40 @@
 "clip": "skenes/clips/D_d65f0516-3abb-365a-9e1a-45e32511d76d.mp4",
 "still": "skenes/clips/D_d65f0516-3abb-365a-9e1a-45e32511d76d_break.jpg",
 "compare": {
-"play_id": "dc3d8f03-488e-3b03-9922-8036c44faab2",
+"play_id": "5e5dfaa6-877c-300d-af67-9dd5c1ec2abb",
 "family": "BR",
 "family_name": "breaking ball",
-"clip": "skenes/clips/D_dc3d8f03-488e-3b03-9922-8036c44faab2.mp4",
-"still": "skenes/clips/D_dc3d8f03-488e-3b03-9922-8036c44faab2_break.jpg"
+"clip": "skenes/clips/D_5e5dfaa6-877c-300d-af67-9dd5c1ec2abb.mp4",
+"still": "skenes/clips/D_5e5dfaa6-877c-300d-af67-9dd5c1ec2abb_break.jpg"
+}
+},
+{
+"play_id": "345e157e-eb1d-3d43-a62b-80ee7976df86",
+"family": "FB",
+"family_name": "fastball",
+"key": "hitter_stretch",
+"label": "Hitter view, stretch",
+"view_label": "Hitter view",
+"delivery": "stretch",
+"slice": "break",
+"when": "at hand break",
+"t": 0.6,
+"conf": 0.8762,
+"conf_sit": 0.3467,
+"tell": "Before a fastball, lead knee forward/back tends to sit further right on screen at hand break.",
+"fix": "Same leg lift height and path on every pitch.",
+"inning": 1,
+"count": "0-0",
+"outs": 2,
+"bat_side": "L",
+"clip": "skenes/clips/D_345e157e-eb1d-3d43-a62b-80ee7976df86.mp4",
+"still": "skenes/clips/D_345e157e-eb1d-3d43-a62b-80ee7976df86_break.jpg",
+"compare": {
+"play_id": "5e5dfaa6-877c-300d-af67-9dd5c1ec2abb",
+"family": "BR",
+"family_name": "breaking ball",
+"clip": "skenes/clips/D_5e5dfaa6-877c-300d-af67-9dd5c1ec2abb.mp4",
+"still": "skenes/clips/D_5e5dfaa6-877c-300d-af67-9dd5c1ec2abb_break.jpg"
 }
 },
 {
@@ -138,8 +138,8 @@
 "slice": "break",
 "when": "at hand break",
 "t": 0.6,
-"conf": 0.7552,
-"conf_sit": 0.5974,
+"conf": 0.7906,
+"conf_sit": 0.6359,
 "tell": "Before a fastball, lead knee forward/back tends to sit further right on screen at hand break.",
 "fix": "Same leg lift height and path on every pitch.",
 "inning": 2,
@@ -149,11 +149,11 @@
 "clip": "skenes/clips/D_130cc0b1-52dd-3eca-837a-bac5deaa1d00.mp4",
 "still": "skenes/clips/D_130cc0b1-52dd-3eca-837a-bac5deaa1d00_break.jpg",
 "compare": {
-"play_id": "dc3d8f03-488e-3b03-9922-8036c44faab2",
+"play_id": "5e5dfaa6-877c-300d-af67-9dd5c1ec2abb",
 "family": "BR",
 "family_name": "breaking ball",
-"clip": "skenes/clips/D_dc3d8f03-488e-3b03-9922-8036c44faab2.mp4",
-"still": "skenes/clips/D_dc3d8f03-488e-3b03-9922-8036c44faab2_break.jpg"
+"clip": "skenes/clips/D_5e5dfaa6-877c-300d-af67-9dd5c1ec2abb.mp4",
+"still": "skenes/clips/D_5e5dfaa6-877c-300d-af67-9dd5c1ec2abb_break.jpg"
 }
 },
 {
@@ -167,8 +167,8 @@
 "slice": "break",
 "when": "at hand break",
 "t": 0.6,
-"conf": 0.7427,
-"conf_sit": 0.2696,
+"conf": 0.7834,
+"conf_sit": 0.2651,
 "tell": "Before a fastball, lead knee forward/back tends to sit further right on screen at hand break.",
 "fix": "Same leg lift height and path on every pitch.",
 "inning": 1,
@@ -178,69 +178,11 @@
 "clip": "skenes/clips/D_0f981a6b-dddc-3611-a67b-f771fa0667a8.mp4",
 "still": "skenes/clips/D_0f981a6b-dddc-3611-a67b-f771fa0667a8_break.jpg",
 "compare": {
-"play_id": "dc3d8f03-488e-3b03-9922-8036c44faab2",
+"play_id": "5e5dfaa6-877c-300d-af67-9dd5c1ec2abb",
 "family": "BR",
 "family_name": "breaking ball",
-"clip": "skenes/clips/D_dc3d8f03-488e-3b03-9922-8036c44faab2.mp4",
-"still": "skenes/clips/D_dc3d8f03-488e-3b03-9922-8036c44faab2_break.jpg"
-}
-},
-{
-"play_id": "43f6c18c-53bc-3ab2-9b68-e07d44223c60",
-"family": "FB",
-"family_name": "fastball",
-"key": "hitter_stretch",
-"label": "Hitter view, stretch",
-"view_label": "Hitter view",
-"delivery": "stretch",
-"slice": "m1500",
-"when": "1.5 s before release",
-"t": 1.5,
-"conf": 0.7117,
-"conf_sit": 0.4951,
-"tell": "Before a fastball, fingers forward/back of the glove tends to sit further left on screen 1.5 s before release.",
-"fix": "Keep the fingers behind the glove so the grip never shows.",
-"inning": 3,
-"count": "3-2",
-"outs": 0,
-"bat_side": "R",
-"clip": "skenes/clips/D_43f6c18c-53bc-3ab2-9b68-e07d44223c60.mp4",
-"still": "skenes/clips/D_43f6c18c-53bc-3ab2-9b68-e07d44223c60_m1500.jpg",
-"compare": {
-"play_id": "dc3d8f03-488e-3b03-9922-8036c44faab2",
-"family": "BR",
-"family_name": "breaking ball",
-"clip": "skenes/clips/D_dc3d8f03-488e-3b03-9922-8036c44faab2.mp4",
-"still": "skenes/clips/D_dc3d8f03-488e-3b03-9922-8036c44faab2_m1500.jpg"
-}
-},
-{
-"play_id": "d4545ac1-223f-33c1-a417-d5345d4cf982",
-"family": "OS",
-"family_name": "offspeed pitch",
-"key": "hitter_stretch",
-"label": "Hitter view, stretch",
-"view_label": "Hitter view",
-"delivery": "stretch",
-"slice": "break",
-"when": "at hand break",
-"t": 0.6,
-"conf": 0.6974,
-"conf_sit": 0.0773,
-"tell": "Before an offspeed pitch, throwing elbow forward/back tends to sit further right on screen at hand break.",
-"fix": "Same throwing elbow in the set on every pitch.",
-"inning": 5,
-"count": "2-2",
-"outs": 0,
-"bat_side": "R",
-"clip": "skenes/clips/D_d4545ac1-223f-33c1-a417-d5345d4cf982.mp4",
-"still": "skenes/clips/D_d4545ac1-223f-33c1-a417-d5345d4cf982_break.jpg",
-"compare": {
-"play_id": "2e8eb32b-7635-3996-bce6-f337d9b62ff0",
-"family": "FB",
-"family_name": "fastball",
-"clip": "skenes/clips/D_2e8eb32b-7635-3996-bce6-f337d9b62ff0.mp4",
-"still": "skenes/clips/D_2e8eb32b-7635-3996-bce6-f337d9b62ff0_break.jpg"
+"clip": "skenes/clips/D_5e5dfaa6-877c-300d-af67-9dd5c1ec2abb.mp4",
+"still": "skenes/clips/D_5e5dfaa6-877c-300d-af67-9dd5c1ec2abb_break.jpg"
 }
 },
 {
@@ -254,8 +196,8 @@
 "slice": "break",
 "when": "at hand break",
 "t": 0.6,
-"conf": 0.6937,
-"conf_sit": 0.4398,
+"conf": 0.7481,
+"conf_sit": 0.4346,
 "tell": "Before a fastball, lead knee forward/back tends to sit further right on screen at hand break.",
 "fix": "Same leg lift height and path on every pitch.",
 "inning": 3,
@@ -265,11 +207,11 @@
 "clip": "skenes/clips/D_073841e0-8991-3d13-87c1-15c5a6c6e395.mp4",
 "still": "skenes/clips/D_073841e0-8991-3d13-87c1-15c5a6c6e395_break.jpg",
 "compare": {
-"play_id": "dc3d8f03-488e-3b03-9922-8036c44faab2",
+"play_id": "5e5dfaa6-877c-300d-af67-9dd5c1ec2abb",
 "family": "BR",
 "family_name": "breaking ball",
-"clip": "skenes/clips/D_dc3d8f03-488e-3b03-9922-8036c44faab2.mp4",
-"still": "skenes/clips/D_dc3d8f03-488e-3b03-9922-8036c44faab2_break.jpg"
+"clip": "skenes/clips/D_5e5dfaa6-877c-300d-af67-9dd5c1ec2abb.mp4",
+"still": "skenes/clips/D_5e5dfaa6-877c-300d-af67-9dd5c1ec2abb_break.jpg"
 }
 },
 {
@@ -283,8 +225,8 @@
 "slice": "break",
 "when": "at hand break",
 "t": 0.6,
-"conf": 0.6892,
-"conf_sit": 0.4146,
+"conf": 0.7108,
+"conf_sit": 0.4201,
 "tell": "Before a fastball, lead knee forward/back tends to sit further right on screen at hand break.",
 "fix": "Same leg lift height and path on every pitch.",
 "inning": 2,
@@ -294,11 +236,40 @@
 "clip": "skenes/clips/D_4372477b-e7af-320e-bade-b50306cdaef6.mp4",
 "still": "skenes/clips/D_4372477b-e7af-320e-bade-b50306cdaef6_break.jpg",
 "compare": {
-"play_id": "dc3d8f03-488e-3b03-9922-8036c44faab2",
+"play_id": "5e5dfaa6-877c-300d-af67-9dd5c1ec2abb",
 "family": "BR",
 "family_name": "breaking ball",
-"clip": "skenes/clips/D_dc3d8f03-488e-3b03-9922-8036c44faab2.mp4",
-"still": "skenes/clips/D_dc3d8f03-488e-3b03-9922-8036c44faab2_break.jpg"
+"clip": "skenes/clips/D_5e5dfaa6-877c-300d-af67-9dd5c1ec2abb.mp4",
+"still": "skenes/clips/D_5e5dfaa6-877c-300d-af67-9dd5c1ec2abb_break.jpg"
+}
+},
+{
+"play_id": "d4545ac1-223f-33c1-a417-d5345d4cf982",
+"family": "OS",
+"family_name": "offspeed pitch",
+"key": "hitter_stretch",
+"label": "Hitter view, stretch",
+"view_label": "Hitter view",
+"delivery": "stretch",
+"slice": "break",
+"when": "at hand break",
+"t": 0.6,
+"conf": 0.7058,
+"conf_sit": 0.0887,
+"tell": "Before an offspeed pitch, throwing elbow forward/back tends to sit further right on screen at hand break.",
+"fix": "Same throwing elbow in the set on every pitch.",
+"inning": 5,
+"count": "2-2",
+"outs": 0,
+"bat_side": "R",
+"clip": "skenes/clips/D_d4545ac1-223f-33c1-a417-d5345d4cf982.mp4",
+"still": "skenes/clips/D_d4545ac1-223f-33c1-a417-d5345d4cf982_break.jpg",
+"compare": {
+"play_id": "c18710d7-015b-316d-bd81-790620ba2273",
+"family": "FB",
+"family_name": "fastball",
+"clip": "skenes/clips/D_c18710d7-015b-316d-bd81-790620ba2273.mp4",
+"still": "skenes/clips/D_c18710d7-015b-316d-bd81-790620ba2273_break.jpg"
 }
 },
 {
@@ -312,8 +283,8 @@
 "slice": "break",
 "when": "at hand break",
 "t": 0.6,
-"conf": 0.6757,
-"conf_sit": 0.2309,
+"conf": 0.6962,
+"conf_sit": 0.2249,
 "tell": "Before a fastball, lead knee forward/back tends to sit further right on screen at hand break.",
 "fix": "Same leg lift height and path on every pitch.",
 "inning": 1,
@@ -323,28 +294,56 @@
 "clip": "skenes/clips/D_a4fe135c-0d80-33fe-af01-2042beb513ba.mp4",
 "still": "skenes/clips/D_a4fe135c-0d80-33fe-af01-2042beb513ba_break.jpg",
 "compare": {
-"play_id": "dc3d8f03-488e-3b03-9922-8036c44faab2",
+"play_id": "5e5dfaa6-877c-300d-af67-9dd5c1ec2abb",
 "family": "BR",
 "family_name": "breaking ball",
-"clip": "skenes/clips/D_dc3d8f03-488e-3b03-9922-8036c44faab2.mp4",
-"still": "skenes/clips/D_dc3d8f03-488e-3b03-9922-8036c44faab2_break.jpg"
+"clip": "skenes/clips/D_5e5dfaa6-877c-300d-af67-9dd5c1ec2abb.mp4",
+"still": "skenes/clips/D_5e5dfaa6-877c-300d-af67-9dd5c1ec2abb_break.jpg"
+}
+},
+{
+"play_id": "a1be3601-6e15-3521-a516-2dc22a8ec586",
+"family": "FB",
+"family_name": "fastball",
+"key": "hitter_stretch",
+"label": "Hitter view, stretch",
+"view_label": "Hitter view",
+"delivery": "stretch",
+"slice": "break",
+"when": "at hand break",
+"t": 0.6,
+"conf": 0.6783,
+"conf_sit": 0.3246,
+"tell": "Before a fastball, lead knee forward/back tends to sit further right on screen at hand break.",
+"fix": "Same leg lift height and path on every pitch.",
+"inning": 1,
+"count": "0-0",
+"outs": 1,
+"bat_side": "R",
+"clip": "skenes/clips/D_a1be3601-6e15-3521-a516-2dc22a8ec586.mp4",
+"still": "skenes/clips/D_a1be3601-6e15-3521-a516-2dc22a8ec586_break.jpg",
+"compare": {
+"play_id": "5e5dfaa6-877c-300d-af67-9dd5c1ec2abb",
+"family": "BR",
+"family_name": "breaking ball",
+"clip": "skenes/clips/D_5e5dfaa6-877c-300d-af67-9dd5c1ec2abb.mp4",
+"still": "skenes/clips/D_5e5dfaa6-877c-300d-af67-9dd5c1ec2abb_break.jpg"
 }
 }
 ],
 "n_flagged": 10,
 "best": {
-"key": "hitter_stretch",
-"label": "Hitter view, stretch",
+"key": "hitter_windup",
+"label": "Hitter view, windup",
 "view_label": "Hitter view",
-"delivery": "stretch",
-"grade": "weak",
-"slice": "break",
-"when": "at hand break",
-"n": 43,
-"acc": 0.628,
-"baseline": 0.581,
-"situation": 0.349,
-"flagged": 10
+"delivery": "windup",
+"grade": "none",
+"slice": "lift_start",
+"when": "as the leg starts up",
+"n": 16,
+"acc": 0.875,
+"baseline": 0.812,
+"situation": 0.688
 },
 "processed": true
 }

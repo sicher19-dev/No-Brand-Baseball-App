@@ -208,6 +208,8 @@ def analyse(npz):
     if t_rel - t_lift < 0.4 or t_rel - t_lift > 2.5: flags += ' odd_tempo'
     if out['lift_height'] < 0.12: flags += ' low_lift'
     if out['box_h'] < tk.VIEWS[view].get('small_h', 400): flags += ' small_pitcher'
+    # a lock on the wrong person shows as low keypoint confidence, a slow 'release', or a release far from where the clip puts the pitch
+    if out['conf_mean'] < 0.66 or out['v_release'] < 1.0 or not (3.0 <= t_rel <= 14.0): flags += ' odd_track'
     out['flag'] = flags.strip()
     return out
 

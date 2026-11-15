@@ -157,8 +157,12 @@ def pitcher_rect(view, pid, t0, t1):
     return x0, y0, max(2, w), max(2, h)
 
 
+CLIP_JOBS = []   # ffmpeg commands, run in parallel once every game page is laid out
+
+
 def render_clip(view, pid, t_rel, name):
-    """2.6 s pitcher-only clip, set through release, 480 px tall, no sound. Resumable."""
+    """2.6 s pitcher-only clip, set through release, 480 px tall, no sound. Resumable; queued and rendered in parallel.
+    Pose boxes are in the 1280x720 frame the pose pass decoded, so the source is scaled to that before the crop."""
     out = clips_dir / f'{name}.mp4'
     if out.exists() and out.stat().st_size > 20000:
         return f'{a.pitcher}/clips/{name}.mp4'
@@ -168,12 +172,10 @@ def render_clip(view, pid, t_rel, name):
         return None
     x, y, w, h = rect
     cmd = ['ffmpeg', '-y', '-loglevel', 'error', '-ss', f'{t0:.3f}', '-i', str(tk.clip_path(a.pitcher, view, pid)), '-t', f'{t1 - t0:.3f}',
-           '-vf', f'crop={w}:{h}:{x}:{y},scale=-2:480,fps=30', '-an', '-c:v', 'libx264', '-crf', '27', '-preset', 'veryfast',
-           '-pix_fmt', 'yuv420p', '-movflags', '+faststart', str(out)]
-    try:
-        subprocess.run(cmd, check=True, timeout=120)
-    except Exception as e:
-        print('clip failed', pid, e); return None
+           '-vf', f'scale={tk.W}:{tk.H},crop={w}:{h}:{x}:{y},scale=-2:480,fps=30', '-an', '-c:v', 'libx264', '-crf', '27', '-preset', 'veryfast',
+           '-threads', '2', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', str(out)]
+    if not any(j[1][-1] == str(out) for j in CLIP_JOBS):   # the same comparison clip can be asked for by several pitches
+        CLIP_JOBS.append((pid, cmd))
     return f'{a.pitcher}/clips/{name}.mp4'
 
 
@@ -278,7 +280,9 @@ for gdate in sorted(lab.game_date.unique()):
         g['entries'].append(st)
         if v['grade'] == 'none' and not a.force_flags:
             continue
-        early = gp[(gp.t_before_release >= 0.5) & (gp.pred == gp.family) & (gp.p_true >= 0.6) & (gp.p_true - gp.p_true_sit >= 0.15)]
+        # only moments where this model actually has an edge on held-out games (lift >= 0.03 and not luck), at least 0.5 s out
+        live = [s['slice'] for s in tl['slices'] if s['t_before_release'] >= TIP_WINDOW and s['acc_lr'] - s['baseline_majority'] >= 0.03 and (s['perm_p'] or 1) < 0.1]
+        early = gp[gp.slice.isin(live) & (gp.t_before_release >= 0.5) & (gp.pred == gp.family) & (gp.p_true >= 0.6) & (gp.p_true - gp.p_true_sit >= 0.15)]
         early = early.sort_values('t_before_release', ascending=False).drop_duplicates('play_id', keep='first')
         early = early.sort_values('p_true', ascending=False).head(a.per_game)
         st['flagged'] = int(len(early))
@@ -324,6 +328,19 @@ for gdate in sorted(lab.game_date.unique()):
         (games_dir / f'{gdate}.json').write_text(json.dumps(dict(pitcher=dict(id=a.pitcher, name=info.get('name', a.pitcher)), season=a.season, built=dt.date.today().isoformat(),
                                                                  label='game-only', **g), indent=0))
 print(f"games: {sum(1 for g in games if g['processed'])} with model output, {sum(g['n_flagged'] for g in games)} flagged pitches")
+
+# ---------------- render queued clips in parallel ----------------
+if CLIP_JOBS:
+    from concurrent.futures import ThreadPoolExecutor
+    def _run(job):
+        pid, cmd = job
+        try:
+            subprocess.run(cmd, check=True, timeout=180)
+        except Exception as e:
+            print('clip failed', pid, e)
+    print(f'rendering {len(CLIP_JOBS)} clips', flush=True)
+    with ThreadPoolExecutor(6) as ex:
+        list(ex.map(_run, CLIP_JOBS))
 
 # ---------------- dashboard ----------------
 fixes = []
