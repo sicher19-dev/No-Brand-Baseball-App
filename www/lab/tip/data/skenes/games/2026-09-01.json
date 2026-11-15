@@ -12,6 +12,20 @@
 "pitches": 95,
 "entries": [
 {
+"key": "hitter_stretch",
+"label": "Hitter view, stretch",
+"view_label": "Hitter view",
+"delivery": "stretch",
+"grade": "weak",
+"slice": "break",
+"when": "at hand break",
+"n": 7,
+"acc": 0.571,
+"baseline": 0.571,
+"situation": 0.571,
+"flagged": 1
+},
+{
 "key": "hitter_windup",
 "label": "Hitter view, windup",
 "view_label": "Hitter view",
@@ -19,14 +33,44 @@
 "grade": "none",
 "slice": "lift_start",
 "when": "as the leg starts up",
-"n": 17,
-"acc": 0.588,
-"baseline": 0.471,
-"situation": 0.529
+"n": 33,
+"acc": 0.667,
+"baseline": 0.606,
+"situation": 0.545
 }
 ],
-"flagged": [],
-"n_flagged": 0,
+"flagged": [
+{
+"play_id": "d951461c-c94a-370f-880e-4f4579f0251d",
+"family": "FB",
+"family_name": "fastball",
+"key": "hitter_stretch",
+"label": "Hitter view, stretch",
+"view_label": "Hitter view",
+"delivery": "stretch",
+"slice": "lift_top",
+"when": "at the top of the leg lift",
+"t": 0.77,
+"conf": 0.8015,
+"conf_sit": 0.6103,
+"tell": "Before a fastball, lead foot forward/back tends to sit further right on screen at the top of the leg lift.",
+"fix": "Same stride direction on every pitch.",
+"inning": 1,
+"count": "3-1",
+"outs": 1,
+"bat_side": "R",
+"clip": "skenes/clips/D_d951461c-c94a-370f-880e-4f4579f0251d.mp4",
+"still": "skenes/clips/D_d951461c-c94a-370f-880e-4f4579f0251d_lift_top.jpg",
+"compare": {
+"play_id": "a3b33389-3608-3c10-85d2-91b9f1fac6c5",
+"family": "BR",
+"family_name": "breaking ball",
+"clip": "skenes/clips/D_a3b33389-3608-3c10-85d2-91b9f1fac6c5.mp4",
+"still": "skenes/clips/D_a3b33389-3608-3c10-85d2-91b9f1fac6c5_lift_top.jpg"
+}
+}
+],
+"n_flagged": 1,
 "best": {
 "key": "hitter_windup",
 "label": "Hitter view, windup",
@@ -35,10 +79,10 @@
 "grade": "none",
 "slice": "lift_start",
 "when": "as the leg starts up",
-"n": 17,
-"acc": 0.588,
-"baseline": 0.471,
-"situation": 0.529
+"n": 33,
+"acc": 0.667,
+"baseline": 0.606,
+"situation": 0.545
 },
 "processed": true
 }

@@ -16,6 +16,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 ap = argparse.ArgumentParser()
 ap.add_argument('pitcher'); ap.add_argument('--out', required=True)
+ap.add_argument('--full', action='store_true', help='write a complete HTML document (for GitHub Pages) instead of a skeleton-less page')
+ap.add_argument('--copy-assets', action='store_true', help='copy stills and clips next to the page (data/...) instead of inlining stills; clips then play')
 a = ap.parse_args()
 pid = a.pitcher
 web = ROOT / 'www' / 'lab' / 'tip'
@@ -33,10 +35,24 @@ for v in page.get('views', []):
 for gm in games.values():
     for f in gm.get('flagged', []):
         wanted.add(f.get('still')); wanted.add((f.get('compare') or {}).get('still'))
+for gm in games.values():
+    for f in gm.get('flagged', []):
+        if a.copy_assets:
+            wanted.add(f.get('clip')); wanted.add((f.get('compare') or {}).get('clip'))
 assets = {}
+copied = 0
 for rel in sorted(x for x in wanted if x):
     p = data / rel
-    if p.exists() and p.suffix.lower() in ('.jpg', '.jpeg', '.png'):
+    if not p.exists():
+        continue
+    if a.copy_assets:
+        import shutil
+        dst = Path(a.out).parent / 'data' / rel
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        if not dst.exists() or dst.stat().st_size != p.stat().st_size:
+            shutil.copyfile(p, dst)
+        assets[rel] = 'data/' + rel; copied += 1
+    elif p.suffix.lower() in ('.jpg', '.jpeg', '.png'):
         assets[rel] = 'data:image/jpeg;base64,' + base64.b64encode(p.read_bytes()).decode()
 
 
@@ -123,7 +139,7 @@ body{{background:var(--bg);color:var(--ink)}}
 <script>window.__NB = {{ page: {json.dumps(page)}, games: {json.dumps(games)}, assets: {json.dumps(assets)} }};</script>
 <div id="viewDash">
 {d_markup}
-<div class="share-note">Private link from No Brand Baseball Analytics. Clips play on the team machine; this copy shows stills.</div>
+<div class="share-note">Shared copy from No Brand Baseball Analytics.</div>
 </div>
 <div id="viewGame" hidden>
 {g_markup}
@@ -135,5 +151,11 @@ body{{background:var(--bg);color:var(--ink)}}
 {g_func}
 </script>
 """
+if a.full:
+    NL = chr(10)
+    head = ('<!DOCTYPE html>' + NL + '<html lang="en">' + NL + '<head>' + NL + '<meta charset="utf-8">' + NL
+            + '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">' + NL
+            + '<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>' + NL)
+    out = head + out.replace(NL + '<link', NL + '</head>' + NL + '<body>' + NL + '<link', 1) + NL + '</body>' + NL + '</html>' + NL
 Path(a.out).write_text(out, encoding='utf-8')
-print(f'wrote {a.out}: {len(out)/1024:.0f} KB, {len(games)} games, {len(assets)} images')
+print(f'wrote {a.out}: {len(out)/1024:.0f} KB, {len(games)} games, {len(assets)} assets' + (f', {copied} copied' if a.copy_assets else ''))

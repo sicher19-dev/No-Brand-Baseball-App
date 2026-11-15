@@ -19,10 +19,10 @@
 "grade": "none",
 "slice": "lift_start",
 "when": "as the leg starts up",
-"n": 42,
-"acc": 0.595,
-"baseline": 0.595,
-"situation": 0.643
+"n": 77,
+"acc": 0.351,
+"baseline": 0.351,
+"situation": 0.377
 }
 ],
 "flagged": [],
@@ -35,10 +35,10 @@
 "grade": "none",
 "slice": "lift_start",
 "when": "as the leg starts up",
-"n": 42,
-"acc": 0.595,
-"baseline": 0.595,
-"situation": 0.643
+"n": 77,
+"acc": 0.351,
+"baseline": 0.351,
+"situation": 0.377
 },
 "processed": true
 }

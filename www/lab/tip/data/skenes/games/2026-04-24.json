@@ -12,6 +12,20 @@
 "pitches": 93,
 "entries": [
 {
+"key": "hitter_stretch",
+"label": "Hitter view, stretch",
+"view_label": "Hitter view",
+"delivery": "stretch",
+"grade": "weak",
+"slice": "break",
+"when": "at hand break",
+"n": 3,
+"acc": 0.333,
+"baseline": 1.0,
+"situation": 0.333,
+"flagged": 2
+},
+{
 "key": "hitter_windup",
 "label": "Hitter view, windup",
 "view_label": "Hitter view",
@@ -19,14 +33,61 @@
 "grade": "none",
 "slice": "lift_start",
 "when": "as the leg starts up",
-"n": 43,
-"acc": 0.744,
-"baseline": 0.767,
-"situation": 0.744
+"n": 84,
+"acc": 0.524,
+"baseline": 0.548,
+"situation": 0.488
 }
 ],
-"flagged": [],
-"n_flagged": 0,
+"flagged": [
+{
+"play_id": "127eeb15-66f9-3104-bb3e-b03e22a5a73c",
+"family": "FB",
+"family_name": "fastball",
+"key": "hitter_stretch",
+"label": "Hitter view, stretch",
+"view_label": "Hitter view",
+"delivery": "stretch",
+"slice": "top_m1",
+"when": "a second before the top of the leg lift",
+"t": 1.77,
+"conf": 0.7193,
+"conf_sit": 0.5509,
+"tell": "Before a fastball, back knee height tends to be higher a second before the top of the leg lift.",
+"fix": "Same back leg on every pitch.",
+"inning": 7,
+"count": "1-1",
+"outs": 2,
+"bat_side": "L",
+"clip": "skenes/clips/D_127eeb15-66f9-3104-bb3e-b03e22a5a73c.mp4",
+"still": "skenes/clips/D_127eeb15-66f9-3104-bb3e-b03e22a5a73c_top_m1.jpg",
+"compare": null
+},
+{
+"play_id": "77db757f-13ce-3a00-bf7f-315bc807a5d8",
+"family": "FB",
+"family_name": "fastball",
+"key": "hitter_stretch",
+"label": "Hitter view, stretch",
+"view_label": "Hitter view",
+"delivery": "stretch",
+"slice": "set",
+"when": "in the set",
+"t": 1.63,
+"conf": 0.634,
+"conf_sit": 0.3238,
+"tell": "Before a fastball, leg lift to release time tends to be longer in the set.",
+"fix": "Same tempo from the set to release on every pitch.",
+"inning": 7,
+"count": "1-0",
+"outs": 2,
+"bat_side": "L",
+"clip": "skenes/clips/D_77db757f-13ce-3a00-bf7f-315bc807a5d8.mp4",
+"still": "skenes/clips/D_77db757f-13ce-3a00-bf7f-315bc807a5d8_set.jpg",
+"compare": null
+}
+],
+"n_flagged": 2,
 "best": {
 "key": "hitter_windup",
 "label": "Hitter view, windup",
@@ -35,10 +96,10 @@
 "grade": "none",
 "slice": "lift_start",
 "when": "as the leg starts up",
-"n": 43,
-"acc": 0.744,
-"baseline": 0.767,
-"situation": 0.744
+"n": 84,
+"acc": 0.524,
+"baseline": 0.548,
+"situation": 0.488
 },
 "processed": true
 }

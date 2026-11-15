@@ -36,8 +36,9 @@ out_dir = tk.ROOT / 'www' / 'lab' / 'tip' / 'data'
 frames_dir = out_dir / a.pitcher / 'frames'; frames_dir.mkdir(parents=True, exist_ok=True)
 clips_dir = out_dir / a.pitcher / 'clips'; clips_dir.mkdir(parents=True, exist_ok=True)
 games_dir = out_dir / a.pitcher / 'games'; games_dir.mkdir(parents=True, exist_ok=True)
-FAMILY = {'FF': 'FF', 'SI': 'SI', 'FT': 'SI', 'ST': 'ST', 'SL': 'SL', 'CH': 'CH', 'FS': 'FS', 'FC': 'FC'}
-NAMES = {'FF': 'four-seam', 'SI': 'sinker', 'ST': 'sweeper', 'SL': 'slider', 'CH': 'changeup', 'FS': 'splitter', 'FC': 'cutter'}
+NAMES = dict(tk.NAMES)
+NAMES.update(info.get('pitch_names', {}))   # e.g. Skenes calls his splitter a splinker
+FAMILY = tk.FAMILY   # replaced by tk.GROUP below when the models were trained on groups
 SLICE_TEXT = {'m2000': '2.0 s before release', 'm1500': '1.5 s before release', 'set': 'in the set', 'top_m1': 'a second before the top of the leg lift',
               'lift_start': 'as the leg starts up', 'm1000': '1.0 s before release', 'lift_top': 'at the top of the leg lift',
               'm0750': '0.75 s before release', 'break': 'at hand break', 'm0500': '0.5 s before release', 'm0250': '0.25 s before release', 'm0000': 'at release'}
@@ -59,6 +60,9 @@ FIX = [('glove_y', 'Set the glove at the same height on every pitch.'),
        ('to_release', 'Same tempo from the set to release on every pitch.'), ('set_dur', 'Hold the set the same length on every pitch.')]
 lab = pd.read_csv(tk.ROOT / 'private' / f'{a.pitcher}_execution_pitch_level_INTERNAL.csv', dtype={'play_id': str})
 lab = lab[lab.game_date.astype(str).str.startswith(a.season)]
+_any = next(iter(sorted(D.glob('models/*/*/timeline.json'))), None)
+if _any and json.loads(_any.read_text()).get('class_mode') == 'groups':
+    FAMILY = tk.GROUP
 lab['family'] = lab.pitch_type.map(FAMILY)
 lab['home_flag'] = lab.home.astype(str).str.lower() == 'true'
 sit = pd.read_csv(D / f'situations-{a.season}.csv', dtype={'play_id': str}).set_index('play_id')
@@ -111,12 +115,16 @@ def verdict(tl):
     return best
 
 
+def art(name):
+    return 'an' if name[:1].lower() in 'aeiou' else 'a'
+
+
 def tell_text(tl, slice_, fam):
     s = next((x for x in tl['slices'] if x['slice'] == slice_), None)
     if not s or fam not in s['tells_lr']:
         return None, None
     t = s['tells_lr'][fam][0]
-    return f"Before a {NAMES.get(fam, fam)}, {phrase(t['feature'], t['direction'], t['plain'])} {SLICE_TEXT.get(slice_, '')}.", t['feature']
+    return f"Before {art(NAMES.get(fam, fam))} {NAMES.get(fam, fam)}, {phrase(t['feature'], t['direction'], t['plain'])} {SLICE_TEXT.get(slice_, '')}.", t['feature']
 
 
 def tells(tl, v):
@@ -129,7 +137,7 @@ def tells(tl, v):
                 continue
             t = lst[0]
             out.append(dict(slice=s['slice'], when=SLICE_TEXT.get(s['slice'], s['slice']), t=s['t_before_release'], family=c, family_name=NAMES.get(c, c),
-                            text=f"Before a {NAMES.get(c, c)}, {phrase(t['feature'], t['direction'], t['plain'])} {SLICE_TEXT.get(s['slice'], '')}.",
+                            text=f"Before {art(NAMES.get(c, c))} {NAMES.get(c, c)}, {phrase(t['feature'], t['direction'], t['plain'])} {SLICE_TEXT.get(s['slice'], '')}.",
                             feature=t['feature'], direction=t['direction'], weight=t['weight'], fix=fix_for(t['feature'])))
     return out
 
@@ -240,7 +248,7 @@ for view in [v.strip().upper() for v in a.views.split(',') if v.strip()]:
         key = f"{tk.VIEWS[view]['name']}_{dlv}"
         entry = dict(key=key, letter=view, view_label=base, label=base if dlv == 'all' else f'{base}, {dlv}',
                      delivery=dlv, who=tk.VIEWS[view]['who'], who_text=WHO[tk.VIEWS[view]['who']],
-                     clips=tl['n_clips'], games=tl['games'], classes=tl['classes'], class_names={c: NAMES.get(c, c) for c in list(tl['classes']) + list(tl['not_enough_data'])}, n_per_class=tl['n_per_class'],
+                     clips=tl['n_clips'], games=tl['games'], classes=tl['classes'], class_names={c: NAMES.get(c, c) for c in list(tl['classes']) + list(tl['not_enough_data'])}, n_per_class=tl['n_per_class'], members=tl.get('members', {}),
                      not_enough_data={c: n for c, n in tl['not_enough_data'].items()}, min_n=tl['min_n'],
                      verdict=v, timeline=timeline, tells=tells(tl, v), frames=render_frames(view, dlv, tl['classes']) if tl['classes'] else [])
         views.append(entry)
@@ -330,7 +338,7 @@ data = dict(schema='nb.tip_page/2', pitcher=dict(id=a.pitcher, name=info.get('na
             delivery_note={'stretch_only': 'All pitches from the stretch.', 'windup_only': 'All pitches from the windup.'}.get(
                 info.get('delivery', 'stretch_only'), 'Windup with the bases empty, stretch with runners on. The video decides which, and each is modeled on its own.'),
             deliveries=sorted({v['delivery'] for v in views}),
-            season_mix={c: int(n) for c, n in counts.items() if c}, season_pitches=int(counts.sum()),
+            season_mix={c: int(n) for c, n in counts.items() if c}, season_pitches=int(counts.sum()), type_names=NAMES,
             majority=dict(family=str(counts.idxmax()), share=round(float(counts.max() / counts.sum()), 3)),
             views=views, fix_cue='', fix_suggestions=fixes[:3], facility=[],
             games=[dict(date=g['date'], opp=g['opp'], home=g['home'], pitches=g['pitches'], processed=g['processed'], n_flagged=g['n_flagged'], best=g['best']) for g in games])

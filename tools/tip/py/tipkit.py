@@ -21,6 +21,12 @@ R_HAND = slice(112, 133)
 # Camera views by team-server letter. `region` is the part of the frame where the
 # pitcher's delivery happens (fractions of width and height), used by the coarse
 # motion pass and as a prior when picking the pitcher among detected people.
+# pitch families: per type (FAMILY) or three groups (GROUP) a hitter actually sorts by
+FAMILY = {'FF': 'FF', 'SI': 'SI', 'FT': 'SI', 'ST': 'ST', 'SL': 'SL', 'CH': 'CH', 'FS': 'FS', 'FC': 'FC'}
+GROUP = {'FF': 'FB', 'SI': 'FB', 'FT': 'FB', 'FC': 'FB', 'ST': 'BR', 'SL': 'BR', 'CU': 'BR', 'KC': 'BR', 'CH': 'OS', 'FS': 'OS'}
+NAMES = {'FF': 'four-seam', 'SI': 'sinker', 'ST': 'sweeper', 'SL': 'slider', 'CH': 'changeup', 'FS': 'splitter', 'FC': 'cutter', 'CU': 'curveball',
+         'FB': 'fastball', 'BR': 'breaking ball', 'OS': 'offspeed pitch'}
+
 VIEWS = {
     'D': dict(name='hitter', label='Hitter view', region=(0.30, 0.70, 0.05, 0.95), min_h=250, who='hitter'),
     'J': dict(name='hitter_closed', label='Hitter view (closed side)', region=(0.30, 0.70, 0.05, 0.95), min_h=250, who='hitter'),

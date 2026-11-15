@@ -43,12 +43,13 @@ ap = argparse.ArgumentParser()
 ap.add_argument('pitcher'); ap.add_argument('--view', required=True); ap.add_argument('--season', default='2026')
 ap.add_argument('--perms', type=int, default=100); ap.add_argument('--min-n', type=int, default=150)
 ap.add_argument('--delivery', default='auto')
+ap.add_argument('--classes', default='groups', choices=['groups', 'types'], help='groups: fastball / breaking / offspeed; types: each pitch type on its own')
 a = ap.parse_args()
 view = a.view.upper()
 D = tk.pdir(a.pitcher)
 info = tk.pitcher_info(a.pitcher)
-FAMILY = {'FF': 'FF', 'SI': 'SI', 'FT': 'SI', 'ST': 'ST', 'SL': 'SL', 'CH': 'CH', 'FS': 'FS', 'CU': None, 'KC': None, 'FC': 'FC'}
-NAMES = {'FF': 'four-seam', 'SI': 'sinker', 'ST': 'sweeper', 'SL': 'slider', 'CH': 'changeup', 'FS': 'splitter', 'FC': 'cutter'}
+FAMILY = tk.GROUP if a.classes == 'groups' else tk.FAMILY
+NAMES = tk.NAMES
 PLAIN = {
     'glove_y': 'glove height', 'glove_x': 'glove forward/back', 'hand_y': 'throwing hand height', 'hand_x': 'throwing hand forward/back',
     'hand_glove_dx': 'hand ahead of or behind the glove', 'hand_glove_dy': 'hand above or below the glove', 'hand_glove_dist': 'hand-to-glove distance',
@@ -76,7 +77,7 @@ lab['park'] = np.where(lab.home.astype(str).str.lower() == 'true', info.get('tea
 sit = pd.read_csv(D / f'situations-{a.season}.csv', dtype={'play_id': str})
 sit['score_diff'] = sit.score_for - sit.score_against
 sit['on_base'] = sit.on_1b + sit.on_2b + sit.on_3b
-meta = lab[['play_id', 'game_date', 'park', 'stand', 'family']].merge(
+meta = lab[['play_id', 'game_date', 'park', 'stand', 'family', 'pitch_type']].merge(
     sit[['play_id', 'outs', 'balls', 'strikes', 'on_1b', 'on_2b', 'on_3b', 'on_base', 'inning', 'score_diff', 'tto', 'bat_side']], on='play_id', how='inner')
 if 'pre_sw' in ev.columns:
     meta = meta.merge(ev[['play_id', 'pre_sw', 'pre_hw']], on='play_id', how='left')
@@ -112,7 +113,7 @@ SIT_COLS = ['outs', 'balls', 'strikes', 'on_1b', 'on_2b', 'on_3b', 'inning', 'sc
 df['bat_side_L'] = (df.bat_side == 'L').astype(int)
 df['park_code'] = df.park.astype('category').cat.codes
 CAM_COLS = [c for c in df.columns if c.startswith('cam_')]
-SKIP = {'play_id', 'slice', 't_before_release', 'game_date', 'park', 'stand', 'family', 'bat_side', 'delivery', 'on_base', 'park_code', 'bat_side_L',
+SKIP = {'play_id', 'slice', 't_before_release', 'game_date', 'park', 'stand', 'family', 'pitch_type', 'bat_side', 'delivery', 'on_base', 'park_code', 'bat_side_L',
         'pre_sw', 'pre_hw'} | set(SIT_COLS) | set(CAM_COLS)
 VID_COLS = [c for c in df.columns if c not in SKIP]
 
@@ -212,8 +213,9 @@ def run(df, delivery):
         Pc, _, _ = oof(gbm, Xc, y, groups, logo); r['acc_camera'] = round(summarize(Pc, labels, y)[0], 4)
         Pvs, _, _ = oof(gbm, Xvs, y, groups, logo); r['acc_video_plus_situation'] = round(summarize(Pvs, labels, y)[0], 4)
         pairs = {}
-        for name, pos, neg in [('FF_vs_ST', ['FF'], ['ST']), ('FF_vs_offspeed', ['FF'], ['CH', 'FS']), ('fast_vs_breaking', ['FF', 'SI'], ['ST', 'SL']),
-                               ('FF_vs_rest', ['FF'], [c for c in classes if c != 'FF'])]:
+        PAIRS = ([('fastball_vs_breaking', ['FB'], ['BR']), ('fastball_vs_offspeed', ['FB'], ['OS']), ('fastball_vs_rest', ['FB'], ['BR', 'OS'])] if a.classes == 'groups'
+                 else [('FF_vs_ST', ['FF'], ['ST']), ('FF_vs_offspeed', ['FF'], ['CH', 'FS']), ('fast_vs_breaking', ['FF', 'SI'], ['ST', 'SL']), ('FF_vs_rest', ['FF'], [c for c in classes if c != 'FF'])])
+        for name, pos, neg in PAIRS:
             m = np.isin(y, pos + neg)
             if m.sum() < 60 or not any(np.isin(y[m], pos)) or not any(np.isin(y[m], neg)):
                 continue
@@ -245,7 +247,8 @@ def run(df, delivery):
                    delivery=delivery, delivery_rule=rule, delivery_agreement_with_bases=agreement,
                    n_clips=int(len(clips)), games=int(clips.game_date.nunique()), classes=classes,
                    class_names={c: NAMES.get(c, c) for c in classes}, n_per_class={c: int(counts[c]) for c in classes},
-                   not_enough_data=dropped, min_n=a.min_n, perms=a.perms, slices=results, label='game-only')
+                   not_enough_data=dropped, min_n=a.min_n, perms=a.perms, slices=results, label='game-only', class_mode=a.classes,
+                   members={c: {t: int(n) for t, n in clips[clips.family == c].pitch_type.value_counts().items()} for c in counts.index})
     (out_dir / 'timeline.json').write_text(json.dumps(summary, indent=1))
     clips[['play_id', 'game_date', 'family']].to_csv(out_dir / 'clips.csv', index=False)
     pd.DataFrame(pitch_rows).to_csv(out_dir / 'pitches.csv', index=False)
