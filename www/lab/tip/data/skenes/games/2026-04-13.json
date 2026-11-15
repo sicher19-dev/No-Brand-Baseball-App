@@ -4,7 +4,7 @@
 "name": "Paul Skenes"
 },
 "season": "2026",
-"built": "2026-11-14",
+"built": "2026-11-15",
 "label": "game-only",
 "date": "2026-04-13",
 "opp": "WSH",
@@ -17,12 +17,12 @@
 "view_label": "Hitter view",
 "delivery": "windup",
 "grade": "none",
-"slice": "lift_start",
-"when": "as the leg starts up",
-"n": 75,
-"acc": 0.36,
-"baseline": 0.36,
-"situation": 0.373
+"slice": "set",
+"when": "in the set",
+"n": 73,
+"acc": 0.37,
+"baseline": 0.37,
+"situation": 0.37
 },
 {
 "key": "cf_stretch",
@@ -47,9 +47,9 @@
 "slice": "lift_start",
 "when": "as the leg starts up",
 "n": 80,
-"acc": 0.425,
+"acc": 0.463,
 "baseline": 0.35,
-"situation": 0.4
+"situation": 0.388
 }
 ],
 "flagged": [
@@ -61,25 +61,25 @@
 "label": "Center field, stretch",
 "view_label": "Center field",
 "delivery": "stretch",
-"slice": "top_m1",
-"when": "a second before the top of the leg lift",
-"t": 1.4,
-"conf": 0.6209,
-"conf_sit": 0.3005,
-"tell": "Before an offspeed pitch, hip height over the feet tends to be lower a second before the top of the leg lift.",
-"fix": "Same knee bend in the set.",
+"slice": "m2000",
+"when": "2.0 s before release",
+"t": 2.0,
+"conf": 0.6707,
+"conf_sit": 0.3379,
+"tell": "Before an offspeed pitch, hand break to release time tends to be longer 2.0 s before release.",
+"fix": "Same tempo from the set to release on every pitch.",
 "inning": 3,
 "count": "0-0",
 "outs": 2,
 "bat_side": "L",
 "clip": "skenes/clips/C_20a2b469-138f-316d-8d45-a1133ce489cc.mp4",
-"still": "skenes/clips/C_20a2b469-138f-316d-8d45-a1133ce489cc_top_m1.jpg",
+"still": "skenes/clips/C_20a2b469-138f-316d-8d45-a1133ce489cc_m2000.jpg",
 "compare": {
 "play_id": "57e4226b-c4ed-3ade-ba2c-b561977bb55d",
 "family": "FB",
 "family_name": "fastball",
 "clip": "skenes/clips/C_57e4226b-c4ed-3ade-ba2c-b561977bb55d.mp4",
-"still": "skenes/clips/C_57e4226b-c4ed-3ade-ba2c-b561977bb55d_top_m1.jpg"
+"still": "skenes/clips/C_57e4226b-c4ed-3ade-ba2c-b561977bb55d_m2000.jpg"
 }
 }
 ],
@@ -93,9 +93,9 @@
 "slice": "lift_start",
 "when": "as the leg starts up",
 "n": 80,
-"acc": 0.425,
+"acc": 0.463,
 "baseline": 0.35,
-"situation": 0.4
+"situation": 0.388
 },
 "processed": true
 }

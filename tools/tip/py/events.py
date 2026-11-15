@@ -210,6 +210,14 @@ def analyse(npz):
     if out['box_h'] < tk.VIEWS[view].get('small_h', 400): flags += ' small_pitcher'
     # a lock on the wrong person shows as low keypoint confidence, a slow 'release', or a release far from where the clip puts the pitch
     if out['conf_mean'] < 0.66 or out['v_release'] < 1.0 or not (3.0 <= t_rel <= 14.0): flags += ' odd_track'
+    # a camera zoom or a cut to a close-up inside the delivery window: the box grows past 1.4x the
+    # standing height, so the 'release' was read off a different shot (a shrink is just the follow-through)
+    hb = box[:, 3] - box[:, 1]
+    win = found & (t >= t_rel - 2.5) & (t <= t_rel + 0.2)
+    if win.sum() >= 10:
+        hw = hb[win]
+        hw = np.array([np.median(hw[max(0, i - 2): i + 3]) for i in range(len(hw))])
+        if hw.max() > 1.4 * hpx: flags += ' scale_jump'
     out['flag'] = flags.strip()
     return out
 

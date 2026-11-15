@@ -67,7 +67,7 @@ Preview the page with `.venv-tip/Scripts/python -m http.server 8765 -d www` and 
 Every step is resumable and skips clips it has already done. Pose costs about
 5 s per clip on the RTX 4070 (detector every third frame, pose on the pitcher
 crop only). A pitch where the pitcher leaves the frame (pickoff) is flagged
-`small_pitcher` or `release_at_window_end` by events.py and left out of training.
+`small_pitcher`, `release_at_window_end`, `odd_track` (wrong person locked) or `scale_jump` (the camera zoomed or cut to a close-up inside the delivery window, so the box grows past 1.4x the standing height) by events.py and left out of training.
 
 Labels: pitch type from the internal pitch file (`FT` and `SI` are both the
 sinker; `CU` is dropped), situation from `situations-<season>.csv`.

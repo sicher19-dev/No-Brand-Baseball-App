@@ -4,27 +4,13 @@
 "name": "Paul Skenes"
 },
 "season": "2026",
-"built": "2026-11-14",
+"built": "2026-11-15",
 "label": "game-only",
 "date": "2026-07-19",
 "opp": "CLE",
 "home": false,
 "pitches": 100,
 "entries": [
-{
-"key": "cf_stretch",
-"label": "Center field, stretch",
-"view_label": "Center field",
-"delivery": "stretch",
-"grade": "weak",
-"slice": "top_m1",
-"when": "a second before the top of the leg lift",
-"n": 1,
-"acc": 1.0,
-"baseline": 1.0,
-"situation": 1.0,
-"flagged": 1
-},
 {
 "key": "cf_windup",
 "label": "Center field, windup",
@@ -39,45 +25,20 @@
 "situation": 1.0
 }
 ],
-"flagged": [
-{
-"play_id": "55750ca9-3b65-3df9-baa2-3095342d2456",
-"family": "FB",
-"family_name": "fastball",
-"key": "cf_stretch",
-"label": "Center field, stretch",
-"view_label": "Center field",
-"delivery": "stretch",
-"slice": "m1500",
-"when": "1.5 s before release",
-"t": 1.5,
-"conf": 1.0,
-"conf_sit": 0.6852,
-"tell": "Before a fastball, throwing elbow height tends to be lower 1.5 s before release.",
-"fix": "Same throwing elbow in the set on every pitch.",
-"inning": 5,
-"count": "1-0",
-"outs": 2,
-"bat_side": "L",
-"clip": "skenes/clips/C_55750ca9-3b65-3df9-baa2-3095342d2456.mp4",
-"still": "skenes/clips/C_55750ca9-3b65-3df9-baa2-3095342d2456_m1500.jpg",
-"compare": null
-}
-],
-"n_flagged": 1,
+"flagged": [],
+"n_flagged": 0,
 "best": {
-"key": "cf_stretch",
-"label": "Center field, stretch",
+"key": "cf_windup",
+"label": "Center field, windup",
 "view_label": "Center field",
-"delivery": "stretch",
-"grade": "weak",
-"slice": "top_m1",
-"when": "a second before the top of the leg lift",
-"n": 1,
-"acc": 1.0,
+"delivery": "windup",
+"grade": "none",
+"slice": "lift_start",
+"when": "as the leg starts up",
+"n": 4,
+"acc": 0.75,
 "baseline": 1.0,
-"situation": 1.0,
-"flagged": 1
+"situation": 1.0
 },
 "processed": true
 }

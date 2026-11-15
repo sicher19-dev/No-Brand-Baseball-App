@@ -6,7 +6,7 @@
 "hand": "R"
 },
 "season": "2026",
-"built": "2026-11-14",
+"built": "2026-11-15",
 "label": "game-only",
 "delivery_note": "Windup with the bases empty, stretch with runners on. The video decides which, and each is modeled on its own.",
 "deliveries": [
@@ -45,7 +45,7 @@
 "delivery": "stretch",
 "who": "hitter",
 "who_text": "the hitter",
-"clips": 667,
+"clips": 664,
 "games": 27,
 "classes": [
 "BR",
@@ -58,34 +58,34 @@
 "OS": "offspeed pitch"
 },
 "n_per_class": {
-"BR": 208,
-"FB": 307,
-"OS": 152
+"BR": 207,
+"FB": 306,
+"OS": 151
 },
 "members": {
 "FB": {
-"FF": 231,
+"FF": 230,
 "SI": 76
 },
 "BR": {
-"ST": 140,
+"ST": 139,
 "SL": 65,
 "CU": 3
 },
 "OS": {
-"CH": 77,
+"CH": 76,
 "FS": 75
 }
 },
 "not_enough_data": {},
 "min_n": 150,
 "verdict": {
-"grade": "weak",
+"grade": "none",
 "slice": "break",
 "t": 0.6,
-"acc": 0.5277,
-"baseline": 0.4603,
-"situation": 0.4438,
+"acc": 0.5045,
+"baseline": 0.4608,
+"situation": 0.4488,
 "p": 0.0099
 },
 "timeline": [
@@ -93,37 +93,37 @@
 "slice": "m2000",
 "when": "2.0 s before release",
 "t": 2.0,
-"n": 599,
-"acc": 0.4407,
-"acc_gbm": 0.4591,
-"baseline": 0.4574,
-"situation": 0.4324,
-"camera": 0.3573,
-"video_plus_situation": 0.4758,
-"perm_p": 0.1485,
+"n": 596,
+"acc": 0.4547,
+"acc_gbm": 0.4681,
+"baseline": 0.4581,
+"situation": 0.4329,
+"camera": 0.3607,
+"video_plus_situation": 0.4564,
+"perm_p": 0.0198,
 "recall": {
-"BR": 0.262,
-"FB": 0.657,
-"OS": 0.254
+"BR": 0.33,
+"FB": 0.637,
+"OS": 0.262
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 457,
-"acc": 0.5821,
-"auc": 0.5777,
-"baseline": 0.5996
+"n": 455,
+"acc": 0.6022,
+"auc": 0.5961,
+"baseline": 0.6
 },
 "fastball_vs_offspeed": {
-"n": 416,
-"acc": 0.6755,
-"auc": 0.644,
-"baseline": 0.6587
+"n": 414,
+"acc": 0.6691,
+"auc": 0.633,
+"baseline": 0.6594
 },
 "fastball_vs_rest": {
-"n": 599,
-"acc": 0.5676,
-"auc": 0.5644,
-"baseline": 0.5426
+"n": 596,
+"acc": 0.5537,
+"auc": 0.5608,
+"baseline": 0.5419
 }
 }
 },
@@ -131,37 +131,37 @@
 "slice": "m1500",
 "when": "1.5 s before release",
 "t": 1.5,
-"n": 641,
-"acc": 0.4618,
-"acc_gbm": 0.4415,
-"baseline": 0.4571,
-"situation": 0.4399,
-"camera": 0.376,
-"video_plus_situation": 0.468,
+"n": 638,
+"acc": 0.4639,
+"acc_gbm": 0.4451,
+"baseline": 0.4577,
+"situation": 0.4498,
+"camera": 0.3824,
+"video_plus_situation": 0.4561,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.318,
-"FB": 0.638,
-"OS": 0.306
+"BR": 0.33,
+"FB": 0.637,
+"OS": 0.301
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 494,
-"acc": 0.587,
-"auc": 0.6069,
-"baseline": 0.5931
+"n": 492,
+"acc": 0.5976,
+"auc": 0.6118,
+"baseline": 0.5935
 },
 "fastball_vs_offspeed": {
-"n": 440,
-"acc": 0.6659,
-"auc": 0.6323,
-"baseline": 0.6659
+"n": 438,
+"acc": 0.6667,
+"auc": 0.6299,
+"baseline": 0.6667
 },
 "fastball_vs_rest": {
-"n": 641,
-"acc": 0.5647,
-"auc": 0.5403,
-"baseline": 0.5429
+"n": 638,
+"acc": 0.5658,
+"auc": 0.5385,
+"baseline": 0.5423
 }
 }
 },
@@ -169,37 +169,37 @@
 "slice": "set",
 "when": "in the set",
 "t": 1.63,
-"n": 646,
-"acc": 0.469,
-"acc_gbm": 0.4365,
-"baseline": 0.4551,
-"situation": 0.4365,
-"camera": 0.3421,
-"video_plus_situation": 0.4675,
-"perm_p": 0.0198,
+"n": 643,
+"acc": 0.4619,
+"acc_gbm": 0.4448,
+"baseline": 0.4557,
+"situation": 0.4386,
+"camera": 0.3484,
+"video_plus_situation": 0.4401,
+"perm_p": 0.0099,
 "recall": {
-"BR": 0.358,
-"FB": 0.609,
-"OS": 0.345
+"BR": 0.365,
+"FB": 0.577,
+"OS": 0.367
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 498,
-"acc": 0.5884,
-"auc": 0.5981,
-"baseline": 0.5904
+"n": 496,
+"acc": 0.5786,
+"auc": 0.6001,
+"baseline": 0.5907
 },
 "fastball_vs_offspeed": {
-"n": 442,
-"acc": 0.6833,
-"auc": 0.6329,
-"baseline": 0.6652
+"n": 440,
+"acc": 0.6886,
+"auc": 0.6313,
+"baseline": 0.6659
 },
 "fastball_vs_rest": {
-"n": 646,
-"acc": 0.548,
-"auc": 0.5571,
-"baseline": 0.5449
+"n": 643,
+"acc": 0.5412,
+"auc": 0.5535,
+"baseline": 0.5443
 }
 }
 },
@@ -207,37 +207,37 @@
 "slice": "top_m1",
 "when": "a second before the top of the leg lift",
 "t": 1.77,
-"n": 640,
-"acc": 0.4547,
-"acc_gbm": 0.4547,
-"baseline": 0.4547,
-"situation": 0.4469,
-"camera": 0.3781,
-"video_plus_situation": 0.4641,
-"perm_p": 0.0198,
+"n": 637,
+"acc": 0.4443,
+"acc_gbm": 0.4443,
+"baseline": 0.4553,
+"situation": 0.4333,
+"camera": 0.3579,
+"video_plus_situation": 0.4694,
+"perm_p": 0.0099,
 "recall": {
-"BR": 0.401,
-"FB": 0.584,
-"OS": 0.272
+"BR": 0.388,
+"FB": 0.566,
+"OS": 0.281
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 493,
-"acc": 0.6004,
-"auc": 0.6048,
-"baseline": 0.5903
+"n": 491,
+"acc": 0.5947,
+"auc": 0.6085,
+"baseline": 0.5906
 },
 "fastball_vs_offspeed": {
-"n": 438,
-"acc": 0.6575,
-"auc": 0.6277,
-"baseline": 0.6644
+"n": 436,
+"acc": 0.6583,
+"auc": 0.6255,
+"baseline": 0.6651
 },
 "fastball_vs_rest": {
-"n": 640,
-"acc": 0.5531,
-"auc": 0.5518,
-"baseline": 0.5453
+"n": 637,
+"acc": 0.5495,
+"auc": 0.5462,
+"baseline": 0.5447
 }
 }
 },
@@ -245,37 +245,37 @@
 "slice": "lift_start",
 "when": "as the leg starts up",
 "t": 1.13,
-"n": 667,
-"acc": 0.4513,
-"acc_gbm": 0.4618,
-"baseline": 0.4603,
-"situation": 0.4438,
-"camera": 0.3868,
-"video_plus_situation": 0.4348,
-"perm_p": 0.1782,
+"n": 664,
+"acc": 0.4578,
+"acc_gbm": 0.4744,
+"baseline": 0.4608,
+"situation": 0.4488,
+"camera": 0.381,
+"video_plus_situation": 0.4789,
+"perm_p": 0.2079,
 "recall": {
-"BR": 0.317,
-"FB": 0.625,
-"OS": 0.283
+"BR": 0.309,
+"FB": 0.627,
+"OS": 0.318
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 515,
-"acc": 0.5922,
-"auc": 0.6027,
-"baseline": 0.5961
+"n": 513,
+"acc": 0.5926,
+"auc": 0.6071,
+"baseline": 0.5965
 },
 "fastball_vs_offspeed": {
-"n": 459,
-"acc": 0.6667,
-"auc": 0.6329,
-"baseline": 0.6688
+"n": 457,
+"acc": 0.6608,
+"auc": 0.6312,
+"baseline": 0.6696
 },
 "fastball_vs_rest": {
-"n": 667,
-"acc": 0.5547,
-"auc": 0.5439,
-"baseline": 0.5397
+"n": 664,
+"acc": 0.5617,
+"auc": 0.5406,
+"baseline": 0.5392
 }
 }
 },
@@ -283,37 +283,37 @@
 "slice": "m1000",
 "when": "1.0 s before release",
 "t": 1.0,
-"n": 653,
-"acc": 0.4487,
-"acc_gbm": 0.4671,
-"baseline": 0.4594,
-"situation": 0.4303,
-"camera": 0.3752,
-"video_plus_situation": 0.4594,
+"n": 650,
+"acc": 0.4569,
+"acc_gbm": 0.4538,
+"baseline": 0.46,
+"situation": 0.4354,
+"camera": 0.3754,
+"video_plus_situation": 0.4677,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.387,
-"FB": 0.62,
-"OS": 0.188
+"BR": 0.394,
+"FB": 0.619,
+"OS": 0.216
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 504,
-"acc": 0.6111,
-"auc": 0.618,
-"baseline": 0.5952
+"n": 502,
+"acc": 0.6135,
+"auc": 0.6225,
+"baseline": 0.5956
 },
 "fastball_vs_offspeed": {
-"n": 449,
-"acc": 0.6459,
-"auc": 0.5799,
-"baseline": 0.6682
+"n": 447,
+"acc": 0.6443,
+"auc": 0.5769,
+"baseline": 0.6689
 },
 "fastball_vs_rest": {
-"n": 653,
-"acc": 0.5375,
-"auc": 0.5474,
-"baseline": 0.5406
+"n": 650,
+"acc": 0.5369,
+"auc": 0.5471,
+"baseline": 0.54
 }
 }
 },
@@ -321,37 +321,37 @@
 "slice": "lift_top",
 "when": "at the top of the leg lift",
 "t": 0.77,
-"n": 667,
-"acc": 0.4768,
-"acc_gbm": 0.4573,
-"baseline": 0.4603,
-"situation": 0.4438,
-"camera": 0.4033,
-"video_plus_situation": 0.4858,
+"n": 664,
+"acc": 0.4759,
+"acc_gbm": 0.4759,
+"baseline": 0.4608,
+"situation": 0.4488,
+"camera": 0.4006,
+"video_plus_situation": 0.5075,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.284,
-"FB": 0.642,
-"OS": 0.408
+"BR": 0.285,
+"FB": 0.641,
+"OS": 0.404
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 515,
-"acc": 0.565,
-"auc": 0.5532,
-"baseline": 0.5961
+"n": 513,
+"acc": 0.5653,
+"auc": 0.5592,
+"baseline": 0.5965
 },
 "fastball_vs_offspeed": {
-"n": 459,
-"acc": 0.7102,
-"auc": 0.7335,
-"baseline": 0.6688
+"n": 457,
+"acc": 0.7133,
+"auc": 0.7326,
+"baseline": 0.6696
 },
 "fastball_vs_rest": {
-"n": 667,
-"acc": 0.5727,
-"auc": 0.5707,
-"baseline": 0.5397
+"n": 664,
+"acc": 0.5708,
+"auc": 0.5711,
+"baseline": 0.5392
 }
 }
 },
@@ -359,37 +359,37 @@
 "slice": "m0750",
 "when": "0.75 s before release",
 "t": 0.75,
-"n": 660,
-"acc": 0.4758,
-"acc_gbm": 0.4682,
-"baseline": 0.4591,
-"situation": 0.4485,
-"camera": 0.3652,
-"video_plus_situation": 0.4788,
+"n": 657,
+"acc": 0.4749,
+"acc_gbm": 0.449,
+"baseline": 0.4597,
+"situation": 0.4444,
+"camera": 0.3729,
+"video_plus_situation": 0.4658,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.413,
-"FB": 0.64,
-"OS": 0.232
+"BR": 0.405,
+"FB": 0.646,
+"OS": 0.227
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 509,
-"acc": 0.609,
-"auc": 0.5977,
-"baseline": 0.5953
+"n": 507,
+"acc": 0.6134,
+"auc": 0.6053,
+"baseline": 0.5957
 },
 "fastball_vs_offspeed": {
-"n": 454,
-"acc": 0.6586,
-"auc": 0.6097,
-"baseline": 0.6674
+"n": 452,
+"acc": 0.6659,
+"auc": 0.6044,
+"baseline": 0.6681
 },
 "fastball_vs_rest": {
-"n": 660,
-"acc": 0.5258,
-"auc": 0.5304,
-"baseline": 0.5409
+"n": 657,
+"acc": 0.5251,
+"auc": 0.5253,
+"baseline": 0.5403
 }
 }
 },
@@ -397,37 +397,37 @@
 "slice": "break",
 "when": "at hand break",
 "t": 0.6,
-"n": 667,
-"acc": 0.5277,
-"acc_gbm": 0.5097,
-"baseline": 0.4603,
-"situation": 0.4438,
-"camera": 0.3838,
-"video_plus_situation": 0.5232,
+"n": 664,
+"acc": 0.5045,
+"acc_gbm": 0.5196,
+"baseline": 0.4608,
+"situation": 0.4488,
+"camera": 0.3795,
+"video_plus_situation": 0.5256,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.433,
-"FB": 0.661,
-"OS": 0.388
+"BR": 0.411,
+"FB": 0.634,
+"OS": 0.371
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 515,
-"acc": 0.6311,
-"auc": 0.6533,
-"baseline": 0.5961
+"n": 513,
+"acc": 0.6199,
+"auc": 0.6501,
+"baseline": 0.5965
 },
 "fastball_vs_offspeed": {
-"n": 459,
-"acc": 0.7102,
-"auc": 0.722,
-"baseline": 0.6688
+"n": 457,
+"acc": 0.7068,
+"auc": 0.7208,
+"baseline": 0.6696
 },
 "fastball_vs_rest": {
-"n": 667,
-"acc": 0.6417,
-"auc": 0.6697,
-"baseline": 0.5397
+"n": 664,
+"acc": 0.6386,
+"auc": 0.6671,
+"baseline": 0.5392
 }
 }
 },
@@ -435,37 +435,37 @@
 "slice": "m0500",
 "when": "0.5 s before release",
 "t": 0.5,
-"n": 665,
-"acc": 0.4797,
-"acc_gbm": 0.5113,
-"baseline": 0.4586,
-"situation": 0.4451,
-"camera": 0.403,
-"video_plus_situation": 0.5143,
+"n": 662,
+"acc": 0.4804,
+"acc_gbm": 0.5,
+"baseline": 0.4592,
+"situation": 0.4547,
+"camera": 0.3852,
+"video_plus_situation": 0.5076,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.418,
-"FB": 0.728,
-"OS": 0.066
+"BR": 0.425,
+"FB": 0.714,
+"OS": 0.086
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 513,
-"acc": 0.6355,
-"auc": 0.6555,
-"baseline": 0.5945
+"n": 511,
+"acc": 0.6419,
+"auc": 0.6671,
+"baseline": 0.5949
 },
 "fastball_vs_offspeed": {
-"n": 457,
-"acc": 0.6521,
-"auc": 0.484,
-"baseline": 0.6674
+"n": 455,
+"acc": 0.6527,
+"auc": 0.4868,
+"baseline": 0.6681
 },
 "fastball_vs_rest": {
-"n": 665,
-"acc": 0.5444,
-"auc": 0.5432,
-"baseline": 0.5414
+"n": 662,
+"acc": 0.5529,
+"auc": 0.5471,
+"baseline": 0.5408
 }
 }
 },
@@ -473,37 +473,37 @@
 "slice": "m0250",
 "when": "0.25 s before release",
 "t": 0.25,
-"n": 667,
-"acc": 0.4333,
-"acc_gbm": 0.4183,
-"baseline": 0.4603,
-"situation": 0.4438,
-"camera": 0.4063,
-"video_plus_situation": 0.4198,
-"perm_p": 0.2079,
+"n": 664,
+"acc": 0.4413,
+"acc_gbm": 0.4157,
+"baseline": 0.4608,
+"situation": 0.4488,
+"camera": 0.3961,
+"video_plus_situation": 0.4337,
+"perm_p": 0.0792,
 "recall": {
-"BR": 0.279,
-"FB": 0.671,
-"OS": 0.164
+"BR": 0.285,
+"FB": 0.673,
+"OS": 0.185
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 515,
-"acc": 0.5806,
-"auc": 0.5591,
-"baseline": 0.5961
+"n": 513,
+"acc": 0.5828,
+"auc": 0.565,
+"baseline": 0.5965
 },
 "fastball_vs_offspeed": {
-"n": 459,
-"acc": 0.6558,
-"auc": 0.5959,
-"baseline": 0.6688
+"n": 457,
+"acc": 0.6543,
+"auc": 0.5925,
+"baseline": 0.6696
 },
 "fastball_vs_rest": {
-"n": 667,
-"acc": 0.5472,
-"auc": 0.5222,
-"baseline": 0.5397
+"n": 664,
+"acc": 0.5437,
+"auc": 0.5195,
+"baseline": 0.5392
 }
 }
 },
@@ -511,79 +511,42 @@
 "slice": "m0000",
 "when": "at release",
 "t": 0.0,
-"n": 667,
-"acc": 0.5937,
-"acc_gbm": 0.6327,
-"baseline": 0.4603,
-"situation": 0.4438,
-"camera": 0.4408,
-"video_plus_situation": 0.6642,
+"n": 664,
+"acc": 0.5858,
+"acc_gbm": 0.6205,
+"baseline": 0.4608,
+"situation": 0.4488,
+"camera": 0.4428,
+"video_plus_situation": 0.6566,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.644,
-"FB": 0.73,
-"OS": 0.25
+"BR": 0.638,
+"FB": 0.722,
+"OS": 0.238
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 515,
-"acc": 0.7573,
-"auc": 0.7977,
-"baseline": 0.5961
+"n": 513,
+"acc": 0.7602,
+"auc": 0.7987,
+"baseline": 0.5965
 },
 "fastball_vs_offspeed": {
-"n": 459,
-"acc": 0.6732,
-"auc": 0.6196,
-"baseline": 0.6688
+"n": 457,
+"acc": 0.674,
+"auc": 0.6132,
+"baseline": 0.6696
 },
 "fastball_vs_rest": {
-"n": 667,
-"acc": 0.5967,
-"auc": 0.6485,
-"baseline": 0.5397
+"n": 664,
+"acc": 0.5994,
+"auc": 0.6508,
+"baseline": 0.5392
 }
 }
 }
 ],
-"tells": [
-{
-"slice": "break",
-"when": "at hand break",
-"t": 0.6,
-"family": "BR",
-"family_name": "breaking ball",
-"text": "Before a breaking ball, there tends to be more trunk lean at hand break.",
-"feature": "trunk_tilt",
-"direction": "higher",
-"weight": 0.586,
-"fix": "Same posture in the set: no extra lean on one pitch."
-},
-{
-"slice": "break",
-"when": "at hand break",
-"t": 0.6,
-"family": "FB",
-"family_name": "fastball",
-"text": "Before a fastball, lead knee forward/back tends to sit further right on screen at hand break.",
-"feature": "lead_knee_x",
-"direction": "higher",
-"weight": 0.768,
-"fix": "Same leg lift height and path on every pitch."
-},
-{
-"slice": "break",
-"when": "at hand break",
-"t": 0.6,
-"family": "OS",
-"family_name": "offspeed pitch",
-"text": "Before an offspeed pitch, throwing elbow forward/back tends to sit further right on screen at hand break.",
-"feature": "throw_elbow_x",
-"direction": "higher",
-"weight": 1.212,
-"fix": "Same throwing elbow in the set on every pitch."
-}
-],
+"tells": [],
 "frames": [
 {
 "view": "D",
@@ -592,7 +555,7 @@
 "slice": "set",
 "when": "in the set",
 "src": "skenes/frames/D_stretch_BR_set.jpg",
-"n": 204
+"n": 203
 },
 {
 "view": "D",
@@ -601,7 +564,7 @@
 "slice": "set",
 "when": "in the set",
 "src": "skenes/frames/D_stretch_FB_set.jpg",
-"n": 294
+"n": 293
 },
 {
 "view": "D",
@@ -610,7 +573,7 @@
 "slice": "set",
 "when": "in the set",
 "src": "skenes/frames/D_stretch_OS_set.jpg",
-"n": 148
+"n": 147
 },
 {
 "view": "D",
@@ -619,7 +582,7 @@
 "slice": "lift_top",
 "when": "at the top of the leg lift",
 "src": "skenes/frames/D_stretch_BR_lift_top.jpg",
-"n": 208
+"n": 207
 },
 {
 "view": "D",
@@ -628,7 +591,7 @@
 "slice": "lift_top",
 "when": "at the top of the leg lift",
 "src": "skenes/frames/D_stretch_FB_lift_top.jpg",
-"n": 307
+"n": 306
 },
 {
 "view": "D",
@@ -637,7 +600,7 @@
 "slice": "lift_top",
 "when": "at the top of the leg lift",
 "src": "skenes/frames/D_stretch_OS_lift_top.jpg",
-"n": 152
+"n": 151
 }
 ]
 },
@@ -649,7 +612,7 @@
 "delivery": "windup",
 "who": "hitter",
 "who_text": "the hitter",
-"clips": 1137,
+"clips": 1133,
 "games": 28,
 "classes": [
 "BR",
@@ -663,12 +626,12 @@
 },
 "n_per_class": {
 "BR": 293,
-"FB": 631,
-"OS": 213
+"FB": 629,
+"OS": 211
 },
 "members": {
 "FB": {
-"FF": 487,
+"FF": 485,
 "SI": 144
 },
 "BR": {
@@ -677,19 +640,19 @@
 "CU": 7
 },
 "OS": {
-"CH": 122,
-"FS": 91
+"CH": 121,
+"FS": 90
 }
 },
 "not_enough_data": {},
 "min_n": 150,
 "verdict": {
 "grade": "none",
-"slice": "lift_start",
-"t": 1.43,
-"acc": 0.5805,
-"baseline": 0.555,
-"situation": 0.4996,
+"slice": "set",
+"t": 1.93,
+"acc": 0.5857,
+"baseline": 0.5571,
+"situation": 0.5095,
 "p": 0.0099
 },
 "timeline": [
@@ -697,37 +660,37 @@
 "slice": "m2000",
 "when": "2.0 s before release",
 "t": 2.0,
-"n": 1026,
-"acc": 0.5419,
-"acc_gbm": 0.5156,
-"baseline": 0.5565,
-"situation": 0.4942,
-"camera": 0.4708,
-"video_plus_situation": 0.5253,
-"perm_p": 0.6238,
+"n": 1022,
+"acc": 0.5479,
+"acc_gbm": 0.5254,
+"baseline": 0.5568,
+"situation": 0.501,
+"camera": 0.4736,
+"video_plus_situation": 0.5333,
+"perm_p": 0.0198,
 "recall": {
-"BR": 0.145,
-"FB": 0.883,
-"OS": 0.07
+"BR": 0.164,
+"FB": 0.87,
+"OS": 0.114
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 840,
-"acc": 0.6702,
-"auc": 0.6237,
-"baseline": 0.6798
+"n": 838,
+"acc": 0.6683,
+"auc": 0.6258,
+"baseline": 0.679
 },
 "fastball_vs_offspeed": {
-"n": 757,
-"acc": 0.7371,
-"auc": 0.6144,
-"baseline": 0.7543
+"n": 753,
+"acc": 0.753,
+"auc": 0.6457,
+"baseline": 0.7556
 },
 "fastball_vs_rest": {
-"n": 1026,
-"acc": 0.5692,
-"auc": 0.5965,
-"baseline": 0.5565
+"n": 1022,
+"acc": 0.5783,
+"auc": 0.5995,
+"baseline": 0.5568
 }
 }
 },
@@ -735,37 +698,37 @@
 "slice": "m1500",
 "when": "1.5 s before release",
 "t": 1.5,
-"n": 1072,
-"acc": 0.541,
-"acc_gbm": 0.5299,
-"baseline": 0.556,
-"situation": 0.5047,
-"camera": 0.4916,
-"video_plus_situation": 0.5466,
-"perm_p": 0.1287,
+"n": 1068,
+"acc": 0.5506,
+"acc_gbm": 0.5365,
+"baseline": 0.5562,
+"situation": 0.5009,
+"camera": 0.4934,
+"video_plus_situation": 0.5524,
+"perm_p": 0.1782,
 "recall": {
-"BR": 0.213,
-"FB": 0.866,
-"OS": 0.021
+"BR": 0.238,
+"FB": 0.864,
+"OS": 0.042
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 878,
-"acc": 0.6868,
-"auc": 0.6503,
-"baseline": 0.6788
+"n": 876,
+"acc": 0.6758,
+"auc": 0.6534,
+"baseline": 0.6781
 },
 "fastball_vs_offspeed": {
-"n": 790,
-"acc": 0.7443,
-"auc": 0.5765,
-"baseline": 0.7544
+"n": 786,
+"acc": 0.7455,
+"auc": 0.5805,
+"baseline": 0.7557
 },
 "fastball_vs_rest": {
-"n": 1072,
-"acc": 0.597,
-"auc": 0.6101,
-"baseline": 0.556
+"n": 1068,
+"acc": 0.6011,
+"auc": 0.6111,
+"baseline": 0.5562
 }
 }
 },
@@ -773,37 +736,37 @@
 "slice": "set",
 "when": "in the set",
 "t": 1.93,
-"n": 1054,
-"acc": 0.5787,
-"acc_gbm": 0.5598,
-"baseline": 0.5569,
-"situation": 0.5123,
-"camera": 0.4877,
-"video_plus_situation": 0.5655,
+"n": 1050,
+"acc": 0.5857,
+"acc_gbm": 0.5638,
+"baseline": 0.5571,
+"situation": 0.5095,
+"camera": 0.4952,
+"video_plus_situation": 0.5762,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.215,
-"FB": 0.903,
-"OS": 0.109
+"BR": 0.234,
+"FB": 0.88,
+"OS": 0.188
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 861,
-"acc": 0.7085,
-"auc": 0.6249,
-"baseline": 0.6818
+"n": 859,
+"acc": 0.702,
+"auc": 0.6331,
+"baseline": 0.681
 },
 "fastball_vs_offspeed": {
-"n": 780,
-"acc": 0.7538,
-"auc": 0.6248,
-"baseline": 0.7526
+"n": 776,
+"acc": 0.7732,
+"auc": 0.6731,
+"baseline": 0.7539
 },
 "fastball_vs_rest": {
-"n": 1054,
-"acc": 0.6176,
-"auc": 0.6354,
-"baseline": 0.5569
+"n": 1050,
+"acc": 0.619,
+"auc": 0.6509,
+"baseline": 0.5571
 }
 }
 },
@@ -811,37 +774,37 @@
 "slice": "top_m1",
 "when": "a second before the top of the leg lift",
 "t": 1.9,
-"n": 1065,
-"acc": 0.569,
-"acc_gbm": 0.5465,
-"baseline": 0.5559,
-"situation": 0.5061,
-"camera": 0.5014,
-"video_plus_situation": 0.5559,
+"n": 1061,
+"acc": 0.5551,
+"acc_gbm": 0.5589,
+"baseline": 0.5561,
+"situation": 0.4948,
+"camera": 0.5042,
+"video_plus_situation": 0.5608,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.166,
-"FB": 0.897,
-"OS": 0.148
+"BR": 0.191,
+"FB": 0.837,
+"OS": 0.216
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 869,
-"acc": 0.6812,
-"auc": 0.6187,
-"baseline": 0.6812
+"n": 867,
+"acc": 0.6805,
+"auc": 0.6359,
+"baseline": 0.6805
 },
 "fastball_vs_offspeed": {
-"n": 788,
-"acc": 0.7538,
-"auc": 0.6516,
-"baseline": 0.7513
+"n": 784,
+"acc": 0.7653,
+"auc": 0.693,
+"baseline": 0.7526
 },
 "fastball_vs_rest": {
-"n": 1065,
-"acc": 0.6103,
-"auc": 0.6346,
-"baseline": 0.5559
+"n": 1061,
+"acc": 0.6202,
+"auc": 0.6545,
+"baseline": 0.5561
 }
 }
 },
@@ -849,37 +812,37 @@
 "slice": "lift_start",
 "when": "as the leg starts up",
 "t": 1.43,
-"n": 1137,
-"acc": 0.5805,
-"acc_gbm": 0.5585,
-"baseline": 0.555,
-"situation": 0.4996,
-"camera": 0.4811,
-"video_plus_situation": 0.5805,
+"n": 1133,
+"acc": 0.5799,
+"acc_gbm": 0.5402,
+"baseline": 0.5552,
+"situation": 0.504,
+"camera": 0.4872,
+"video_plus_situation": 0.5755,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.249,
-"FB": 0.894,
-"OS": 0.108
+"BR": 0.259,
+"FB": 0.886,
+"OS": 0.114
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 924,
-"acc": 0.7186,
-"auc": 0.6439,
-"baseline": 0.6829
+"n": 922,
+"acc": 0.7158,
+"auc": 0.6491,
+"baseline": 0.6822
 },
 "fastball_vs_offspeed": {
-"n": 844,
-"acc": 0.7393,
-"auc": 0.6237,
-"baseline": 0.7476
+"n": 840,
+"acc": 0.7464,
+"auc": 0.6244,
+"baseline": 0.7488
 },
 "fastball_vs_rest": {
-"n": 1137,
-"acc": 0.6288,
-"auc": 0.6306,
-"baseline": 0.555
+"n": 1133,
+"acc": 0.6311,
+"auc": 0.6333,
+"baseline": 0.5552
 }
 }
 },
@@ -887,37 +850,37 @@
 "slice": "m1000",
 "when": "1.0 s before release",
 "t": 1.0,
-"n": 1114,
-"acc": 0.5386,
-"acc_gbm": 0.5269,
-"baseline": 0.5575,
-"situation": 0.518,
-"camera": 0.4874,
-"video_plus_situation": 0.535,
-"perm_p": 0.5545,
+"n": 1110,
+"acc": 0.5477,
+"acc_gbm": 0.5306,
+"baseline": 0.5577,
+"situation": 0.5117,
+"camera": 0.4838,
+"video_plus_situation": 0.5495,
+"perm_p": 0.3861,
 "recall": {
-"BR": 0.125,
-"FB": 0.899,
+"BR": 0.157,
+"FB": 0.9,
 "OS": 0.029
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 908,
-"acc": 0.674,
-"auc": 0.5672,
-"baseline": 0.6839
+"n": 906,
+"acc": 0.6854,
+"auc": 0.5769,
+"baseline": 0.6832
 },
 "fastball_vs_offspeed": {
-"n": 827,
-"acc": 0.74,
-"auc": 0.6049,
-"baseline": 0.7509
+"n": 823,
+"acc": 0.7375,
+"auc": 0.6209,
+"baseline": 0.7521
 },
 "fastball_vs_rest": {
-"n": 1114,
-"acc": 0.5431,
-"auc": 0.5776,
-"baseline": 0.5575
+"n": 1110,
+"acc": 0.5694,
+"auc": 0.5902,
+"baseline": 0.5577
 }
 }
 },
@@ -925,37 +888,37 @@
 "slice": "lift_top",
 "when": "at the top of the leg lift",
 "t": 0.9,
-"n": 1137,
-"acc": 0.555,
-"acc_gbm": 0.518,
-"baseline": 0.555,
-"situation": 0.4996,
-"camera": 0.5031,
-"video_plus_situation": 0.5418,
-"perm_p": 0.0198,
+"n": 1133,
+"acc": 0.5578,
+"acc_gbm": 0.5163,
+"baseline": 0.5552,
+"situation": 0.504,
+"camera": 0.4996,
+"video_plus_situation": 0.5384,
+"perm_p": 0.0099,
 "recall": {
 "BR": 0.14,
-"FB": 0.872,
-"OS": 0.188
+"FB": 0.863,
+"OS": 0.227
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 924,
-"acc": 0.671,
-"auc": 0.571,
-"baseline": 0.6829
+"n": 922,
+"acc": 0.6692,
+"auc": 0.5692,
+"baseline": 0.6822
 },
 "fastball_vs_offspeed": {
-"n": 844,
-"acc": 0.7512,
-"auc": 0.6889,
-"baseline": 0.7476
+"n": 840,
+"acc": 0.7583,
+"auc": 0.7024,
+"baseline": 0.7488
 },
 "fastball_vs_rest": {
-"n": 1137,
-"acc": 0.6033,
-"auc": 0.6278,
-"baseline": 0.555
+"n": 1133,
+"acc": 0.6108,
+"auc": 0.6315,
+"baseline": 0.5552
 }
 }
 },
@@ -963,37 +926,37 @@
 "slice": "m0750",
 "when": "0.75 s before release",
 "t": 0.75,
-"n": 1125,
-"acc": 0.5378,
-"acc_gbm": 0.5164,
-"baseline": 0.5564,
-"situation": 0.5076,
-"camera": 0.4916,
-"video_plus_situation": 0.5378,
-"perm_p": 0.9802,
+"n": 1121,
+"acc": 0.5388,
+"acc_gbm": 0.5183,
+"baseline": 0.5566,
+"situation": 0.5129,
+"camera": 0.496,
+"video_plus_situation": 0.5308,
+"perm_p": 0.9703,
 "recall": {
-"BR": 0.1,
+"BR": 0.11,
 "FB": 0.912,
-"OS": 0.024
+"OS": 0.015
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 917,
-"acc": 0.6761,
-"auc": 0.5696,
-"baseline": 0.6827
+"n": 915,
+"acc": 0.6732,
+"auc": 0.5656,
+"baseline": 0.682
 },
 "fastball_vs_offspeed": {
-"n": 834,
-"acc": 0.7398,
-"auc": 0.5649,
-"baseline": 0.7506
+"n": 830,
+"acc": 0.7361,
+"auc": 0.5611,
+"baseline": 0.7518
 },
 "fastball_vs_rest": {
-"n": 1125,
-"acc": 0.5422,
-"auc": 0.5506,
-"baseline": 0.5564
+"n": 1121,
+"acc": 0.537,
+"auc": 0.5469,
+"baseline": 0.5566
 }
 }
 },
@@ -1001,37 +964,37 @@
 "slice": "break",
 "when": "at hand break",
 "t": 0.63,
-"n": 1137,
-"acc": 0.5585,
-"acc_gbm": 0.5163,
-"baseline": 0.555,
-"situation": 0.4996,
-"camera": 0.5048,
-"video_plus_situation": 0.5321,
+"n": 1133,
+"acc": 0.5569,
+"acc_gbm": 0.5013,
+"baseline": 0.5552,
+"situation": 0.504,
+"camera": 0.5128,
+"video_plus_situation": 0.5234,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.198,
-"FB": 0.878,
-"OS": 0.108
+"BR": 0.195,
+"FB": 0.871,
+"OS": 0.123
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 924,
-"acc": 0.6883,
-"auc": 0.6228,
-"baseline": 0.6829
+"n": 922,
+"acc": 0.6876,
+"auc": 0.6211,
+"baseline": 0.6822
 },
 "fastball_vs_offspeed": {
-"n": 844,
-"acc": 0.7405,
-"auc": 0.6302,
-"baseline": 0.7476
+"n": 840,
+"acc": 0.7464,
+"auc": 0.6303,
+"baseline": 0.7488
 },
 "fastball_vs_rest": {
-"n": 1137,
-"acc": 0.5814,
-"auc": 0.5943,
-"baseline": 0.555
+"n": 1133,
+"acc": 0.5808,
+"auc": 0.5964,
+"baseline": 0.5552
 }
 }
 },
@@ -1039,37 +1002,37 @@
 "slice": "m0500",
 "when": "0.5 s before release",
 "t": 0.5,
-"n": 1133,
-"acc": 0.5384,
-"acc_gbm": 0.5649,
-"baseline": 0.556,
-"situation": 0.4978,
-"camera": 0.4872,
-"video_plus_situation": 0.5666,
-"perm_p": 0.6436,
+"n": 1129,
+"acc": 0.5394,
+"acc_gbm": 0.5678,
+"baseline": 0.5562,
+"situation": 0.5128,
+"camera": 0.4907,
+"video_plus_situation": 0.5731,
+"perm_p": 0.7525,
 "recall": {
-"BR": 0.161,
-"FB": 0.884,
-"OS": 0.028
+"BR": 0.164,
+"FB": 0.882,
+"OS": 0.033
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 922,
-"acc": 0.6735,
-"auc": 0.6222,
-"baseline": 0.6833
+"n": 920,
+"acc": 0.6739,
+"auc": 0.6233,
+"baseline": 0.6826
 },
 "fastball_vs_offspeed": {
-"n": 841,
-"acc": 0.7408,
-"auc": 0.5779,
-"baseline": 0.7491
+"n": 837,
+"acc": 0.7395,
+"auc": 0.5971,
+"baseline": 0.7503
 },
 "fastball_vs_rest": {
-"n": 1133,
-"acc": 0.5552,
-"auc": 0.5899,
-"baseline": 0.556
+"n": 1129,
+"acc": 0.5633,
+"auc": 0.5967,
+"baseline": 0.5562
 }
 }
 },
@@ -1077,37 +1040,37 @@
 "slice": "m0250",
 "when": "0.25 s before release",
 "t": 0.25,
-"n": 1137,
-"acc": 0.5594,
-"acc_gbm": 0.5497,
-"baseline": 0.555,
-"situation": 0.4996,
-"camera": 0.4485,
-"video_plus_situation": 0.5602,
-"perm_p": 0.1683,
+"n": 1133,
+"acc": 0.5613,
+"acc_gbm": 0.5534,
+"baseline": 0.5552,
+"situation": 0.504,
+"camera": 0.459,
+"video_plus_situation": 0.5675,
+"perm_p": 0.0099,
 "recall": {
-"BR": 0.167,
-"FB": 0.913,
-"OS": 0.052
+"BR": 0.164,
+"FB": 0.919,
+"OS": 0.047
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 924,
-"acc": 0.6861,
-"auc": 0.6181,
-"baseline": 0.6829
+"n": 922,
+"acc": 0.6855,
+"auc": 0.6167,
+"baseline": 0.6822
 },
 "fastball_vs_offspeed": {
-"n": 844,
+"n": 840,
 "acc": 0.7405,
-"auc": 0.5829,
-"baseline": 0.7476
+"auc": 0.5866,
+"baseline": 0.7488
 },
 "fastball_vs_rest": {
-"n": 1137,
-"acc": 0.5673,
-"auc": 0.5828,
-"baseline": 0.555
+"n": 1133,
+"acc": 0.5649,
+"auc": 0.5796,
+"baseline": 0.5552
 }
 }
 },
@@ -1115,37 +1078,37 @@
 "slice": "m0000",
 "when": "at release",
 "t": 0.0,
-"n": 1137,
-"acc": 0.6297,
-"acc_gbm": 0.6675,
-"baseline": 0.555,
-"situation": 0.4996,
-"camera": 0.4741,
-"video_plus_situation": 0.6772,
+"n": 1133,
+"acc": 0.6355,
+"acc_gbm": 0.6708,
+"baseline": 0.5552,
+"situation": 0.504,
+"camera": 0.4651,
+"video_plus_situation": 0.6805,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.546,
-"FB": 0.851,
-"OS": 0.089
+"BR": 0.56,
+"FB": 0.852,
+"OS": 0.095
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 924,
-"acc": 0.7857,
-"auc": 0.8103,
-"baseline": 0.6829
+"n": 922,
+"acc": 0.7842,
+"auc": 0.8097,
+"baseline": 0.6822
 },
 "fastball_vs_offspeed": {
-"n": 844,
-"acc": 0.7299,
-"auc": 0.655,
-"baseline": 0.7476
+"n": 840,
+"acc": 0.7321,
+"auc": 0.6604,
+"baseline": 0.7488
 },
 "fastball_vs_rest": {
-"n": 1137,
-"acc": 0.6772,
-"auc": 0.7158,
-"baseline": 0.555
+"n": 1133,
+"acc": 0.6831,
+"auc": 0.716,
+"baseline": 0.5552
 }
 }
 }
@@ -1168,7 +1131,7 @@
 "slice": "set",
 "when": "in the set",
 "src": "skenes/frames/D_windup_FB_set.jpg",
-"n": 587
+"n": 585
 },
 {
 "view": "D",
@@ -1177,7 +1140,7 @@
 "slice": "set",
 "when": "in the set",
 "src": "skenes/frames/D_windup_OS_set.jpg",
-"n": 193
+"n": 191
 },
 {
 "view": "D",
@@ -1195,7 +1158,7 @@
 "slice": "lift_top",
 "when": "at the top of the leg lift",
 "src": "skenes/frames/D_windup_FB_lift_top.jpg",
-"n": 631
+"n": 629
 },
 {
 "view": "D",
@@ -1204,7 +1167,7 @@
 "slice": "lift_top",
 "when": "at the top of the leg lift",
 "src": "skenes/frames/D_windup_OS_lift_top.jpg",
-"n": 213
+"n": 211
 }
 ]
 },
@@ -1216,8 +1179,8 @@
 "delivery": "stretch",
 "who": "cf",
 "who_text": "the center-field camera and a runner on second",
-"clips": 901,
-"games": 30,
+"clips": 896,
+"games": 29,
 "classes": [
 "BR",
 "FB",
@@ -1229,23 +1192,23 @@
 "OS": "offspeed pitch"
 },
 "n_per_class": {
-"BR": 252,
-"FB": 431,
-"OS": 218
+"BR": 250,
+"FB": 429,
+"OS": 217
 },
 "members": {
 "FB": {
-"FF": 340,
+"FF": 338,
 "SI": 91
 },
 "BR": {
-"ST": 156,
-"SL": 93,
+"ST": 155,
+"SL": 92,
 "CU": 3
 },
 "OS": {
 "CH": 120,
-"FS": 98
+"FS": 97
 }
 },
 "not_enough_data": {},
@@ -1254,9 +1217,9 @@
 "grade": "weak",
 "slice": "top_m1",
 "t": 1.4,
-"acc": 0.5439,
-"baseline": 0.4807,
-"situation": 0.4444,
+"acc": 0.5459,
+"baseline": 0.4812,
+"situation": 0.4365,
 "p": 0.0099
 },
 "timeline": [
@@ -1264,37 +1227,37 @@
 "slice": "m2000",
 "when": "2.0 s before release",
 "t": 2.0,
-"n": 817,
-"acc": 0.5031,
-"acc_gbm": 0.4945,
-"baseline": 0.4761,
-"situation": 0.4627,
-"camera": 0.4162,
-"video_plus_situation": 0.5288,
+"n": 812,
+"acc": 0.5086,
+"acc_gbm": 0.4926,
+"baseline": 0.4766,
+"situation": 0.4667,
+"camera": 0.415,
+"video_plus_situation": 0.5185,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.295,
-"FB": 0.753,
-"OS": 0.254
+"BR": 0.351,
+"FB": 0.713,
+"OS": 0.29
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 616,
-"acc": 0.6429,
-"auc": 0.6647,
-"baseline": 0.6315
+"n": 612,
+"acc": 0.652,
+"auc": 0.6755,
+"baseline": 0.6324
 },
 "fastball_vs_offspeed": {
-"n": 590,
-"acc": 0.7169,
-"auc": 0.6977,
+"n": 587,
+"acc": 0.7206,
+"auc": 0.711,
 "baseline": 0.6593
 },
 "fastball_vs_rest": {
-"n": 817,
-"acc": 0.601,
-"auc": 0.6269,
-"baseline": 0.5239
+"n": 812,
+"acc": 0.5985,
+"auc": 0.6293,
+"baseline": 0.5234
 }
 }
 },
@@ -1302,75 +1265,75 @@
 "slice": "m1500",
 "when": "1.5 s before release",
 "t": 1.5,
-"n": 848,
-"acc": 0.5212,
-"acc_gbm": 0.5177,
-"baseline": 0.48,
-"situation": 0.4646,
-"camera": 0.4139,
-"video_plus_situation": 0.5283,
+"n": 843,
+"acc": 0.5208,
+"acc_gbm": 0.5279,
+"baseline": 0.4804,
+"situation": 0.4579,
+"camera": 0.4164,
+"video_plus_situation": 0.5208,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.291,
-"FB": 0.762,
-"OS": 0.309
+"BR": 0.332,
+"FB": 0.731,
+"OS": 0.32
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 644,
-"acc": 0.6351,
-"auc": 0.645,
-"baseline": 0.632
+"n": 640,
+"acc": 0.6531,
+"auc": 0.6554,
+"baseline": 0.6328
 },
 "fastball_vs_offspeed": {
-"n": 611,
-"acc": 0.707,
-"auc": 0.7134,
+"n": 608,
+"acc": 0.7105,
+"auc": 0.7199,
 "baseline": 0.6661
 },
 "fastball_vs_rest": {
-"n": 848,
-"acc": 0.5743,
-"auc": 0.6124,
-"baseline": 0.52
+"n": 843,
+"acc": 0.5896,
+"auc": 0.6174,
+"baseline": 0.5196
 }
 }
 },
 {
 "slice": "set",
 "when": "in the set",
-"t": 1.3,
-"n": 863,
-"acc": 0.533,
-"acc_gbm": 0.5226,
-"baseline": 0.4786,
-"situation": 0.4438,
-"camera": 0.3986,
-"video_plus_situation": 0.5272,
+"t": 1.27,
+"n": 858,
+"acc": 0.5221,
+"acc_gbm": 0.4907,
+"baseline": 0.479,
+"situation": 0.4452,
+"camera": 0.4068,
+"video_plus_situation": 0.5256,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.318,
-"FB": 0.76,
-"OS": 0.332
+"BR": 0.295,
+"FB": 0.723,
+"OS": 0.386
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 652,
-"acc": 0.6656,
-"auc": 0.6867,
-"baseline": 0.6334
+"n": 648,
+"acc": 0.6528,
+"auc": 0.6774,
+"baseline": 0.6343
 },
 "fastball_vs_offspeed": {
-"n": 624,
-"acc": 0.6923,
-"auc": 0.7075,
-"baseline": 0.6619
+"n": 621,
+"acc": 0.7214,
+"auc": 0.7331,
+"baseline": 0.6618
 },
 "fastball_vs_rest": {
-"n": 863,
-"acc": 0.6095,
-"auc": 0.6477,
-"baseline": 0.5214
+"n": 858,
+"acc": 0.6224,
+"auc": 0.6559,
+"baseline": 0.521
 }
 }
 },
@@ -1378,37 +1341,37 @@
 "slice": "top_m1",
 "when": "a second before the top of the leg lift",
 "t": 1.4,
-"n": 855,
-"acc": 0.5439,
-"acc_gbm": 0.5298,
-"baseline": 0.4807,
-"situation": 0.4444,
-"camera": 0.393,
-"video_plus_situation": 0.545,
+"n": 850,
+"acc": 0.5459,
+"acc_gbm": 0.5071,
+"baseline": 0.4812,
+"situation": 0.4365,
+"camera": 0.3871,
+"video_plus_situation": 0.5424,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.343,
-"FB": 0.732,
-"OS": 0.399
+"BR": 0.363,
+"FB": 0.726,
+"OS": 0.396
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 647,
-"acc": 0.6677,
-"auc": 0.7026,
-"baseline": 0.6352
+"n": 643,
+"acc": 0.6594,
+"auc": 0.6965,
+"baseline": 0.6361
 },
 "fastball_vs_offspeed": {
-"n": 619,
-"acc": 0.7351,
-"auc": 0.742,
+"n": 616,
+"acc": 0.7289,
+"auc": 0.7439,
 "baseline": 0.664
 },
 "fastball_vs_rest": {
-"n": 855,
-"acc": 0.6363,
-"auc": 0.6787,
-"baseline": 0.5193
+"n": 850,
+"acc": 0.6376,
+"auc": 0.6733,
+"baseline": 0.5188
 }
 }
 },
@@ -1416,37 +1379,37 @@
 "slice": "lift_start",
 "when": "as the leg starts up",
 "t": 0.77,
-"n": 901,
-"acc": 0.5394,
-"acc_gbm": 0.4928,
-"baseline": 0.4784,
-"situation": 0.4451,
-"camera": 0.3973,
-"video_plus_situation": 0.5117,
+"n": 896,
+"acc": 0.5469,
+"acc_gbm": 0.4777,
+"baseline": 0.4788,
+"situation": 0.4431,
+"camera": 0.394,
+"video_plus_situation": 0.5145,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.321,
-"FB": 0.761,
-"OS": 0.353
+"BR": 0.36,
+"FB": 0.739,
+"OS": 0.382
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 683,
-"acc": 0.675,
-"auc": 0.6987,
-"baseline": 0.631
+"n": 679,
+"acc": 0.6834,
+"auc": 0.7048,
+"baseline": 0.6318
 },
 "fastball_vs_offspeed": {
-"n": 649,
-"acc": 0.7381,
-"auc": 0.7394,
+"n": 646,
+"acc": 0.7337,
+"auc": 0.7378,
 "baseline": 0.6641
 },
 "fastball_vs_rest": {
-"n": 901,
-"acc": 0.6304,
-"auc": 0.6755,
-"baseline": 0.5216
+"n": 896,
+"acc": 0.6317,
+"auc": 0.6857,
+"baseline": 0.5212
 }
 }
 },
@@ -1454,37 +1417,37 @@
 "slice": "m1000",
 "when": "1.0 s before release",
 "t": 1.0,
-"n": 881,
-"acc": 0.5414,
-"acc_gbm": 0.5176,
-"baseline": 0.4801,
-"situation": 0.4597,
-"camera": 0.4166,
-"video_plus_situation": 0.5233,
+"n": 876,
+"acc": 0.5696,
+"acc_gbm": 0.5137,
+"baseline": 0.4806,
+"situation": 0.4498,
+"camera": 0.4132,
+"video_plus_situation": 0.5183,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.325,
-"FB": 0.771,
-"OS": 0.335
+"BR": 0.402,
+"FB": 0.741,
+"OS": 0.422
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 669,
-"acc": 0.6637,
-"auc": 0.6681,
-"baseline": 0.6323
+"n": 665,
+"acc": 0.6797,
+"auc": 0.6935,
+"baseline": 0.6331
 },
 "fastball_vs_offspeed": {
-"n": 635,
-"acc": 0.7087,
-"auc": 0.7089,
+"n": 632,
+"acc": 0.7326,
+"auc": 0.7431,
 "baseline": 0.6661
 },
 "fastball_vs_rest": {
-"n": 881,
-"acc": 0.6005,
-"auc": 0.6384,
-"baseline": 0.5199
+"n": 876,
+"acc": 0.6358,
+"auc": 0.6658,
+"baseline": 0.5194
 }
 }
 },
@@ -1492,37 +1455,37 @@
 "slice": "lift_top",
 "when": "at the top of the leg lift",
 "t": 0.4,
-"n": 900,
-"acc": 0.55,
-"acc_gbm": 0.5444,
-"baseline": 0.4789,
-"situation": 0.4578,
-"camera": 0.4256,
-"video_plus_situation": 0.5833,
+"n": 896,
+"acc": 0.5513,
+"acc_gbm": 0.5536,
+"baseline": 0.4788,
+"situation": 0.4431,
+"camera": 0.4263,
+"video_plus_situation": 0.5792,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.191,
-"FB": 0.794,
-"OS": 0.482
+"BR": 0.268,
+"FB": 0.758,
+"OS": 0.47
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 682,
-"acc": 0.6554,
-"auc": 0.6387,
-"baseline": 0.632
+"n": 679,
+"acc": 0.6583,
+"auc": 0.6481,
+"baseline": 0.6318
 },
 "fastball_vs_offspeed": {
-"n": 649,
-"acc": 0.7596,
-"auc": 0.7783,
+"n": 646,
+"acc": 0.7508,
+"auc": 0.7774,
 "baseline": 0.6641
 },
 "fastball_vs_rest": {
-"n": 900,
-"acc": 0.6489,
-"auc": 0.7027,
-"baseline": 0.5211
+"n": 896,
+"acc": 0.6518,
+"auc": 0.7017,
+"baseline": 0.5212
 }
 }
 },
@@ -1530,37 +1493,37 @@
 "slice": "m0750",
 "when": "0.75 s before release",
 "t": 0.75,
-"n": 891,
-"acc": 0.5297,
-"acc_gbm": 0.4905,
-"baseline": 0.4781,
-"situation": 0.4456,
-"camera": 0.3883,
-"video_plus_situation": 0.5297,
+"n": 886,
+"acc": 0.5327,
+"acc_gbm": 0.4853,
+"baseline": 0.4786,
+"situation": 0.4312,
+"camera": 0.3928,
+"video_plus_situation": 0.5305,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.252,
-"FB": 0.789,
-"OS": 0.34
+"BR": 0.31,
+"FB": 0.748,
+"OS": 0.364
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 676,
-"acc": 0.642,
-"auc": 0.6481,
-"baseline": 0.6302
+"n": 672,
+"acc": 0.6548,
+"auc": 0.668,
+"baseline": 0.631
 },
 "fastball_vs_offspeed": {
-"n": 641,
-"acc": 0.6942,
-"auc": 0.7036,
+"n": 638,
+"acc": 0.6991,
+"auc": 0.7182,
 "baseline": 0.6646
 },
 "fastball_vs_rest": {
-"n": 891,
-"acc": 0.6117,
-"auc": 0.6482,
-"baseline": 0.5219
+"n": 886,
+"acc": 0.6038,
+"auc": 0.6585,
+"baseline": 0.5214
 }
 }
 },
@@ -1568,37 +1531,37 @@
 "slice": "break",
 "when": "at hand break",
 "t": 0.27,
-"n": 901,
-"acc": 0.586,
-"acc_gbm": 0.5916,
-"baseline": 0.4784,
-"situation": 0.4451,
-"camera": 0.4095,
-"video_plus_situation": 0.6104,
+"n": 896,
+"acc": 0.6049,
+"acc_gbm": 0.5949,
+"baseline": 0.4788,
+"situation": 0.4431,
+"camera": 0.4219,
+"video_plus_situation": 0.6083,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.425,
-"FB": 0.754,
-"OS": 0.44
+"BR": 0.46,
+"FB": 0.753,
+"OS": 0.479
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 683,
-"acc": 0.6896,
-"auc": 0.739,
-"baseline": 0.631
+"n": 679,
+"acc": 0.6996,
+"auc": 0.7403,
+"baseline": 0.6318
 },
 "fastball_vs_offspeed": {
-"n": 649,
-"acc": 0.7458,
+"n": 646,
+"acc": 0.743,
 "auc": 0.7653,
 "baseline": 0.6641
 },
 "fastball_vs_rest": {
-"n": 901,
-"acc": 0.677,
-"auc": 0.728,
-"baseline": 0.5216
+"n": 896,
+"acc": 0.683,
+"auc": 0.7263,
+"baseline": 0.5212
 }
 }
 },
@@ -1606,37 +1569,37 @@
 "slice": "m0500",
 "when": "0.5 s before release",
 "t": 0.5,
-"n": 898,
-"acc": 0.4933,
-"acc_gbm": 0.5022,
-"baseline": 0.4777,
-"situation": 0.4532,
-"camera": 0.3731,
-"video_plus_situation": 0.5267,
-"perm_p": 0.0594,
+"n": 893,
+"acc": 0.4938,
+"acc_gbm": 0.495,
+"baseline": 0.4782,
+"situation": 0.449,
+"camera": 0.3572,
+"video_plus_situation": 0.5286,
+"perm_p": 0.0099,
 "recall": {
-"BR": 0.107,
-"FB": 0.823,
-"OS": 0.29
+"BR": 0.104,
+"FB": 0.794,
+"OS": 0.352
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 681,
-"acc": 0.6211,
-"auc": 0.5675,
-"baseline": 0.63
+"n": 677,
+"acc": 0.616,
+"auc": 0.5626,
+"baseline": 0.6307
 },
 "fastball_vs_offspeed": {
-"n": 646,
-"acc": 0.6827,
-"auc": 0.6868,
+"n": 643,
+"acc": 0.6796,
+"auc": 0.7042,
 "baseline": 0.6641
 },
 "fastball_vs_rest": {
-"n": 898,
-"acc": 0.5958,
-"auc": 0.6176,
-"baseline": 0.5223
+"n": 893,
+"acc": 0.5991,
+"auc": 0.6234,
+"baseline": 0.5218
 }
 }
 },
@@ -1644,37 +1607,37 @@
 "slice": "m0250",
 "when": "0.25 s before release",
 "t": 0.25,
-"n": 901,
-"acc": 0.5205,
-"acc_gbm": 0.5339,
-"baseline": 0.4784,
-"situation": 0.4451,
-"camera": 0.3618,
-"video_plus_situation": 0.5438,
+"n": 896,
+"acc": 0.5413,
+"acc_gbm": 0.5379,
+"baseline": 0.4788,
+"situation": 0.4431,
+"camera": 0.3728,
+"video_plus_situation": 0.5446,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.131,
-"FB": 0.789,
-"OS": 0.44
+"BR": 0.188,
+"FB": 0.781,
+"OS": 0.475
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 683,
-"acc": 0.6047,
-"auc": 0.5754,
-"baseline": 0.631
+"n": 679,
+"acc": 0.62,
+"auc": 0.5799,
+"baseline": 0.6318
 },
 "fastball_vs_offspeed": {
-"n": 649,
-"acc": 0.7273,
-"auc": 0.7432,
+"n": 646,
+"acc": 0.757,
+"auc": 0.7681,
 "baseline": 0.6641
 },
 "fastball_vs_rest": {
-"n": 901,
-"acc": 0.6071,
-"auc": 0.6477,
-"baseline": 0.5216
+"n": 896,
+"acc": 0.6261,
+"auc": 0.6695,
+"baseline": 0.5212
 }
 }
 },
@@ -1682,37 +1645,37 @@
 "slice": "m0000",
 "when": "at release",
 "t": 0.0,
-"n": 901,
-"acc": 0.5072,
-"acc_gbm": 0.5427,
-"baseline": 0.4784,
-"situation": 0.4451,
-"camera": 0.3918,
-"video_plus_situation": 0.5438,
+"n": 896,
+"acc": 0.5011,
+"acc_gbm": 0.5446,
+"baseline": 0.4788,
+"situation": 0.4431,
+"camera": 0.3929,
+"video_plus_situation": 0.5569,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.278,
-"FB": 0.766,
-"OS": 0.261
+"BR": 0.268,
+"FB": 0.746,
+"OS": 0.286
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 683,
-"acc": 0.6398,
-"auc": 0.6466,
-"baseline": 0.631
+"n": 679,
+"acc": 0.6333,
+"auc": 0.6626,
+"baseline": 0.6318
 },
 "fastball_vs_offspeed": {
-"n": 649,
-"acc": 0.698,
-"auc": 0.7226,
+"n": 646,
+"acc": 0.7043,
+"auc": 0.7193,
 "baseline": 0.6641
 },
 "fastball_vs_rest": {
-"n": 901,
-"acc": 0.6382,
-"auc": 0.6638,
-"baseline": 0.5216
+"n": 896,
+"acc": 0.6339,
+"auc": 0.6645,
+"baseline": 0.5212
 }
 }
 }
@@ -1724,10 +1687,10 @@
 "t": 1.4,
 "family": "BR",
 "family_name": "breaking ball",
-"text": "Before a breaking ball, throwing elbow forward/back tends to sit further left on screen a second before the top of the leg lift.",
-"feature": "throw_elbow_x",
-"direction": "lower",
-"weight": -0.796,
+"text": "Before a breaking ball, throwing elbow height tends to be higher a second before the top of the leg lift.",
+"feature": "throw_elbow_y",
+"direction": "higher",
+"weight": 0.763,
 "fix": "Same throwing elbow in the set on every pitch."
 },
 {
@@ -1739,7 +1702,7 @@
 "text": "Before a fastball, throwing elbow forward/back tends to sit further right on screen a second before the top of the leg lift.",
 "feature": "throw_elbow_x",
 "direction": "higher",
-"weight": 1.199,
+"weight": 1.065,
 "fix": "Same throwing elbow in the set on every pitch."
 },
 {
@@ -1748,11 +1711,11 @@
 "t": 1.4,
 "family": "OS",
 "family_name": "offspeed pitch",
-"text": "Before an offspeed pitch, hip height over the feet tends to be lower a second before the top of the leg lift.",
-"feature": "hip_height",
+"text": "Before an offspeed pitch, back knee height tends to be lower a second before the top of the leg lift.",
+"feature": "back_knee_y",
 "direction": "lower",
-"weight": -0.904,
-"fix": "Same knee bend in the set."
+"weight": -0.761,
+"fix": "Same back leg on every pitch."
 }
 ],
 "frames": [
@@ -1763,7 +1726,7 @@
 "slice": "set",
 "when": "in the set",
 "src": "skenes/frames/C_stretch_BR_set.jpg",
-"n": 239
+"n": 237
 },
 {
 "view": "C",
@@ -1772,7 +1735,7 @@
 "slice": "set",
 "when": "in the set",
 "src": "skenes/frames/C_stretch_FB_set.jpg",
-"n": 413
+"n": 411
 },
 {
 "view": "C",
@@ -1781,7 +1744,7 @@
 "slice": "set",
 "when": "in the set",
 "src": "skenes/frames/C_stretch_OS_set.jpg",
-"n": 211
+"n": 210
 },
 {
 "view": "C",
@@ -1790,7 +1753,7 @@
 "slice": "lift_top",
 "when": "at the top of the leg lift",
 "src": "skenes/frames/C_stretch_BR_lift_top.jpg",
-"n": 251
+"n": 250
 },
 {
 "view": "C",
@@ -1799,7 +1762,7 @@
 "slice": "lift_top",
 "when": "at the top of the leg lift",
 "src": "skenes/frames/C_stretch_FB_lift_top.jpg",
-"n": 431
+"n": 429
 },
 {
 "view": "C",
@@ -1808,7 +1771,7 @@
 "slice": "lift_top",
 "when": "at the top of the leg lift",
 "src": "skenes/frames/C_stretch_OS_lift_top.jpg",
-"n": 218
+"n": 217
 }
 ]
 },
@@ -1820,7 +1783,7 @@
 "delivery": "windup",
 "who": "cf",
 "who_text": "the center-field camera and a runner on second",
-"clips": 1426,
+"clips": 1419,
 "games": 32,
 "classes": [
 "BR",
@@ -1833,22 +1796,22 @@
 "OS": "offspeed pitch"
 },
 "n_per_class": {
-"BR": 352,
-"FB": 782,
-"OS": 292
+"BR": 350,
+"FB": 778,
+"OS": 291
 },
 "members": {
 "FB": {
-"FF": 614,
-"SI": 168
+"FF": 612,
+"SI": 166
 },
 "BR": {
-"ST": 231,
+"ST": 229,
 "SL": 114,
 "CU": 7
 },
 "OS": {
-"CH": 180,
+"CH": 179,
 "FS": 112
 }
 },
@@ -1858,9 +1821,9 @@
 "grade": "none",
 "slice": "lift_start",
 "t": 0.9,
-"acc": 0.5792,
-"baseline": 0.5484,
-"situation": 0.5105,
+"acc": 0.5906,
+"baseline": 0.5483,
+"situation": 0.5109,
 "p": 0.0099
 },
 "timeline": [
@@ -1868,37 +1831,37 @@
 "slice": "m2000",
 "when": "2.0 s before release",
 "t": 2.0,
-"n": 1256,
-"acc": 0.543,
-"acc_gbm": 0.4809,
-"baseline": 0.551,
-"situation": 0.5167,
-"camera": 0.496,
-"video_plus_situation": 0.5056,
-"perm_p": 0.8218,
+"n": 1249,
+"acc": 0.5492,
+"acc_gbm": 0.4884,
+"baseline": 0.5508,
+"situation": 0.5156,
+"camera": 0.4908,
+"video_plus_situation": 0.5092,
+"perm_p": 0.0099,
 "recall": {
-"BR": 0.064,
-"FB": 0.941,
-"OS": 0.043
+"BR": 0.074,
+"FB": 0.938,
+"OS": 0.071
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 1003,
-"acc": 0.682,
-"auc": 0.5317,
-"baseline": 0.6899
+"n": 997,
+"acc": 0.681,
+"auc": 0.5302,
+"baseline": 0.6901
 },
 "fastball_vs_offspeed": {
-"n": 945,
-"acc": 0.727,
-"auc": 0.5458,
-"baseline": 0.7323
+"n": 940,
+"acc": 0.734,
+"auc": 0.5627,
+"baseline": 0.7319
 },
 "fastball_vs_rest": {
-"n": 1256,
-"acc": 0.5295,
-"auc": 0.5403,
-"baseline": 0.551
+"n": 1249,
+"acc": 0.5508,
+"auc": 0.5514,
+"baseline": 0.5508
 }
 }
 },
@@ -1906,37 +1869,37 @@
 "slice": "m1500",
 "when": "1.5 s before release",
 "t": 1.5,
-"n": 1323,
-"acc": 0.5427,
-"acc_gbm": 0.5359,
-"baseline": 0.5518,
-"situation": 0.5163,
-"camera": 0.4875,
-"video_plus_situation": 0.5563,
-"perm_p": 0.0693,
+"n": 1316,
+"acc": 0.5456,
+"acc_gbm": 0.535,
+"baseline": 0.5517,
+"situation": 0.5144,
+"camera": 0.4939,
+"video_plus_situation": 0.5623,
+"perm_p": 0.5248,
 "recall": {
-"BR": 0.065,
-"FB": 0.934,
-"OS": 0.056
+"BR": 0.093,
+"FB": 0.926,
+"OS": 0.059
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 1053,
-"acc": 0.6914,
-"auc": 0.5938,
-"baseline": 0.6933
+"n": 1047,
+"acc": 0.6886,
+"auc": 0.5867,
+"baseline": 0.6934
 },
 "fastball_vs_offspeed": {
-"n": 1000,
-"acc": 0.716,
-"auc": 0.595,
-"baseline": 0.73
+"n": 995,
+"acc": 0.7196,
+"auc": 0.6059,
+"baseline": 0.7296
 },
 "fastball_vs_rest": {
-"n": 1323,
-"acc": 0.5745,
-"auc": 0.561,
-"baseline": 0.5518
+"n": 1316,
+"acc": 0.5714,
+"auc": 0.5662,
+"baseline": 0.5517
 }
 }
 },
@@ -1944,37 +1907,37 @@
 "slice": "set",
 "when": "in the set",
 "t": 1.4,
-"n": 1326,
-"acc": 0.5498,
-"acc_gbm": 0.5573,
-"baseline": 0.552,
-"situation": 0.5158,
-"camera": 0.494,
-"video_plus_situation": 0.5709,
+"n": 1319,
+"acc": 0.5451,
+"acc_gbm": 0.5641,
+"baseline": 0.5519,
+"situation": 0.508,
+"camera": 0.486,
+"video_plus_situation": 0.577,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.188,
-"FB": 0.843,
-"OS": 0.19
+"BR": 0.207,
+"FB": 0.823,
+"OS": 0.198
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 1057,
-"acc": 0.6954,
-"auc": 0.6313,
-"baseline": 0.6925
+"n": 1051,
+"acc": 0.7031,
+"auc": 0.634,
+"baseline": 0.6927
 },
 "fastball_vs_offspeed": {
-"n": 1001,
-"acc": 0.7363,
-"auc": 0.6786,
-"baseline": 0.7313
+"n": 996,
+"acc": 0.741,
+"auc": 0.6859,
+"baseline": 0.7309
 },
 "fastball_vs_rest": {
-"n": 1326,
-"acc": 0.6041,
-"auc": 0.6184,
-"baseline": 0.552
+"n": 1319,
+"acc": 0.6103,
+"auc": 0.6299,
+"baseline": 0.5519
 }
 }
 },
@@ -1982,37 +1945,37 @@
 "slice": "top_m1",
 "when": "a second before the top of the leg lift",
 "t": 1.33,
-"n": 1331,
-"acc": 0.5665,
-"acc_gbm": 0.5657,
-"baseline": 0.5507,
-"situation": 0.5199,
-"camera": 0.4921,
-"video_plus_situation": 0.58,
+"n": 1324,
+"acc": 0.5687,
+"acc_gbm": 0.5672,
+"baseline": 0.5506,
+"situation": 0.5083,
+"camera": 0.4985,
+"video_plus_situation": 0.5718,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.117,
-"FB": 0.862,
-"OS": 0.309
+"BR": 0.139,
+"FB": 0.855,
+"OS": 0.314
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 1059,
-"acc": 0.6874,
-"auc": 0.6313,
-"baseline": 0.6922
+"n": 1053,
+"acc": 0.6914,
+"auc": 0.6285,
+"baseline": 0.6923
 },
 "fastball_vs_offspeed": {
-"n": 1005,
-"acc": 0.7502,
-"auc": 0.717,
-"baseline": 0.7294
+"n": 1000,
+"acc": 0.751,
+"auc": 0.7245,
+"baseline": 0.729
 },
 "fastball_vs_rest": {
-"n": 1331,
-"acc": 0.6101,
-"auc": 0.6435,
-"baseline": 0.5507
+"n": 1324,
+"acc": 0.614,
+"auc": 0.6463,
+"baseline": 0.5506
 }
 }
 },
@@ -2020,37 +1983,37 @@
 "slice": "lift_start",
 "when": "as the leg starts up",
 "t": 0.9,
-"n": 1426,
-"acc": 0.5792,
-"acc_gbm": 0.615,
-"baseline": 0.5484,
-"situation": 0.5105,
-"camera": 0.4979,
-"video_plus_situation": 0.6178,
+"n": 1419,
+"acc": 0.5906,
+"acc_gbm": 0.618,
+"baseline": 0.5483,
+"situation": 0.5109,
+"camera": 0.4996,
+"video_plus_situation": 0.6223,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.256,
-"FB": 0.848,
-"OS": 0.25
+"BR": 0.243,
+"FB": 0.841,
+"OS": 0.34
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 1134,
-"acc": 0.7205,
-"auc": 0.6926,
-"baseline": 0.6896
+"n": 1128,
+"acc": 0.7181,
+"auc": 0.6908,
+"baseline": 0.6897
 },
 "fastball_vs_offspeed": {
-"n": 1074,
-"acc": 0.7384,
-"auc": 0.7378,
-"baseline": 0.7281
+"n": 1069,
+"acc": 0.7596,
+"auc": 0.7711,
+"baseline": 0.7278
 },
 "fastball_vs_rest": {
-"n": 1426,
-"acc": 0.6543,
-"auc": 0.6948,
-"baseline": 0.5484
+"n": 1419,
+"acc": 0.6596,
+"auc": 0.7085,
+"baseline": 0.5483
 }
 }
 },
@@ -2058,37 +2021,37 @@
 "slice": "m1000",
 "when": "1.0 s before release",
 "t": 1.0,
-"n": 1377,
-"acc": 0.557,
-"acc_gbm": 0.594,
-"baseline": 0.5483,
-"situation": 0.5084,
-"camera": 0.5025,
-"video_plus_situation": 0.6137,
+"n": 1370,
+"acc": 0.5599,
+"acc_gbm": 0.5949,
+"baseline": 0.5482,
+"situation": 0.5088,
+"camera": 0.4942,
+"video_plus_situation": 0.6124,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.118,
-"FB": 0.894,
-"OS": 0.184
+"BR": 0.139,
+"FB": 0.872,
+"OS": 0.231
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 1095,
-"acc": 0.6868,
-"auc": 0.6589,
-"baseline": 0.6895
+"n": 1089,
+"acc": 0.6951,
+"auc": 0.6693,
+"baseline": 0.6896
 },
 "fastball_vs_offspeed": {
-"n": 1037,
-"acc": 0.7261,
-"auc": 0.7053,
-"baseline": 0.7281
+"n": 1032,
+"acc": 0.7413,
+"auc": 0.7287,
+"baseline": 0.7277
 },
 "fastball_vs_rest": {
-"n": 1377,
-"acc": 0.6507,
-"auc": 0.6839,
-"baseline": 0.5483
+"n": 1370,
+"acc": 0.6496,
+"auc": 0.692,
+"baseline": 0.5482
 }
 }
 },
@@ -2096,37 +2059,37 @@
 "slice": "lift_top",
 "when": "at the top of the leg lift",
 "t": 0.33,
-"n": 1426,
-"acc": 0.5624,
-"acc_gbm": 0.5792,
-"baseline": 0.5484,
-"situation": 0.5105,
-"camera": 0.493,
-"video_plus_situation": 0.5849,
-"perm_p": 0.0297,
+"n": 1419,
+"acc": 0.5708,
+"acc_gbm": 0.5828,
+"baseline": 0.5483,
+"situation": 0.5109,
+"camera": 0.4912,
+"video_plus_situation": 0.5941,
+"perm_p": 0.0099,
 "recall": {
 "BR": 0.131,
-"FB": 0.876,
-"OS": 0.243
+"FB": 0.852,
+"OS": 0.347
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 1134,
-"acc": 0.6966,
-"auc": 0.6088,
-"baseline": 0.6896
+"n": 1128,
+"acc": 0.7039,
+"auc": 0.617,
+"baseline": 0.6897
 },
 "fastball_vs_offspeed": {
-"n": 1074,
-"acc": 0.7393,
-"auc": 0.7131,
-"baseline": 0.7281
+"n": 1069,
+"acc": 0.7512,
+"auc": 0.7475,
+"baseline": 0.7278
 },
 "fastball_vs_rest": {
-"n": 1426,
-"acc": 0.6353,
-"auc": 0.6645,
-"baseline": 0.5484
+"n": 1419,
+"acc": 0.6371,
+"auc": 0.6846,
+"baseline": 0.5483
 }
 }
 },
@@ -2134,37 +2097,37 @@
 "slice": "m0750",
 "when": "0.75 s before release",
 "t": 0.75,
-"n": 1403,
-"acc": 0.5709,
-"acc_gbm": 0.6144,
-"baseline": 0.5495,
-"situation": 0.5068,
-"camera": 0.4968,
-"video_plus_situation": 0.6215,
+"n": 1396,
+"acc": 0.5802,
+"acc_gbm": 0.6017,
+"baseline": 0.5494,
+"situation": 0.5115,
+"camera": 0.4936,
+"video_plus_situation": 0.6268,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.198,
-"FB": 0.886,
-"OS": 0.174
+"BR": 0.222,
+"FB": 0.877,
+"OS": 0.213
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 1115,
-"acc": 0.7274,
-"auc": 0.6841,
-"baseline": 0.6915
+"n": 1109,
+"acc": 0.7259,
+"auc": 0.6908,
+"baseline": 0.6916
 },
 "fastball_vs_offspeed": {
-"n": 1059,
-"acc": 0.7309,
-"auc": 0.6967,
-"baseline": 0.728
+"n": 1054,
+"acc": 0.7448,
+"auc": 0.7144,
+"baseline": 0.7277
 },
 "fastball_vs_rest": {
-"n": 1403,
-"acc": 0.6629,
-"auc": 0.6951,
-"baseline": 0.5495
+"n": 1396,
+"acc": 0.6726,
+"auc": 0.6971,
+"baseline": 0.5494
 }
 }
 },
@@ -2172,37 +2135,37 @@
 "slice": "break",
 "when": "at hand break",
 "t": 0.1,
-"n": 1426,
-"acc": 0.5603,
-"acc_gbm": 0.54,
-"baseline": 0.5484,
-"situation": 0.5105,
-"camera": 0.479,
-"video_plus_situation": 0.5673,
+"n": 1419,
+"acc": 0.5913,
+"acc_gbm": 0.5518,
+"baseline": 0.5483,
+"situation": 0.5109,
+"camera": 0.4891,
+"video_plus_situation": 0.5687,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.199,
-"FB": 0.882,
-"OS": 0.134
+"BR": 0.28,
+"FB": 0.869,
+"OS": 0.223
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 1134,
-"acc": 0.6949,
-"auc": 0.667,
-"baseline": 0.6896
+"n": 1128,
+"acc": 0.7199,
+"auc": 0.7109,
+"baseline": 0.6897
 },
 "fastball_vs_offspeed": {
-"n": 1074,
-"acc": 0.7374,
-"auc": 0.7344,
-"baseline": 0.7281
+"n": 1069,
+"acc": 0.7437,
+"auc": 0.7476,
+"baseline": 0.7278
 },
 "fastball_vs_rest": {
-"n": 1426,
-"acc": 0.6241,
-"auc": 0.6684,
-"baseline": 0.5484
+"n": 1419,
+"acc": 0.649,
+"auc": 0.71,
+"baseline": 0.5483
 }
 }
 },
@@ -2210,37 +2173,37 @@
 "slice": "m0500",
 "when": "0.5 s before release",
 "t": 0.5,
-"n": 1421,
-"acc": 0.5524,
-"acc_gbm": 0.5848,
-"baseline": 0.5482,
-"situation": 0.5123,
-"camera": 0.4849,
-"video_plus_situation": 0.6165,
+"n": 1414,
+"acc": 0.5559,
+"acc_gbm": 0.5898,
+"baseline": 0.5481,
+"situation": 0.5078,
+"camera": 0.4859,
+"video_plus_situation": 0.616,
 "perm_p": 0.0099,
 "recall": {
-"BR": 0.117,
-"FB": 0.908,
-"OS": 0.127
+"BR": 0.135,
+"FB": 0.884,
+"OS": 0.186
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 1129,
-"acc": 0.6988,
-"auc": 0.6152,
-"baseline": 0.69
+"n": 1123,
+"acc": 0.6999,
+"auc": 0.6157,
+"baseline": 0.6901
 },
 "fastball_vs_offspeed": {
-"n": 1071,
-"acc": 0.7218,
-"auc": 0.6566,
-"baseline": 0.7274
+"n": 1066,
+"acc": 0.7242,
+"auc": 0.6788,
+"baseline": 0.727
 },
 "fastball_vs_rest": {
-"n": 1421,
-"acc": 0.6031,
-"auc": 0.6398,
-"baseline": 0.5482
+"n": 1414,
+"acc": 0.5948,
+"auc": 0.642,
+"baseline": 0.5481
 }
 }
 },
@@ -2248,37 +2211,37 @@
 "slice": "m0250",
 "when": "0.25 s before release",
 "t": 0.25,
-"n": 1426,
-"acc": 0.5463,
-"acc_gbm": 0.5554,
-"baseline": 0.5484,
-"situation": 0.5105,
-"camera": 0.4958,
-"video_plus_situation": 0.5778,
-"perm_p": 0.1287,
+"n": 1419,
+"acc": 0.5518,
+"acc_gbm": 0.5553,
+"baseline": 0.5483,
+"situation": 0.5109,
+"camera": 0.4905,
+"video_plus_situation": 0.5736,
+"perm_p": 0.0198,
 "recall": {
-"BR": 0.091,
-"FB": 0.926,
-"OS": 0.079
+"BR": 0.12,
+"FB": 0.906,
+"OS": 0.124
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 1134,
-"acc": 0.6905,
-"auc": 0.5975,
-"baseline": 0.6896
+"n": 1128,
+"acc": 0.6862,
+"auc": 0.601,
+"baseline": 0.6897
 },
 "fastball_vs_offspeed": {
-"n": 1074,
-"acc": 0.73,
-"auc": 0.6265,
-"baseline": 0.7281
+"n": 1069,
+"acc": 0.7334,
+"auc": 0.6515,
+"baseline": 0.7278
 },
 "fastball_vs_rest": {
-"n": 1426,
-"acc": 0.5912,
-"auc": 0.6006,
-"baseline": 0.5484
+"n": 1419,
+"acc": 0.6082,
+"auc": 0.6159,
+"baseline": 0.5483
 }
 }
 },
@@ -2286,37 +2249,37 @@
 "slice": "m0000",
 "when": "at release",
 "t": 0.0,
-"n": 1426,
-"acc": 0.554,
-"acc_gbm": 0.5379,
-"baseline": 0.5484,
-"situation": 0.5105,
-"camera": 0.5028,
-"video_plus_situation": 0.5533,
-"perm_p": 0.0297,
+"n": 1419,
+"acc": 0.5525,
+"acc_gbm": 0.5391,
+"baseline": 0.5483,
+"situation": 0.5109,
+"camera": 0.506,
+"video_plus_situation": 0.5567,
+"perm_p": 0.0099,
 "recall": {
-"BR": 0.168,
-"FB": 0.891,
-"OS": 0.116
+"BR": 0.174,
+"FB": 0.88,
+"OS": 0.131
 },
 "pairs": {
 "fastball_vs_breaking": {
-"n": 1134,
-"acc": 0.694,
-"auc": 0.628,
-"baseline": 0.6896
+"n": 1128,
+"acc": 0.6897,
+"auc": 0.625,
+"baseline": 0.6897
 },
 "fastball_vs_offspeed": {
-"n": 1074,
-"acc": 0.7263,
-"auc": 0.6604,
-"baseline": 0.7281
+"n": 1069,
+"acc": 0.7278,
+"auc": 0.6639,
+"baseline": 0.7278
 },
 "fastball_vs_rest": {
-"n": 1426,
-"acc": 0.5856,
-"auc": 0.618,
-"baseline": 0.5484
+"n": 1419,
+"acc": 0.5906,
+"auc": 0.623,
+"baseline": 0.5483
 }
 }
 }
@@ -2330,7 +2293,7 @@
 "slice": "set",
 "when": "in the set",
 "src": "skenes/frames/C_windup_BR_set.jpg",
-"n": 325
+"n": 323
 },
 {
 "view": "C",
@@ -2339,7 +2302,7 @@
 "slice": "set",
 "when": "in the set",
 "src": "skenes/frames/C_windup_FB_set.jpg",
-"n": 732
+"n": 728
 },
 {
 "view": "C",
@@ -2348,7 +2311,7 @@
 "slice": "set",
 "when": "in the set",
 "src": "skenes/frames/C_windup_OS_set.jpg",
-"n": 269
+"n": 268
 },
 {
 "view": "C",
@@ -2357,7 +2320,7 @@
 "slice": "lift_top",
 "when": "at the top of the leg lift",
 "src": "skenes/frames/C_windup_BR_lift_top.jpg",
-"n": 352
+"n": 350
 },
 {
 "view": "C",
@@ -2366,7 +2329,7 @@
 "slice": "lift_top",
 "when": "at the top of the leg lift",
 "src": "skenes/frames/C_windup_FB_lift_top.jpg",
-"n": 782
+"n": 778
 },
 {
 "view": "C",
@@ -2375,16 +2338,15 @@
 "slice": "lift_top",
 "when": "at the top of the leg lift",
 "src": "skenes/frames/C_windup_OS_lift_top.jpg",
-"n": 292
+"n": 291
 }
 ]
 }
 ],
 "fix_cue": "",
 "fix_suggestions": [
-"Same posture in the set: no extra lean on one pitch.",
-"Same leg lift height and path on every pitch.",
-"Same throwing elbow in the set on every pitch."
+"Same throwing elbow in the set on every pitch.",
+"Same back leg on every pitch."
 ],
 "facility": [],
 "games": [
@@ -2394,20 +2356,19 @@
 "home": false,
 "pitches": 37,
 "processed": true,
-"n_flagged": 16,
+"n_flagged": 10,
 "best": {
 "key": "hitter_stretch",
 "label": "Hitter view, stretch",
 "view_label": "Hitter view",
 "delivery": "stretch",
-"grade": "weak",
+"grade": "none",
 "slice": "break",
 "when": "at hand break",
 "n": 14,
 "acc": 0.643,
 "baseline": 0.429,
-"situation": 0.429,
-"flagged": 6
+"situation": 0.429
 }
 },
 {
@@ -2416,7 +2377,7 @@
 "home": false,
 "pitches": 77,
 "processed": true,
-"n_flagged": 17,
+"n_flagged": 10,
 "best": {
 "key": "cf_windup",
 "label": "Center field, windup",
@@ -2426,7 +2387,7 @@
 "slice": "lift_start",
 "when": "as the leg starts up",
 "n": 35,
-"acc": 0.657,
+"acc": 0.714,
 "baseline": 0.6,
 "situation": 0.6
 }
@@ -2437,20 +2398,19 @@
 "home": true,
 "pitches": 87,
 "processed": true,
-"n_flagged": 10,
+"n_flagged": 8,
 "best": {
 "key": "hitter_stretch",
 "label": "Hitter view, stretch",
 "view_label": "Hitter view",
 "delivery": "stretch",
-"grade": "weak",
+"grade": "none",
 "slice": "break",
 "when": "at hand break",
 "n": 15,
 "acc": 0.667,
 "baseline": 0.467,
-"situation": 0.4,
-"flagged": 4
+"situation": 0.333
 }
 },
 {
@@ -2469,9 +2429,9 @@
 "slice": "lift_start",
 "when": "as the leg starts up",
 "n": 80,
-"acc": 0.425,
+"acc": 0.463,
 "baseline": 0.35,
-"situation": 0.4
+"situation": 0.388
 }
 },
 {
@@ -2480,7 +2440,7 @@
 "home": true,
 "pitches": 64,
 "processed": true,
-"n_flagged": 3,
+"n_flagged": 5,
 "best": {
 "key": "cf_stretch",
 "label": "Center field, stretch",
@@ -2490,10 +2450,10 @@
 "slice": "top_m1",
 "when": "a second before the top of the leg lift",
 "n": 21,
-"acc": 0.667,
+"acc": 0.619,
 "baseline": 0.524,
 "situation": 0.476,
-"flagged": 1
+"flagged": 5
 }
 },
 {
@@ -2512,9 +2472,9 @@
 "slice": "lift_start",
 "when": "as the leg starts up",
 "n": 90,
-"acc": 0.633,
+"acc": 0.667,
 "baseline": 0.544,
-"situation": 0.456
+"situation": 0.444
 }
 },
 {
@@ -2523,7 +2483,7 @@
 "home": true,
 "pitches": 102,
 "processed": true,
-"n_flagged": 14,
+"n_flagged": 10,
 "best": {
 "key": "cf_stretch",
 "label": "Center field, stretch",
@@ -2532,10 +2492,10 @@
 "grade": "weak",
 "slice": "top_m1",
 "when": "a second before the top of the leg lift",
-"n": 45,
-"acc": 0.6,
-"baseline": 0.267,
-"situation": 0.289,
+"n": 44,
+"acc": 0.636,
+"baseline": 0.25,
+"situation": 0.295,
 "flagged": 10
 }
 },
@@ -2554,10 +2514,10 @@
 "grade": "none",
 "slice": "lift_start",
 "when": "as the leg starts up",
-"n": 11,
-"acc": 0.364,
-"baseline": 0.636,
-"situation": 0.636
+"n": 9,
+"acc": 0.333,
+"baseline": 0.556,
+"situation": 0.556
 }
 },
 {
@@ -2566,20 +2526,19 @@
 "home": true,
 "pitches": 98,
 "processed": true,
-"n_flagged": 5,
+"n_flagged": 4,
 "best": {
 "key": "hitter_stretch",
 "label": "Hitter view, stretch",
 "view_label": "Hitter view",
 "delivery": "stretch",
-"grade": "weak",
+"grade": "none",
 "slice": "break",
 "when": "at hand break",
 "n": 13,
-"acc": 0.692,
+"acc": 0.615,
 "baseline": 0.462,
-"situation": 0.385,
-"flagged": 2
+"situation": 0.385
 }
 },
 {
@@ -2597,10 +2556,10 @@
 "grade": "weak",
 "slice": "top_m1",
 "when": "a second before the top of the leg lift",
-"n": 27,
-"acc": 0.481,
-"baseline": 0.333,
-"situation": 0.333,
+"n": 26,
+"acc": 0.423,
+"baseline": 0.346,
+"situation": 0.385,
 "flagged": 10
 }
 },
@@ -2610,7 +2569,7 @@
 "home": false,
 "pitches": 98,
 "processed": true,
-"n_flagged": 13,
+"n_flagged": 6,
 "best": {
 "key": "cf_windup",
 "label": "Center field, windup",
@@ -2619,10 +2578,10 @@
 "grade": "none",
 "slice": "lift_start",
 "when": "as the leg starts up",
-"n": 4,
-"acc": 0.75,
-"baseline": 0.5,
-"situation": 0.5
+"n": 3,
+"acc": 0.667,
+"baseline": 0.333,
+"situation": 0.333
 }
 },
 {
@@ -2631,20 +2590,19 @@
 "home": true,
 "pitches": 103,
 "processed": true,
-"n_flagged": 12,
+"n_flagged": 7,
 "best": {
 "key": "hitter_stretch",
 "label": "Hitter view, stretch",
 "view_label": "Hitter view",
 "delivery": "stretch",
-"grade": "weak",
+"grade": "none",
 "slice": "break",
 "when": "at hand break",
 "n": 23,
 "acc": 0.435,
 "baseline": 0.304,
-"situation": 0.435,
-"flagged": 8
+"situation": 0.435
 }
 },
 {
@@ -2653,19 +2611,20 @@
 "home": false,
 "pitches": 109,
 "processed": true,
-"n_flagged": 20,
+"n_flagged": 10,
 "best": {
-"key": "hitter_windup",
-"label": "Hitter view, windup",
-"view_label": "Hitter view",
-"delivery": "windup",
-"grade": "none",
-"slice": "lift_start",
-"when": "as the leg starts up",
-"n": 25,
-"acc": 0.64,
-"baseline": 0.56,
-"situation": 0.52
+"key": "cf_stretch",
+"label": "Center field, stretch",
+"view_label": "Center field",
+"delivery": "stretch",
+"grade": "weak",
+"slice": "top_m1",
+"when": "a second before the top of the leg lift",
+"n": 71,
+"acc": 0.592,
+"baseline": 0.535,
+"situation": 0.521,
+"flagged": 10
 }
 },
 {
@@ -2674,20 +2633,19 @@
 "home": true,
 "pitches": 103,
 "processed": true,
-"n_flagged": 20,
+"n_flagged": 10,
 "best": {
 "key": "hitter_stretch",
 "label": "Hitter view, stretch",
 "view_label": "Hitter view",
 "delivery": "stretch",
-"grade": "weak",
+"grade": "none",
 "slice": "break",
 "when": "at hand break",
 "n": 58,
-"acc": 0.621,
+"acc": 0.603,
 "baseline": 0.483,
-"situation": 0.466,
-"flagged": 10
+"situation": 0.534
 }
 },
 {
@@ -2702,14 +2660,13 @@
 "label": "Hitter view, stretch",
 "view_label": "Hitter view",
 "delivery": "stretch",
-"grade": "weak",
+"grade": "none",
 "slice": "break",
 "when": "at hand break",
 "n": 23,
-"acc": 0.478,
+"acc": 0.522,
 "baseline": 0.304,
-"situation": 0.435,
-"flagged": 3
+"situation": 0.391
 }
 },
 {
@@ -2718,7 +2675,7 @@
 "home": false,
 "pitches": 104,
 "processed": true,
-"n_flagged": 9,
+"n_flagged": 10,
 "best": {
 "key": "cf_stretch",
 "label": "Center field, stretch",
@@ -2728,10 +2685,10 @@
 "slice": "top_m1",
 "when": "a second before the top of the leg lift",
 "n": 36,
-"acc": 0.611,
+"acc": 0.639,
 "baseline": 0.611,
-"situation": 0.417,
-"flagged": 9
+"situation": 0.444,
+"flagged": 10
 }
 },
 {
@@ -2740,19 +2697,19 @@
 "home": true,
 "pitches": 96,
 "processed": true,
-"n_flagged": 20,
+"n_flagged": 10,
 "best": {
-"key": "hitter_windup",
-"label": "Hitter view, windup",
-"view_label": "Hitter view",
+"key": "cf_windup",
+"label": "Center field, windup",
+"view_label": "Center field",
 "delivery": "windup",
 "grade": "none",
 "slice": "lift_start",
 "when": "as the leg starts up",
-"n": 20,
-"acc": 0.65,
-"baseline": 0.45,
-"situation": 0.55
+"n": 34,
+"acc": 0.794,
+"baseline": 0.588,
+"situation": 0.529
 }
 },
 {
@@ -2761,19 +2718,19 @@
 "home": false,
 "pitches": 81,
 "processed": true,
-"n_flagged": 10,
+"n_flagged": 2,
 "best": {
 "key": "hitter_windup",
 "label": "Hitter view, windup",
 "view_label": "Hitter view",
 "delivery": "windup",
 "grade": "none",
-"slice": "lift_start",
-"when": "as the leg starts up",
-"n": 28,
-"acc": 0.607,
-"baseline": 0.429,
-"situation": 0.321
+"slice": "set",
+"when": "in the set",
+"n": 24,
+"acc": 0.792,
+"baseline": 0.417,
+"situation": 0.292
 }
 },
 {
@@ -2782,7 +2739,7 @@
 "home": true,
 "pitches": 95,
 "processed": true,
-"n_flagged": 19,
+"n_flagged": 10,
 "best": {
 "key": "cf_stretch",
 "label": "Center field, stretch",
@@ -2792,9 +2749,9 @@
 "slice": "top_m1",
 "when": "a second before the top of the leg lift",
 "n": 39,
-"acc": 0.538,
+"acc": 0.487,
 "baseline": 0.359,
-"situation": 0.359,
+"situation": 0.333,
 "flagged": 10
 }
 },
@@ -2804,7 +2761,7 @@
 "home": true,
 "pitches": 82,
 "processed": true,
-"n_flagged": 14,
+"n_flagged": 10,
 "best": {
 "key": "cf_stretch",
 "label": "Center field, stretch",
@@ -2813,10 +2770,10 @@
 "grade": "weak",
 "slice": "top_m1",
 "when": "a second before the top of the leg lift",
-"n": 27,
-"acc": 0.63,
-"baseline": 0.556,
-"situation": 0.444,
+"n": 26,
+"acc": 0.654,
+"baseline": 0.577,
+"situation": 0.462,
 "flagged": 10
 }
 },
@@ -2826,20 +2783,19 @@
 "home": false,
 "pitches": 100,
 "processed": true,
-"n_flagged": 1,
+"n_flagged": 0,
 "best": {
-"key": "cf_stretch",
-"label": "Center field, stretch",
+"key": "cf_windup",
+"label": "Center field, windup",
 "view_label": "Center field",
-"delivery": "stretch",
-"grade": "weak",
-"slice": "top_m1",
-"when": "a second before the top of the leg lift",
-"n": 1,
-"acc": 1.0,
+"delivery": "windup",
+"grade": "none",
+"slice": "lift_start",
+"when": "as the leg starts up",
+"n": 4,
+"acc": 0.75,
 "baseline": 1.0,
-"situation": 1.0,
-"flagged": 1
+"situation": 1.0
 }
 },
 {
@@ -2848,7 +2804,7 @@
 "home": true,
 "pitches": 105,
 "processed": true,
-"n_flagged": 15,
+"n_flagged": 10,
 "best": {
 "key": "cf_windup",
 "label": "Center field, windup",
@@ -2858,9 +2814,9 @@
 "slice": "lift_start",
 "when": "as the leg starts up",
 "n": 51,
-"acc": 0.686,
+"acc": 0.667,
 "baseline": 0.569,
-"situation": 0.588
+"situation": 0.569
 }
 },
 {
@@ -2871,17 +2827,17 @@
 "processed": true,
 "n_flagged": 6,
 "best": {
-"key": "hitter_windup",
-"label": "Hitter view, windup",
+"key": "hitter_stretch",
+"label": "Hitter view, stretch",
 "view_label": "Hitter view",
-"delivery": "windup",
+"delivery": "stretch",
 "grade": "none",
-"slice": "lift_start",
-"when": "as the leg starts up",
-"n": 25,
-"acc": 0.76,
-"baseline": 0.6,
-"situation": 0.36
+"slice": "break",
+"when": "at hand break",
+"n": 7,
+"acc": 0.714,
+"baseline": 0.571,
+"situation": 0.429
 }
 },
 {
@@ -2892,18 +2848,17 @@
 "processed": true,
 "n_flagged": 8,
 "best": {
-"key": "hitter_stretch",
-"label": "Hitter view, stretch",
+"key": "hitter_windup",
+"label": "Hitter view, windup",
 "view_label": "Hitter view",
-"delivery": "stretch",
-"grade": "weak",
-"slice": "break",
-"when": "at hand break",
+"delivery": "windup",
+"grade": "none",
+"slice": "set",
+"when": "in the set",
 "n": 31,
 "acc": 0.581,
-"baseline": 0.419,
-"situation": 0.452,
-"flagged": 3
+"baseline": 0.484,
+"situation": 0.452
 }
 },
 {
@@ -2912,7 +2867,7 @@
 "home": false,
 "pitches": 65,
 "processed": true,
-"n_flagged": 8,
+"n_flagged": 10,
 "best": {
 "key": "cf_stretch",
 "label": "Center field, stretch",
@@ -2924,8 +2879,8 @@
 "n": 23,
 "acc": 0.565,
 "baseline": 0.565,
-"situation": 0.609,
-"flagged": 8
+"situation": 0.565,
+"flagged": 10
 }
 },
 {
@@ -2934,19 +2889,19 @@
 "home": true,
 "pitches": 81,
 "processed": true,
-"n_flagged": 20,
+"n_flagged": 10,
 "best": {
-"key": "hitter_windup",
-"label": "Hitter view, windup",
+"key": "hitter_stretch",
+"label": "Hitter view, stretch",
 "view_label": "Hitter view",
-"delivery": "windup",
+"delivery": "stretch",
 "grade": "none",
-"slice": "lift_start",
-"when": "as the leg starts up",
-"n": 16,
-"acc": 0.875,
-"baseline": 0.812,
-"situation": 0.688
+"slice": "break",
+"when": "at hand break",
+"n": 42,
+"acc": 0.619,
+"baseline": 0.571,
+"situation": 0.381
 }
 },
 {
@@ -2955,20 +2910,19 @@
 "home": false,
 "pitches": 87,
 "processed": true,
-"n_flagged": 10,
+"n_flagged": 0,
 "best": {
-"key": "hitter_stretch",
-"label": "Hitter view, stretch",
+"key": "hitter_windup",
+"label": "Hitter view, windup",
 "view_label": "Hitter view",
-"delivery": "stretch",
-"grade": "weak",
-"slice": "break",
-"when": "at hand break",
-"n": 22,
-"acc": 0.636,
-"baseline": 0.636,
-"situation": 0.409,
-"flagged": 10
+"delivery": "windup",
+"grade": "none",
+"slice": "set",
+"when": "in the set",
+"n": 25,
+"acc": 0.6,
+"baseline": 0.52,
+"situation": 0.4
 }
 },
 {
@@ -2977,19 +2931,19 @@
 "home": true,
 "pitches": 95,
 "processed": true,
-"n_flagged": 11,
+"n_flagged": 10,
 "best": {
 "key": "hitter_windup",
 "label": "Hitter view, windup",
 "view_label": "Hitter view",
 "delivery": "windup",
 "grade": "none",
-"slice": "lift_start",
-"when": "as the leg starts up",
-"n": 33,
-"acc": 0.667,
-"baseline": 0.606,
-"situation": 0.545
+"slice": "set",
+"when": "in the set",
+"n": 30,
+"acc": 0.633,
+"baseline": 0.567,
+"situation": 0.533
 }
 },
 {
@@ -2998,7 +2952,7 @@
 "home": true,
 "pitches": 87,
 "processed": true,
-"n_flagged": 17,
+"n_flagged": 10,
 "best": {
 "key": "cf_windup",
 "label": "Center field, windup",
@@ -3007,10 +2961,10 @@
 "grade": "none",
 "slice": "lift_start",
 "when": "as the leg starts up",
-"n": 57,
-"acc": 0.772,
-"baseline": 0.579,
-"situation": 0.544
+"n": 56,
+"acc": 0.786,
+"baseline": 0.589,
+"situation": 0.554
 }
 },
 {
@@ -3019,7 +2973,7 @@
 "home": false,
 "pitches": 82,
 "processed": true,
-"n_flagged": 11,
+"n_flagged": 10,
 "best": {
 "key": "cf_stretch",
 "label": "Center field, stretch",
@@ -3029,9 +2983,9 @@
 "slice": "top_m1",
 "when": "a second before the top of the leg lift",
 "n": 15,
-"acc": 0.867,
+"acc": 0.8,
 "baseline": 0.467,
-"situation": 0.333,
+"situation": 0.4,
 "flagged": 10
 }
 },
@@ -3041,19 +2995,19 @@
 "home": true,
 "pitches": 89,
 "processed": true,
-"n_flagged": 8,
+"n_flagged": 5,
 "best": {
 "key": "hitter_windup",
 "label": "Hitter view, windup",
 "view_label": "Hitter view",
 "delivery": "windup",
 "grade": "none",
-"slice": "lift_start",
-"when": "as the leg starts up",
+"slice": "set",
+"when": "in the set",
 "n": 25,
-"acc": 0.68,
+"acc": 0.56,
 "baseline": 0.36,
-"situation": 0.4
+"situation": 0.36
 }
 },
 {
@@ -3062,7 +3016,7 @@
 "home": true,
 "pitches": 96,
 "processed": true,
-"n_flagged": 14,
+"n_flagged": 10,
 "best": {
 "key": "cf_windup",
 "label": "Center field, windup",
@@ -3072,7 +3026,7 @@
 "slice": "lift_start",
 "when": "as the leg starts up",
 "n": 65,
-"acc": 0.554,
+"acc": 0.569,
 "baseline": 0.462,
 "situation": 0.477
 }
