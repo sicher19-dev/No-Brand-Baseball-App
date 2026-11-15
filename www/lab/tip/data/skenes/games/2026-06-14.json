@@ -37,6 +37,33 @@
 "acc": 0.533,
 "baseline": 0.533,
 "situation": 0.547
+},
+{
+"key": "cf_stretch",
+"label": "Center field, stretch",
+"view_label": "Center field",
+"delivery": "stretch",
+"grade": "weak",
+"slice": "top_m1",
+"when": "a second before the top of the leg lift",
+"n": 21,
+"acc": 0.381,
+"baseline": 0.238,
+"situation": 0.476,
+"flagged": 2
+},
+{
+"key": "cf_windup",
+"label": "Center field, windup",
+"view_label": "Center field",
+"delivery": "windup",
+"grade": "none",
+"slice": "lift_start",
+"when": "as the leg starts up",
+"n": 67,
+"acc": 0.507,
+"baseline": 0.507,
+"situation": 0.493
 }
 ],
 "flagged": [
@@ -126,9 +153,67 @@
 "clip": "skenes/clips/D_0205a170-a17a-3973-a857-7add2648ac6f.mp4",
 "still": "skenes/clips/D_0205a170-a17a-3973-a857-7add2648ac6f_break.jpg"
 }
+},
+{
+"play_id": "abeb5820-d6b3-3fc3-bee9-e07e5218866a",
+"family": "OS",
+"family_name": "offspeed pitch",
+"key": "cf_stretch",
+"label": "Center field, stretch",
+"view_label": "Center field",
+"delivery": "stretch",
+"slice": "m1500",
+"when": "1.5 s before release",
+"t": 1.5,
+"conf": 0.6423,
+"conf_sit": 0.3706,
+"tell": "Before an offspeed pitch, hip height over the feet tends to be lower 1.5 s before release.",
+"fix": "Same knee bend in the set.",
+"inning": 2,
+"count": "1-1",
+"outs": 2,
+"bat_side": "L",
+"clip": "skenes/clips/C_abeb5820-d6b3-3fc3-bee9-e07e5218866a.mp4",
+"still": "skenes/clips/C_abeb5820-d6b3-3fc3-bee9-e07e5218866a_m1500.jpg",
+"compare": {
+"play_id": "1cccc111-dadf-32f1-a469-8242ad2c4550",
+"family": "BR",
+"family_name": "breaking ball",
+"clip": "skenes/clips/C_1cccc111-dadf-32f1-a469-8242ad2c4550.mp4",
+"still": "skenes/clips/C_1cccc111-dadf-32f1-a469-8242ad2c4550_m1500.jpg"
+}
+},
+{
+"play_id": "52c36e9f-fc0f-38b4-8d68-c634f35fa2cd",
+"family": "FB",
+"family_name": "fastball",
+"key": "cf_stretch",
+"label": "Center field, stretch",
+"view_label": "Center field",
+"delivery": "stretch",
+"slice": "lift_start",
+"when": "as the leg starts up",
+"t": 0.77,
+"conf": 0.6383,
+"conf_sit": 0.4498,
+"tell": "Before a fastball, throwing elbow forward/back tends to sit further right on screen as the leg starts up.",
+"fix": "Same throwing elbow in the set on every pitch.",
+"inning": 1,
+"count": "0-0",
+"outs": 1,
+"bat_side": "L",
+"clip": "skenes/clips/C_52c36e9f-fc0f-38b4-8d68-c634f35fa2cd.mp4",
+"still": "skenes/clips/C_52c36e9f-fc0f-38b4-8d68-c634f35fa2cd_lift_start.jpg",
+"compare": {
+"play_id": "1a34f997-99ad-341b-9f82-1958fad17d80",
+"family": "OS",
+"family_name": "offspeed pitch",
+"clip": "skenes/clips/C_1a34f997-99ad-341b-9f82-1958fad17d80.mp4",
+"still": "skenes/clips/C_1a34f997-99ad-341b-9f82-1958fad17d80_lift_start.jpg"
+}
 }
 ],
-"n_flagged": 3,
+"n_flagged": 5,
 "best": {
 "key": "hitter_stretch",
 "label": "Hitter view, stretch",

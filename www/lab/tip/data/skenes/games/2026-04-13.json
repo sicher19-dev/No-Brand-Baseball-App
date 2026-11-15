@@ -23,22 +23,79 @@
 "acc": 0.36,
 "baseline": 0.36,
 "situation": 0.373
-}
-],
-"flagged": [],
-"n_flagged": 0,
-"best": {
-"key": "hitter_windup",
-"label": "Hitter view, windup",
-"view_label": "Hitter view",
+},
+{
+"key": "cf_stretch",
+"label": "Center field, stretch",
+"view_label": "Center field",
+"delivery": "stretch",
+"grade": "weak",
+"slice": "top_m1",
+"when": "a second before the top of the leg lift",
+"n": 2,
+"acc": 0.5,
+"baseline": 0.5,
+"situation": 0.5,
+"flagged": 1
+},
+{
+"key": "cf_windup",
+"label": "Center field, windup",
+"view_label": "Center field",
 "delivery": "windup",
 "grade": "none",
 "slice": "lift_start",
 "when": "as the leg starts up",
-"n": 75,
-"acc": 0.36,
-"baseline": 0.36,
-"situation": 0.373
+"n": 80,
+"acc": 0.425,
+"baseline": 0.35,
+"situation": 0.4
+}
+],
+"flagged": [
+{
+"play_id": "20a2b469-138f-316d-8d45-a1133ce489cc",
+"family": "OS",
+"family_name": "offspeed pitch",
+"key": "cf_stretch",
+"label": "Center field, stretch",
+"view_label": "Center field",
+"delivery": "stretch",
+"slice": "top_m1",
+"when": "a second before the top of the leg lift",
+"t": 1.4,
+"conf": 0.6209,
+"conf_sit": 0.3005,
+"tell": "Before an offspeed pitch, hip height over the feet tends to be lower a second before the top of the leg lift.",
+"fix": "Same knee bend in the set.",
+"inning": 3,
+"count": "0-0",
+"outs": 2,
+"bat_side": "L",
+"clip": "skenes/clips/C_20a2b469-138f-316d-8d45-a1133ce489cc.mp4",
+"still": "skenes/clips/C_20a2b469-138f-316d-8d45-a1133ce489cc_top_m1.jpg",
+"compare": {
+"play_id": "57e4226b-c4ed-3ade-ba2c-b561977bb55d",
+"family": "FB",
+"family_name": "fastball",
+"clip": "skenes/clips/C_57e4226b-c4ed-3ade-ba2c-b561977bb55d.mp4",
+"still": "skenes/clips/C_57e4226b-c4ed-3ade-ba2c-b561977bb55d_top_m1.jpg"
+}
+}
+],
+"n_flagged": 1,
+"best": {
+"key": "cf_windup",
+"label": "Center field, windup",
+"view_label": "Center field",
+"delivery": "windup",
+"grade": "none",
+"slice": "lift_start",
+"when": "as the leg starts up",
+"n": 80,
+"acc": 0.425,
+"baseline": 0.35,
+"situation": 0.4
 },
 "processed": true
 }

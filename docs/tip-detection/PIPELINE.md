@@ -49,8 +49,17 @@ field) is a broadcast shot: it zooms to the chest while the pitcher is in the
 set, so the legs are out of frame and no leg lift or release can be timed, and
 it cuts to the batter or catcher within a second of the pitch. Its pose output
 is kept under `pose/V/` for a later glove-crop stage but is not trained on.
-The coarse pass blanks scene cuts (whole-frame change above 40) and the first
-second so the motion peak lands on the delivery, not on the cut after it.
+The coarse pass blanks scene cuts and the first second so the motion peak lands
+on the delivery, not on the cut after it; wide views also search a fixed 4-13.5 s
+window because a runner or close-up later in the clip can out-move the small
+pitcher.
+
+Known issue (2026-11-14): on the center-field angle the wrist-speed peak comes
+about 0.5 s after the true release (the arm travels toward the camera, so its 2D
+speed peaks in the follow-through): lift_start sits at -0.9 s and hand break at
+-0.1 s against -1.4 s and -0.6 s on the hitter view. Slice times on that angle
+are therefore conservative (earlier than labeled). Fix later with a CF-specific
+release rule (e.g. wrist crossing the shoulder line) before trusting CF timing.
 
 Preview the page with `.venv-tip/Scripts/python -m http.server 8765 -d www` and open
 `http://localhost:8765/lab/tip/index.html?p=skenes`.

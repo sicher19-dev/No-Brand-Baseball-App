@@ -37,9 +37,94 @@
 "acc": 0.76,
 "baseline": 0.6,
 "situation": 0.36
+},
+{
+"key": "cf_stretch",
+"label": "Center field, stretch",
+"view_label": "Center field",
+"delivery": "stretch",
+"grade": "weak",
+"slice": "top_m1",
+"when": "a second before the top of the leg lift",
+"n": 43,
+"acc": 0.535,
+"baseline": 0.581,
+"situation": 0.581,
+"flagged": 3
+},
+{
+"key": "cf_windup",
+"label": "Center field, windup",
+"view_label": "Center field",
+"delivery": "windup",
+"grade": "none",
+"slice": "lift_start",
+"when": "as the leg starts up",
+"n": 52,
+"acc": 0.635,
+"baseline": 0.577,
+"situation": 0.327
 }
 ],
 "flagged": [
+{
+"play_id": "21550685-a482-3a38-8cc4-3cb2ba0c9e1d",
+"family": "FB",
+"family_name": "fastball",
+"key": "cf_stretch",
+"label": "Center field, stretch",
+"view_label": "Center field",
+"delivery": "stretch",
+"slice": "m0750",
+"when": "0.75 s before release",
+"t": 0.75,
+"conf": 0.8928,
+"conf_sit": 0.6424,
+"tell": "Before a fastball, throwing elbow forward/back tends to sit further right on screen 0.75 s before release.",
+"fix": "Same throwing elbow in the set on every pitch.",
+"inning": 2,
+"count": "0-1",
+"outs": 2,
+"bat_side": "L",
+"clip": "skenes/clips/C_21550685-a482-3a38-8cc4-3cb2ba0c9e1d.mp4",
+"still": "skenes/clips/C_21550685-a482-3a38-8cc4-3cb2ba0c9e1d_m0750.jpg",
+"compare": {
+"play_id": "07033577-8987-3b9f-a1cf-318f86951cc0",
+"family": "BR",
+"family_name": "breaking ball",
+"clip": "skenes/clips/C_07033577-8987-3b9f-a1cf-318f86951cc0.mp4",
+"still": "skenes/clips/C_07033577-8987-3b9f-a1cf-318f86951cc0_m0750.jpg"
+}
+},
+{
+"play_id": "bae4b0e8-ab9c-3b14-a42d-265c97d37ad3",
+"family": "FB",
+"family_name": "fastball",
+"key": "cf_stretch",
+"label": "Center field, stretch",
+"view_label": "Center field",
+"delivery": "stretch",
+"slice": "m1500",
+"when": "1.5 s before release",
+"t": 1.5,
+"conf": 0.8863,
+"conf_sit": 0.659,
+"tell": "Before a fastball, throwing elbow height tends to be lower 1.5 s before release.",
+"fix": "Same throwing elbow in the set on every pitch.",
+"inning": 3,
+"count": "1-0",
+"outs": 2,
+"bat_side": "R",
+"clip": "skenes/clips/C_bae4b0e8-ab9c-3b14-a42d-265c97d37ad3.mp4",
+"still": "skenes/clips/C_bae4b0e8-ab9c-3b14-a42d-265c97d37ad3_m1500.jpg",
+"compare": {
+"play_id": "07033577-8987-3b9f-a1cf-318f86951cc0",
+"family": "BR",
+"family_name": "breaking ball",
+"clip": "skenes/clips/C_07033577-8987-3b9f-a1cf-318f86951cc0.mp4",
+"still": "skenes/clips/C_07033577-8987-3b9f-a1cf-318f86951cc0_m1500.jpg"
+}
+},
 {
 "play_id": "0fd4fe63-9016-374a-b422-aea5f5c33156",
 "family": "BR",
@@ -99,6 +184,35 @@
 }
 },
 {
+"play_id": "45141090-ec30-39c4-a69d-b958b5f3a6f3",
+"family": "FB",
+"family_name": "fastball",
+"key": "cf_stretch",
+"label": "Center field, stretch",
+"view_label": "Center field",
+"delivery": "stretch",
+"slice": "m1500",
+"when": "1.5 s before release",
+"t": 1.5,
+"conf": 0.6296,
+"conf_sit": 0.4628,
+"tell": "Before a fastball, throwing elbow height tends to be lower 1.5 s before release.",
+"fix": "Same throwing elbow in the set on every pitch.",
+"inning": 3,
+"count": "0-0",
+"outs": 2,
+"bat_side": "R",
+"clip": "skenes/clips/C_45141090-ec30-39c4-a69d-b958b5f3a6f3.mp4",
+"still": "skenes/clips/C_45141090-ec30-39c4-a69d-b958b5f3a6f3_m1500.jpg",
+"compare": {
+"play_id": "07033577-8987-3b9f-a1cf-318f86951cc0",
+"family": "BR",
+"family_name": "breaking ball",
+"clip": "skenes/clips/C_07033577-8987-3b9f-a1cf-318f86951cc0.mp4",
+"still": "skenes/clips/C_07033577-8987-3b9f-a1cf-318f86951cc0_m1500.jpg"
+}
+},
+{
 "play_id": "9f4073cb-5203-394f-a172-597fb2b4df00",
 "family": "BR",
 "family_name": "breaking ball",
@@ -128,7 +242,7 @@
 }
 }
 ],
-"n_flagged": 3,
+"n_flagged": 6,
 "best": {
 "key": "hitter_windup",
 "label": "Hitter view, windup",

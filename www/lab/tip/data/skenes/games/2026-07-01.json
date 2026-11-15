@@ -37,9 +37,65 @@
 "acc": 0.607,
 "baseline": 0.429,
 "situation": 0.321
+},
+{
+"key": "cf_stretch",
+"label": "Center field, stretch",
+"view_label": "Center field",
+"delivery": "stretch",
+"grade": "weak",
+"slice": "top_m1",
+"when": "a second before the top of the leg lift",
+"n": 3,
+"acc": 0.0,
+"baseline": 0.0,
+"situation": 0.0,
+"flagged": 1
+},
+{
+"key": "cf_windup",
+"label": "Center field, windup",
+"view_label": "Center field",
+"delivery": "windup",
+"grade": "none",
+"slice": "lift_start",
+"when": "as the leg starts up",
+"n": 1,
+"acc": 0.0,
+"baseline": 0.0,
+"situation": 0.0
 }
 ],
 "flagged": [
+{
+"play_id": "cf7fb4ae-a29b-34b6-9239-18f23190aa18",
+"family": "BR",
+"family_name": "breaking ball",
+"key": "cf_stretch",
+"label": "Center field, stretch",
+"view_label": "Center field",
+"delivery": "stretch",
+"slice": "m1500",
+"when": "1.5 s before release",
+"t": 1.5,
+"conf": 0.9968,
+"conf_sit": 0.2171,
+"tell": "Before a breaking ball, throwing elbow height tends to be higher 1.5 s before release.",
+"fix": "Same throwing elbow in the set on every pitch.",
+"inning": 2,
+"count": "1-2",
+"outs": 0,
+"bat_side": "L",
+"clip": "skenes/clips/C_cf7fb4ae-a29b-34b6-9239-18f23190aa18.mp4",
+"still": "skenes/clips/C_cf7fb4ae-a29b-34b6-9239-18f23190aa18_m1500.jpg",
+"compare": {
+"play_id": "cc4e61a7-d174-32d2-b3fb-2ebc5d05d9c8",
+"family": "OS",
+"family_name": "offspeed pitch",
+"clip": "skenes/clips/C_cc4e61a7-d174-32d2-b3fb-2ebc5d05d9c8.mp4",
+"still": "skenes/clips/C_cc4e61a7-d174-32d2-b3fb-2ebc5d05d9c8_m1500.jpg"
+}
+},
 {
 "play_id": "f9a6a889-39f3-334a-bf0b-02eb711f88f2",
 "family": "BR",
@@ -302,7 +358,7 @@
 }
 }
 ],
-"n_flagged": 9,
+"n_flagged": 10,
 "best": {
 "key": "hitter_windup",
 "label": "Hitter view, windup",

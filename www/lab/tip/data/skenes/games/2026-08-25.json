@@ -37,6 +37,19 @@
 "acc": 0.5,
 "baseline": 0.5,
 "situation": 0.357
+},
+{
+"key": "cf_windup",
+"label": "Center field, windup",
+"view_label": "Center field",
+"delivery": "windup",
+"grade": "none",
+"slice": "lift_start",
+"when": "as the leg starts up",
+"n": 5,
+"acc": 0.0,
+"baseline": 0.8,
+"situation": 0.8
 }
 ],
 "flagged": [

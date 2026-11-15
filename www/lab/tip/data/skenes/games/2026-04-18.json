@@ -37,6 +37,33 @@
 "acc": 0.559,
 "baseline": 0.529,
 "situation": 0.382
+},
+{
+"key": "cf_stretch",
+"label": "Center field, stretch",
+"view_label": "Center field",
+"delivery": "stretch",
+"grade": "weak",
+"slice": "top_m1",
+"when": "a second before the top of the leg lift",
+"n": 21,
+"acc": 0.667,
+"baseline": 0.524,
+"situation": 0.476,
+"flagged": 1
+},
+{
+"key": "cf_windup",
+"label": "Center field, windup",
+"view_label": "Center field",
+"delivery": "windup",
+"grade": "none",
+"slice": "lift_start",
+"when": "as the leg starts up",
+"n": 36,
+"acc": 0.556,
+"baseline": 0.528,
+"situation": 0.389
 }
 ],
 "flagged": [
@@ -97,22 +124,51 @@
 "clip": "skenes/clips/D_debf725c-7c06-3e65-902f-10b88c381b1e.mp4",
 "still": "skenes/clips/D_debf725c-7c06-3e65-902f-10b88c381b1e_break.jpg"
 }
+},
+{
+"play_id": "1c09ff4f-3d95-357c-a338-fb2ab98619e4",
+"family": "BR",
+"family_name": "breaking ball",
+"key": "cf_stretch",
+"label": "Center field, stretch",
+"view_label": "Center field",
+"delivery": "stretch",
+"slice": "m1000",
+"when": "1.0 s before release",
+"t": 1.0,
+"conf": 0.6164,
+"conf_sit": 0.3102,
+"tell": "Before a breaking ball, throwing elbow forward/back tends to sit further left on screen 1.0 s before release.",
+"fix": "Same throwing elbow in the set on every pitch.",
+"inning": 1,
+"count": "0-0",
+"outs": 2,
+"bat_side": "R",
+"clip": "skenes/clips/C_1c09ff4f-3d95-357c-a338-fb2ab98619e4.mp4",
+"still": "skenes/clips/C_1c09ff4f-3d95-357c-a338-fb2ab98619e4_m1000.jpg",
+"compare": {
+"play_id": "a55993e0-1a20-3dfd-98bf-2fc94e7d1216",
+"family": "FB",
+"family_name": "fastball",
+"clip": "skenes/clips/C_a55993e0-1a20-3dfd-98bf-2fc94e7d1216.mp4",
+"still": "skenes/clips/C_a55993e0-1a20-3dfd-98bf-2fc94e7d1216_m1000.jpg"
+}
 }
 ],
-"n_flagged": 2,
+"n_flagged": 3,
 "best": {
-"key": "hitter_stretch",
-"label": "Hitter view, stretch",
-"view_label": "Hitter view",
+"key": "cf_stretch",
+"label": "Center field, stretch",
+"view_label": "Center field",
 "delivery": "stretch",
 "grade": "weak",
-"slice": "break",
-"when": "at hand break",
-"n": 20,
-"acc": 0.55,
-"baseline": 0.5,
-"situation": 0.45,
-"flagged": 2
+"slice": "top_m1",
+"when": "a second before the top of the leg lift",
+"n": 21,
+"acc": 0.667,
+"baseline": 0.524,
+"situation": 0.476,
+"flagged": 1
 },
 "processed": true
 }

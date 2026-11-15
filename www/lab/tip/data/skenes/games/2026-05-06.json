@@ -1,0 +1,44 @@
+{
+"pitcher": {
+"id": "skenes",
+"name": "Paul Skenes"
+},
+"season": "2026",
+"built": "2026-11-14",
+"label": "game-only",
+"date": "2026-05-06",
+"opp": "AZ",
+"home": false,
+"pitches": 97,
+"entries": [
+{
+"key": "cf_windup",
+"label": "Center field, windup",
+"view_label": "Center field",
+"delivery": "windup",
+"grade": "none",
+"slice": "lift_start",
+"when": "as the leg starts up",
+"n": 11,
+"acc": 0.364,
+"baseline": 0.636,
+"situation": 0.636
+}
+],
+"flagged": [],
+"n_flagged": 0,
+"best": {
+"key": "cf_windup",
+"label": "Center field, windup",
+"view_label": "Center field",
+"delivery": "windup",
+"grade": "none",
+"slice": "lift_start",
+"when": "as the leg starts up",
+"n": 11,
+"acc": 0.364,
+"baseline": 0.636,
+"situation": 0.636
+},
+"processed": true
+}
