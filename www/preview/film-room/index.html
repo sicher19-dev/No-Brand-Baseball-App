@@ -1,0 +1,1465 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>No Brand Baseball Analytics</title>
+<meta name="description" content="Pitching analytics and coaching for pitchers who do this for a living. Scouting reports, pitch grades, pitch design, delivery analysis and Tip Detection.">
+<meta name="robots" content="noindex">
+<meta property="og:title" content="No Brand Baseball Analytics">
+<meta property="og:description" content="The hitter is watching. We watched first. Preview of the new homepage.">
+<meta property="og:image" content="https://sicher19-dev.github.io/No-Brand-Baseball-App/preview/film-room/hero-delivery.jpg">
+<meta property="og:type" content="website">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%23f5b700'/%3E%3Cpath fill='%230b0b0d' d='M10 44V20h7.2l8.6 12.9V20H32v24h-6.6l-9.2-13.6V44z'/%3E%3Cpath fill='%230b0b0d' fill-rule='evenodd' d='M34.5 44V20h10.9c5 0 8 2.4 8 6.3 0 2.4-1.2 4.2-3.2 5.1 2.7.8 4.3 2.9 4.3 5.7 0 4.3-3.3 6.9-8.6 6.9zm6.4-14.4h3.4c1.7 0 2.7-.8 2.7-2.2s-1-2.1-2.7-2.1h-3.4zm0 9.2h4c1.9 0 3-.9 3-2.4s-1.1-2.4-3-2.4h-4z'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ---------- tokens ---------- */
+:root{
+  --ink:#efece4;
+  --gold:#f5b700;
+  --ink-2:rgba(239,236,228,.7);
+  --ink-3:rgba(239,236,228,.56);
+  --line:rgba(239,236,228,.16);
+  --fd:"Bricolage Grotesque","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --fm:"DM Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  --pad:clamp(20px,4vw,56px);
+  --bar:34px;
+  --vh1:100vh;
+  --hh:max(var(--vh1),540px);
+  /* the film stage: a 16:9 box sized so the pitcher's cap clears the nav and his feet clear the timeline */
+  --st:calc((var(--hh) - var(--bar) - 142px)/.857);
+  --stt:calc(var(--bar) + 86px - var(--st)*.083);
+  --sw:calc(var(--st)*16/9);
+  --ease:cubic-bezier(.2,.7,.1,1);
+}
+@supports (height:100svh){:root{--vh1:100svh}}
+html.nobar{--bar:0px}
+
+/* ---------- base ---------- */
+*,*::before,*::after{box-sizing:border-box}
+html{background:#000;color:var(--ink);-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+html.lock{overflow:hidden}
+body{margin:0;background:#000;font:400 1.0625rem/1.5 var(--fd);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+img,svg,video,canvas{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+h1,h2,h3,p,ul,ol,dl,dd,figure{margin:0}
+ul,ol{padding:0;list-style:none}
+em{font-style:normal}
+::selection{background:var(--gold);color:#000}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:3px}
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.skip{position:fixed;left:12px;top:-80px;z-index:100;background:var(--gold);color:#000;padding:10px 14px;border-radius:8px;font:500 .8125rem/1 var(--fm)}
+.skip:focus{top:12px}
+
+/* ---------- shared pieces ---------- */
+.hole{display:inline-block;flex:none;width:7px;height:10px;border-radius:2px;background:var(--gold)}
+.slate{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:14px;margin-bottom:clamp(28px,5vw,64px);border-bottom:1px solid var(--line);font:500 .6875rem/1 var(--fm);letter-spacing:.14em;text-transform:uppercase}
+.slate b{display:inline-flex;align-items:center;gap:10px;font-weight:500;color:var(--ink)}
+.slate span{color:var(--ink-3)}
+.h2{font:500 clamp(2.5rem,6.2vw,5.75rem)/.96 var(--fd);letter-spacing:-.04em;text-wrap:balance}
+.body{font-size:clamp(1.0625rem,1.35vw,1.25rem);line-height:1.45;color:var(--ink-2);max-width:32rem}
+.sample{font:500 .6875rem/1 var(--fm);letter-spacing:.14em;text-transform:uppercase;color:var(--gold);white-space:nowrap}
+.sample::before{content:"";display:inline-block;width:6px;height:6px;margin-right:7px;border-radius:50%;background:var(--gold);vertical-align:.06em}
+span[data-placeholder]{font-family:var(--fm);font-size:.8em;letter-spacing:.02em;color:var(--ink-2);border-bottom:1px dashed rgba(245,183,0,.7)}
+
+.pill{display:inline-flex;align-items:center;gap:14px;height:54px;padding:0 7px 0 24px;border-radius:999px;background:var(--gold);color:#000;font:600 1rem/1 var(--fd);letter-spacing:-.01em;white-space:nowrap}
+.pill i{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:#000;color:var(--gold);transition:transform .45s var(--ease)}
+.pill:hover i,.pill:focus-visible i{transform:rotate(-45deg)}
+.pill--sm{height:40px;padding:0 5px 0 16px;gap:10px;font-size:.875rem}
+.pill--sm i{width:30px;height:30px}
+.pill--line{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px rgba(239,236,228,.5)}
+.pill--line i{background:var(--gold);color:#000}
+.quiet{position:relative;display:inline-flex;align-items:center;gap:10px;padding:16px 2px;font:500 1rem/1 var(--fd)}
+.quiet::after{content:"";position:absolute;left:2px;right:2px;bottom:9px;height:1px;background:currentColor;opacity:.45;transition:opacity .3s}
+.quiet:hover::after{opacity:1}
+.quiet svg{transition:transform .35s var(--ease)}
+.quiet:hover svg{transform:translateX(4px)}
+
+/* gold grease-pencil stroke under a phrase */
+.hl{position:relative;white-space:nowrap}
+.hl::after{content:"";position:absolute;left:-.03em;right:-.03em;bottom:-.02em;height:.085em;border-radius:.05em;background:var(--gold);transform:rotate(-.7deg) scaleX(1);transform-origin:0 50%;transition:transform 1s var(--ease) .55s}
+.js .hl::after{transform:rotate(-.7deg) scaleX(0)}
+.js .is-on .hl::after,.js .in .hl::after,.js .in.hl::after{transform:rotate(-.7deg) scaleX(1)}
+
+/* scroll reveal */
+.js [data-rv]{opacity:0;transform:translateY(20px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.js [data-rv].in{opacity:1;transform:none}
+
+/* ---------- film grain ---------- */
+.grain{position:fixed;inset:0;z-index:45;pointer-events:none;opacity:.03;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.6 -.3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") 0 0/220px 220px}
+.hero__grain{position:absolute;inset:-100px;z-index:3;pointer-events:none;opacity:.045;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.6 -.3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") 0 0/220px 220px;animation:grain 1s steps(1) infinite}
+.hero.is-away .hero__grain{animation-play-state:paused}
+@keyframes grain{
+  0%{transform:translate3d(0,0,0)}12.5%{transform:translate3d(-40px,30px,0)}25%{transform:translate3d(-80px,-50px,0)}37.5%{transform:translate3d(30px,-90px,0)}
+  50%{transform:translate3d(-60px,60px,0)}62.5%{transform:translate3d(70px,20px,0)}75%{transform:translate3d(-20px,-70px,0)}87.5%{transform:translate3d(50px,80px,0)}
+}
+
+/* ---------- preview bar ---------- */
+.pv{position:fixed;top:0;left:0;right:0;z-index:60;height:var(--bar);display:flex;align-items:center;justify-content:center;gap:10px;padding:0 44px;background:#0b0b0a;border-bottom:1px solid var(--line);font:500 .6875rem/1 var(--fm);letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+.pv i{width:6px;height:6px;border-radius:50%;background:var(--gold)}
+.pv button{position:absolute;right:4px;top:0;width:40px;height:100%;display:grid;place-items:center;color:var(--ink-2)}
+.pv button:hover{color:var(--ink)}
+
+/* ---------- nav ---------- */
+.nav{position:fixed;top:calc(var(--bar) + 12px);left:16px;right:16px;z-index:50;max-width:1240px;height:54px;margin:0 auto;padding:0 7px 0 14px;display:flex;align-items:center;gap:8px;border-radius:999px;background:rgba(12,12,11,.55);-webkit-backdrop-filter:blur(18px) saturate(1.3);backdrop-filter:blur(18px) saturate(1.3);box-shadow:inset 0 0 0 1px rgba(239,236,228,.12);transition:top .3s var(--ease)}
+.brand{display:inline-flex;align-items:center;gap:10px;margin-right:auto;padding:6px 6px 6px 0;font:600 1rem/1 var(--fd);letter-spacing:-.02em;white-space:nowrap}
+.brand svg{width:28px;height:28px;flex:none}
+.brand small{font:400 1rem/1 var(--fd);color:var(--ink-2)}
+.nav__links{display:flex;align-items:center;gap:2px}
+.nav__links a,.nav__lb{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 13px;border-radius:999px;font:500 .875rem/1 var(--fd);color:var(--ink-2);transition:color .2s,background .2s}
+.nav__links a:hover,.nav__lb:hover,.nav__lb[aria-expanded="true"]{color:var(--ink);background:rgba(239,236,228,.08)}
+.nav__login{position:relative}
+.nav__lb svg{transition:transform .3s var(--ease)}
+.nav__lb[aria-expanded="true"] svg{transform:rotate(180deg)}
+.nav__menu{position:absolute;right:0;top:calc(100% + 14px);min-width:220px;padding:8px;border-radius:18px;background:rgba(12,12,11,.92);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);box-shadow:inset 0 0 0 1px rgba(239,236,228,.14),0 24px 60px rgba(0,0,0,.6)}
+.nav__menu a{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:12px 14px;border-radius:12px;font:500 .9375rem/1 var(--fd);color:var(--ink)}
+.nav__menu a:hover{background:rgba(239,236,228,.08)}
+.nav__menu a svg{color:var(--gold);opacity:0;transform:translateX(-4px);transition:opacity .2s,transform .3s var(--ease)}
+.nav__menu a:hover svg,.nav__menu a:focus-visible svg{opacity:1;transform:none}
+.nav__burger{display:none;height:40px;padding:0 14px;border-radius:999px;font:500 .6875rem/1 var(--fm);letter-spacing:.14em;text-transform:uppercase;color:var(--ink);box-shadow:inset 0 0 0 1px rgba(239,236,228,.28)}
+@media (max-width:980px){
+  .nav__links,.nav__login{display:none}
+  .nav__burger{display:inline-flex;align-items:center}
+}
+@media (max-width:420px){
+  .nav .brand small,.sheet .brand small{display:none}
+  .nav{gap:6px;padding:0 6px 0 12px}
+  .nav .pill--sm{padding-left:13px;gap:8px}
+  .nav .nav__burger{padding:0 12px}
+}
+@media (max-width:350px){.nav .pill{display:none}}
+
+.sheet{position:fixed;inset:0;z-index:80;display:flex;flex-direction:column;padding:16px var(--pad) 28px;background:#000;overflow:auto;opacity:0;transition:opacity .3s}
+.sheet.open{opacity:1}
+.sheet__top{display:flex;align-items:center;justify-content:space-between;height:54px;flex:none}
+.sheet__top .nav__burger{display:inline-flex;align-items:center}
+.sheet__nav{margin-top:6vh}
+.sheet__nav a{display:flex;align-items:baseline;gap:16px;padding:7px 0;font:500 clamp(2.5rem,11.5vw,4.25rem)/1.02 var(--fd);letter-spacing:-.04em}
+.sheet__nav a span{font:500 .6875rem/1 var(--fm);letter-spacing:.1em;color:var(--gold)}
+.sheet__log{display:grid;grid-template-columns:1fr 1fr;gap:0 20px;margin-top:auto;padding-top:20px;border-top:1px solid var(--line)}
+.sheet__log a{padding:14px 0;font:500 .75rem/1.2 var(--fm);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.sheet .pill{align-self:flex-start;margin-top:22px}
+
+/* ---------- hero ---------- */
+.hero{position:relative;isolation:isolate;display:flex;flex-direction:column;justify-content:flex-end;min-height:var(--hh);padding-top:calc(var(--bar) + 100px);overflow:hidden;background:#000}
+/* The film stage, slid so the pitcher (58% across the frame) sits 70% across the screen. On very wide screens it pins to the right edge. */
+.fit{position:absolute;top:var(--stt);max-width:none;height:var(--st);width:var(--sw);left:max(calc(70% - var(--sw)*.58),calc(100% - var(--sw)))}
+.hero__plate,.hero__film{z-index:0;object-fit:cover;object-position:50% 50%;filter:grayscale(1) brightness(.55) contrast(1.1)}
+.hero--plain .hero__film{display:none}
+.hero__shade{z-index:1;pointer-events:none;background:
+  linear-gradient(90deg,#000 17%,rgba(0,0,0,.86) 27%,rgba(0,0,0,.4) 37%,transparent 47%),
+  linear-gradient(180deg,#000 0%,transparent 7%),
+  linear-gradient(0deg,#000 0%,rgba(0,0,0,.4) 5%,transparent 13%),
+  linear-gradient(270deg,#000 0%,transparent 10%)}
+/* The bottom fade is kept short so the mound and his feet stay in the picture. It is still near solid behind the timeline. */
+.hero__scrim{position:absolute;inset:0;z-index:1;pointer-events:none;background:
+  linear-gradient(90deg,rgba(0,0,0,.94) 0%,rgba(0,0,0,.88) 30%,rgba(0,0,0,.62) 46%,rgba(0,0,0,.24) 60%,transparent 70%),
+  linear-gradient(0deg,#000 0%,rgba(0,0,0,.84) 5%,rgba(0,0,0,.5) 9%,rgba(0,0,0,.12) 14%,transparent 20%),
+  linear-gradient(180deg,rgba(0,0,0,.62) 0%,transparent 16%),
+  linear-gradient(270deg,rgba(0,0,0,.62) 0%,transparent 15%),
+  radial-gradient(110% 90% at 70% 46%,transparent 42%,rgba(0,0,0,.6) 100%)}
+.hero__track{position:absolute;inset:0;z-index:2;width:100%;height:100%;pointer-events:none}
+.hero--plain .hero__track{display:none}
+.hero__body{position:relative;z-index:4;padding:0 var(--pad)}
+.eyebrow{display:flex;align-items:center;gap:10px;font:500 .6875rem/1 var(--fm);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+/* Three set lines, each longer than the one above. The widest stays left of the leg kick at every desktop size. */
+.hero h1{margin-top:clamp(14px,2.2vh,24px);font:500 clamp(2.5rem,min(6.6vw,calc(var(--hh)*.106),calc((70vw - var(--sw)*.17 - var(--pad) - 20px)/6.95)),6rem)/.93 var(--fd);letter-spacing:-.042em;font-variation-settings:"opsz" 96;text-shadow:0 0 44px rgba(0,0,0,.7)}
+.hero h1 span{display:block;white-space:nowrap}
+.hero h1 .hl{display:inline}
+.hero__lede{max-width:30em;margin-top:clamp(14px,2.4vh,26px);font-size:clamp(1rem,1.3vw,1.1875rem);line-height:1.42;color:var(--ink);text-shadow:0 0 24px rgba(0,0,0,.9)}
+.hero__cta{display:flex;flex-wrap:wrap;align-items:center;gap:8px 28px;margin-top:clamp(18px,3vh,32px)}
+.js .hero__body>*{opacity:0;transform:translateY(16px)}
+.js .hero.is-on .hero__body>*{opacity:1;transform:none;transition:opacity 1s var(--ease),transform 1s var(--ease)}
+.js .hero.is-on .hero__body>:nth-child(2){transition-delay:.08s}
+.js .hero.is-on .hero__body>:nth-child(3){transition-delay:.18s}
+.js .hero.is-on .hero__body>:nth-child(4){transition-delay:.28s}
+
+.hero__foot{position:relative;z-index:5;padding:clamp(18px,3.4vh,40px) var(--pad) 12px}
+.foot__row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 24px;min-height:28px}
+.foot__meta{display:flex;align-items:center;gap:14px;font:500 .6875rem/1 var(--fm);letter-spacing:.08em;text-transform:uppercase}
+.foot__pp{min-width:58px;height:28px;padding:0 10px;border-radius:999px;font:500 .625rem/1 var(--fm);letter-spacing:.14em;text-transform:uppercase;color:var(--ink);box-shadow:inset 0 0 0 1px rgba(239,236,228,.35)}
+.foot__pp:hover{box-shadow:inset 0 0 0 1px var(--ink)}
+.foot__ph{color:var(--gold)}
+.foot__tc{color:var(--ink);font-variant-numeric:tabular-nums;white-space:pre}
+.hero__cap{margin-left:auto;font:400 .6875rem/1.3 var(--fm);letter-spacing:.06em;color:var(--ink-2);text-align:right}
+.rail{position:relative;height:60px;margin-top:2px}
+.rail__line,.rail__fill{position:absolute;left:7px;right:7px;top:21.5px;height:1px;pointer-events:none}
+.rail__line{background:rgba(239,236,228,.34)}
+.rail__ruler{position:absolute;left:7px;right:7px;top:15px;height:6px;pointer-events:none;opacity:.26;background:repeating-linear-gradient(90deg,var(--ink) 0 1px,transparent 1px 2.5%)}
+.rail__fill{background:var(--gold);transform:scaleX(0);transform-origin:0 50%}
+.rail input{-webkit-appearance:none;appearance:none;position:absolute;left:0;top:0;z-index:2;width:100%;height:44px;margin:0;background:transparent;cursor:ew-resize;touch-action:pan-y}
+.rail input::-webkit-slider-runnable-track{height:44px;background:transparent}
+.rail input::-moz-range-track{height:44px;background:transparent}
+.rail input::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:44px;border:0;border-radius:0;background:radial-gradient(circle at 50% 50%,var(--gold) 0 4px,transparent 4.6px),linear-gradient(90deg,transparent 6px,var(--gold) 6px 8px,transparent 8px) 50% 50%/100% 28px no-repeat}
+.rail input::-moz-range-thumb{width:14px;height:44px;border:0;border-radius:0;background:radial-gradient(circle at 50% 50%,var(--gold) 0 4px,transparent 4.6px),linear-gradient(90deg,transparent 6px,var(--gold) 6px 8px,transparent 8px) 50% 50%/100% 28px no-repeat}
+.rail input:focus-visible{outline:2px solid var(--gold);outline-offset:0;border-radius:6px}
+.rail__ticks{position:absolute;left:7px;right:7px;top:0;height:100%;pointer-events:none}
+.rail__ticks li{position:absolute;left:calc(var(--f)*100%);top:22px}
+.rail__ticks li::before{content:"";position:absolute;left:-.5px;top:-5px;width:1px;height:11px;background:var(--ink)}
+.rail__ticks button{position:absolute;top:10px;left:0;z-index:3;transform:translateX(-50%);height:28px;padding:0 6px;font:500 .625rem/1 var(--fm);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);white-space:nowrap;pointer-events:auto;transition:color .2s}
+.rail__ticks li:first-child button{transform:none;padding-left:0;left:-7px}
+.rail__ticks button:hover,.rail__ticks li.on button{color:var(--gold)}
+
+/* tall screens (phones, portrait tablets): film on top, timeline under it, words below */
+@media (max-aspect-ratio:1/1){
+  /* --ft is where the film ends and the timeline starts */
+  :root{--hh:max(var(--vh1),620px);--st:calc(var(--hh)*.68);--stt:calc(var(--bar) + 44px);--ft:calc(var(--stt) + var(--st)*.62)}
+  .hero{justify-content:flex-start;padding-top:var(--ft)}
+  .fit{left:calc(50% - var(--sw)*.555)}
+  .hero__shade{background:linear-gradient(90deg,#000 17%,rgba(0,0,0,.8) 26%,transparent 40%),linear-gradient(180deg,#000 0%,transparent 8%)}
+  /* the film fades to black under the tracking, and the tracking closes in a bracket just above the timeline */
+  .hero__scrim{background:
+    linear-gradient(180deg,transparent calc(var(--ft) - 92px),rgba(0,0,0,.42) calc(var(--ft) - 40px),#000 var(--ft)),
+    linear-gradient(180deg,rgba(0,0,0,.66) 0,transparent 150px),
+    linear-gradient(90deg,rgba(0,0,0,.72) 0%,transparent 18%),
+    linear-gradient(270deg,rgba(0,0,0,.6) 0%,transparent 14%)}
+  .hero__foot{order:1;padding-top:0;padding-bottom:0;background:#000}
+  .hero__body{order:2;flex:1 0 auto;padding-top:4px;padding-bottom:40px;background:#000}
+}
+@media (max-aspect-ratio:1/1) and (min-width:700px){:root{--st:calc(var(--hh)*.72);--ft:calc(var(--stt) + var(--st)*.58)}}
+@media (max-aspect-ratio:1/1) and (min-width:641px){.hero h1{font-size:clamp(3rem,9.4vw,5.5rem)}}
+@media (max-width:640px){
+  .hero h1{margin-top:12px;font-size:clamp(2.25rem,11.4vw,3.5rem)}
+  .hero__lede{margin-top:12px}
+  .hero__cta{margin-top:16px}
+  .hero__lede span{display:none}
+  .hero__cap{margin-left:0;text-align:left;order:-1;flex-basis:100%}
+}
+@media (max-width:360px){.foot__ph{display:none}}
+/* where two ticks sit close together, the second keeps its mark and drops its label (the phase name still shows by the timecode) */
+@media (max-width:1180px){.rail__ticks li.t-min button{width:20px;overflow:hidden;color:transparent}}
+
+/* ---------- manifesto ---------- */
+.mani{padding:clamp(96px,15vw,240px) var(--pad)}
+.mani .slate{max-width:1480px;margin-inline:auto;margin-bottom:clamp(48px,9vw,140px)}
+.mani__p{max-width:23em;margin:0 auto;font:500 clamp(1.5rem,2.9vw,2.5rem)/1.2 var(--fd);letter-spacing:-.028em}
+.mani__p em{color:var(--gold)}
+.mani__p.split .w{color:rgba(239,236,228,.2);transition:color .45s ease}
+.mani__p.split em .w{color:rgba(245,183,0,.24)}
+.mani__p.split .w.on{color:var(--ink)}
+.mani__p.split em .w.on{color:var(--gold)}
+
+/* ---------- a season on film ---------- */
+.season__head{padding:clamp(72px,11vw,160px) var(--pad) clamp(40px,6vw,88px);border-top:1px solid var(--line)}
+.season__head .body{margin-top:clamp(18px,2.4vw,32px)}
+.reel{display:flex;min-height:100vh;min-height:100svh;background:#000;border-top:1px solid var(--line)}
+.reel__in{width:100%;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(24px,5vw,96px);align-items:center;padding:clamp(116px,15vh,150px) var(--pad) clamp(36px,6vh,72px);transform-origin:50% 12%}
+.reel__when{display:flex;align-items:center;gap:10px;font:500 .6875rem/1 var(--fm);letter-spacing:.14em;text-transform:uppercase}
+.reel__num{margin:clamp(10px,2vh,22px) 0 clamp(14px,2.6vh,30px) -.05em;font:300 clamp(6rem,min(17vw,29vh),17rem)/.78 var(--fd);letter-spacing:-.06em;color:transparent;-webkit-text-stroke:1px rgba(239,236,228,.72)}
+.reel h3{max-width:13em;font:500 clamp(1.75rem,3.4vw,3.25rem)/1.02 var(--fd);letter-spacing:-.036em;text-wrap:balance}
+.gets__t{margin-top:clamp(20px,3.4vh,40px);font:500 .6875rem/1 var(--fm);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.gets{max-width:30rem;margin-top:12px;border-top:1px solid var(--line);counter-reset:g}
+.gets li{display:flex;align-items:baseline;gap:16px;padding:11px 0;border-bottom:1px solid var(--line);line-height:1.3}
+.gets li::before{content:counter(g,decimal-leading-zero);counter-increment:g;font:500 .6875rem/1 var(--fm);letter-spacing:.08em;color:var(--gold)}
+@media (min-width:900px) and (min-height:600px){
+  .reel{position:sticky;top:var(--stick,0px)}
+  .reel__in{transform:scale(calc(1 - var(--c,0)*.05));opacity:calc(1 - var(--c,0)*.72)}
+}
+@media (max-width:899px){
+  .reel{min-height:0}
+  .reel__in{grid-template-columns:minmax(0,1fr);gap:44px;padding:56px var(--pad) 72px}
+}
+
+.vis{width:100%;max-width:540px;justify-self:center}
+.vis__top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:12px;margin-bottom:18px;border-bottom:1px solid var(--line);font:500 .6875rem/1 var(--fm);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+.vis__cap{margin-top:14px;font:400 .75rem/1.4 var(--fm);letter-spacing:.04em;color:var(--ink-3)}
+
+/* 01: the plan */
+.zone__st{position:relative;width:100%;max-width:min(470px,calc(56vh*.93));margin:0 auto}
+.zone svg{width:100%;height:auto;overflow:visible}
+.zone .ln{fill:none;stroke:var(--ink);stroke-width:1.2;stroke-dasharray:1;stroke-dashoffset:0;transition:stroke-dashoffset 1.5s var(--ease) var(--d,0s)}
+.zone .ln--f{stroke:rgba(239,236,228,.3)}
+.zone .ln--g{stroke:var(--gold)}
+.zone .fd{transition:opacity .9s ease var(--d,0s)}
+.zone .pop{transform-box:fill-box;transform-origin:center;transition:transform .8s var(--ease) var(--d,0s),opacity .5s ease var(--d,0s)}
+.zone__lab{position:absolute;left:var(--x);top:var(--y);transform:translateY(-50%);font:500 .6875rem/1.4 var(--fm);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;transition:opacity .7s ease var(--d,0s)}
+.zone__lab b{display:block;font-weight:500;color:var(--gold)}
+.zone__lab.is-no b{color:var(--ink)}
+.zone__lab span{color:var(--ink-2)}
+.js .zone:not(.in) .ln{stroke-dashoffset:1}
+.js .zone:not(.in) .fd,.js .zone:not(.in) .zone__lab{opacity:0}
+.js .zone:not(.in) .pop{transform:scale(.2);opacity:0}
+
+/* 02: the grades */
+.strip{position:relative;padding:27px 0;background:#0b0b0a}
+.strip::before,.strip::after{content:"";position:absolute;left:0;right:0;height:9px;background:repeating-linear-gradient(90deg,transparent 0 8px,rgba(239,236,228,.3) 8px 17px,transparent 17px 26px)}
+.strip::before{top:9px}
+.strip::after{bottom:9px}
+.strip__fr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:0 6px}
+.fr{position:relative;padding:clamp(22px,2.6vw,34px) clamp(10px,1.5vw,20px) 14px;background:#000}
+.fr::before{content:attr(data-n);position:absolute;top:7px;right:9px;font:400 .5625rem/1 var(--fm);letter-spacing:.1em;color:var(--ink-3)}
+.fr b{display:block;font:500 clamp(3rem,6.6vw,6.25rem)/.84 var(--fd);letter-spacing:-.06em;font-variant-numeric:tabular-nums}
+.fr span{display:block;margin-top:14px;font:500 .6875rem/1 var(--fm);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.fr i{display:block;height:2px;margin-top:10px;background:var(--line)}
+.fr i::after{content:"";display:block;width:calc(var(--g)*100%);height:100%;background:var(--gold);transform-origin:0 50%;transition:transform 1.3s var(--ease) var(--d,0s)}
+.js .grades:not(.in) .fr i::after{transform:scaleX(0)}
+.exec{margin-top:30px}
+.exec__d{display:grid;grid-template-columns:repeat(20,minmax(0,1fr));gap:clamp(3px,.6vw,8px)}
+.exec__d i{aspect-ratio:1;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(239,236,228,.5);transition:transform .5s var(--ease) calc(var(--i)*35ms + .3s),opacity .4s ease calc(var(--i)*35ms + .3s)}
+.exec__d i.h{background:var(--gold);box-shadow:none}
+.js .grades:not(.in) .exec__d i{transform:scale(.2);opacity:0}
+
+/* 03: the delivery */
+.mocap canvas{width:100%;height:min(56vh,520px);min-height:300px}
+
+/* ---------- tip detection ---------- */
+.tip{padding:clamp(88px,13vw,200px) var(--pad) clamp(80px,11vw,160px);border-top:1px solid var(--line)}
+.tip__grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(28px,5vw,88px);align-items:end}
+.tip__txt .body{margin-top:clamp(18px,2.4vw,32px)}
+.tip__st{position:relative}
+.tip__st canvas{width:100%;aspect-ratio:1.14/1}
+.tell{position:absolute;left:0;top:0;width:max-content;max-width:var(--aw,220px);padding-top:12px;border-top:1px solid var(--gold);transform:translate(var(--ax,0px),var(--ay,0px));opacity:0;transition:opacity .45s ease;pointer-events:none}
+.tell.is-l{transform:translate(calc(var(--ax,0px) - 100%),var(--ay,0px))}
+.tell.show{opacity:1}
+.tell p{margin-top:10px;font:500 clamp(1.0625rem,1.7vw,1.5rem)/1.12 var(--fd);letter-spacing:-.02em}
+.tell ul{display:flex;flex-wrap:wrap;gap:4px 16px;margin-top:12px;font:500 .625rem/1 var(--fm);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.tell li{display:flex;align-items:center;gap:6px}
+.tell li::before{content:"";width:9px;height:9px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--gold)}
+.tell li+li::before{box-shadow:none;border:1px dashed rgba(239,236,228,.8)}
+.verdicts{margin-top:clamp(56px,8vw,120px)}
+.verdicts__t{font:500 .6875rem/1.5 var(--fm);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);padding-bottom:14px;border-bottom:1px solid var(--line)}
+.vd{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,21rem);align-items:end;gap:10px 32px;padding:clamp(18px,2.8vw,40px) 0 clamp(16px,2.4vw,32px);border-bottom:1px solid var(--line)}
+.vd dt{font:500 clamp(3rem,11vw,10.5rem)/.84 var(--fd);letter-spacing:-.055em;margin-left:-.04em}
+.vd dd{padding-bottom:.4em;font-size:clamp(1rem,1.3vw,1.1875rem);line-height:1.35;color:var(--ink)}
+.vd dd::before{content:attr(data-n);display:block;margin-bottom:8px;font:500 .6875rem/1 var(--fm);letter-spacing:.14em;color:var(--ink-3)}
+.vd--clear dt{color:var(--gold)}
+.vd--weak dt{color:transparent;background:repeating-linear-gradient(-58deg,var(--ink) 0 2px,transparent 2px 7px);-webkit-background-clip:text;background-clip:text;-webkit-text-stroke:1px var(--ink)}
+.vd--none dt{color:transparent;-webkit-text-stroke:1px rgba(239,236,228,.78)}
+@media (forced-colors:active){.vd dt,.reel__num,.ft__mark{color:CanvasText;background:none;-webkit-text-stroke:0}}
+.tip__send{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 40px;margin-top:clamp(28px,4vw,56px)}
+.tip__send p{max-width:30rem;font-size:clamp(1.0625rem,1.35vw,1.25rem);line-height:1.4}
+.tip__links{display:flex;flex-wrap:wrap;gap:0 32px}
+@media (max-width:899px){
+  .tip__grid{grid-template-columns:minmax(0,1fr)}
+  .tip__st canvas{aspect-ratio:1/1.12}
+  .vd{grid-template-columns:minmax(0,1fr)}
+}
+
+/* ---------- who ---------- */
+.who{padding:clamp(88px,12vw,180px) 0;border-top:1px solid var(--line);overflow:hidden}
+@supports (overflow:clip){.who{overflow:clip}}
+.who .slate{margin-inline:var(--pad)}
+.who__line{padding-inline:var(--pad);font:500 clamp(2.75rem,9vw,8.5rem)/.95 var(--fd);letter-spacing:-.045em;text-wrap:balance}
+.js.motion .who__line{padding-inline:0;font-size:clamp(4.5rem,13.5vw,14rem);white-space:nowrap;text-wrap:nowrap}
+.js.motion .who__line span{display:inline-block;padding-right:.3em;will-change:transform}
+.who__list{display:flex;flex-wrap:wrap;gap:12px 44px;margin:clamp(32px,4.4vw,64px) var(--pad) 0;font:500 .6875rem/1 var(--fm);letter-spacing:.14em;text-transform:uppercase}
+.who__list li{display:flex;gap:12px}
+.who__list li::before{content:attr(data-n);color:var(--gold)}
+
+/* ---------- the app ---------- */
+.app{padding:clamp(88px,12vw,180px) var(--pad);border-top:1px solid var(--line);overflow:hidden}
+.app__grid{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,5fr);gap:clamp(40px,6vw,110px);align-items:center}
+.app__txt .body{margin-top:clamp(18px,2.4vw,32px)}
+.app__txt .gets{margin-top:clamp(24px,3vw,40px)}
+.app__txt .pill{margin-top:clamp(28px,3.4vw,44px)}
+.app__ph{position:relative;display:grid;justify-items:center;gap:26px;padding:30px 0 0}
+.app__ph::before{content:"";position:absolute;inset:-12% -30%;background:radial-gradient(closest-side,rgba(239,236,228,.09),transparent);pointer-events:none}
+.app__rig{position:relative}
+.phone{position:relative;width:min(292px,78vw);padding:9px;border-radius:46px;background:#0d0d0c;box-shadow:inset 0 0 0 1px rgba(239,236,228,.24),0 0 0 6px #040404,0 0 0 7px rgba(239,236,228,.14),0 70px 120px -40px #000,0 0 150px -30px rgba(245,183,0,.2)}
+.phone__scr{position:relative;display:flex;flex-direction:column;min-height:540px;padding:12px 12px 0;border-radius:37px;background:#060606;overflow:hidden;font-size:.6875rem;line-height:1.3}
+/* hairline callouts, the same device as the tell in Tip Detection */
+.app__notes{display:none}
+@media (min-width:1100px){.phone{transform:scale(1.12);margin:36px 18px}}
+@media (min-width:1200px){
+  .app__notes{display:block;position:absolute;inset:0;pointer-events:none;font:500 .6875rem/1 var(--fm);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+  .app__notes li{position:absolute;right:calc(100% + 4px);top:var(--y);transform:translateY(-50%);display:flex;align-items:center;gap:10px;white-space:nowrap}
+  .app__notes b{font-weight:500;color:var(--gold)}
+  .app__notes li::after{content:"";width:40px;height:1px;background:rgba(245,183,0,.75)}
+}
+.phone__scr::before{content:"";position:absolute;left:50%;top:9px;width:74px;height:20px;margin-left:-37px;border-radius:12px;background:#000;box-shadow:inset 0 0 0 1px rgba(239,236,228,.06)}
+.ph-st{display:flex;justify-content:space-between;padding:1px 10px 0;font:500 .625rem/1.6 var(--fm);color:var(--ink)}
+.ph-hd{display:flex;align-items:center;gap:8px;margin:16px 2px 12px}
+.ph-hd svg{width:24px;height:24px}
+.ph-hd b{font:600 1.5rem/1 var(--fd);letter-spacing:-.035em}
+.ph-wk{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;margin-bottom:10px}
+.ph-wk span{display:grid;place-content:center;justify-items:center;gap:4px;height:46px;border-radius:10px;background:#121211;font:500 .5625rem/1 var(--fm);color:var(--ink-2)}
+.ph-wk i{font-style:normal;font-size:.4375rem;letter-spacing:.06em;text-transform:uppercase}
+.ph-wk .pen{color:var(--ink);box-shadow:inset 0 0 0 1px rgba(245,183,0,.7)}
+.ph-wk .on{background:var(--gold);color:#000}
+.ph-rep{display:grid;grid-template-columns:58px minmax(0,1fr);gap:12px;align-items:center}
+.ph-z{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;height:77px}
+.ph-z i{border-radius:1px;background:rgba(239,236,228,.1)}
+.ph-z i.a{background:var(--gold)}
+.ph-z i.n{background:none;box-shadow:inset 0 0 0 1px rgba(239,236,228,.5)}
+.ph-rep p{margin-top:3px;color:var(--ink-2)}
+.ph-hd span{margin-left:auto;font:400 .5625rem/1 var(--fm);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.ph-c{padding:12px;margin-bottom:8px;border-radius:16px;background:#121211}
+.ph-c h4{display:flex;justify-content:space-between;align-items:center;margin:0 0 8px;font:500 .5625rem/1 var(--fm);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.ph-c h4 em{color:var(--gold)}
+.ph-c strong{display:block;font:500 1.0625rem/1.05 var(--fd);letter-spacing:-.03em}
+.ph-btn{display:inline-block;margin-top:8px;padding:7px 11px;border-radius:999px;background:var(--gold);color:#000;font:600 .625rem/1 var(--fd)}
+.ph-g{display:grid;grid-template-columns:58px 1fr 20px;align-items:center;gap:8px;padding:6px 0}
+.ph-g i{height:2px;background:rgba(239,236,228,.14)}
+.ph-g i::after{content:"";display:block;width:calc(var(--g)*100%);height:100%;background:var(--gold);transform-origin:0 50%;transition:transform 1.2s var(--ease) .5s}
+.js .app__ph:not(.in) .ph-g i::after{transform:scaleX(0)}
+.ph-g b{font:600 .75rem/1 var(--fd);text-align:right}
+.ph-m{display:flex;gap:8px;align-items:flex-start}
+.ph-m svg{width:20px;height:20px;flex:none}
+.ph-m b{display:block;font-weight:600}
+.ph-tabs{display:grid;grid-template-columns:repeat(4,1fr);margin:auto -12px 0;padding:10px 6px 16px;border-top:1px solid rgba(239,236,228,.1);font:500 .5rem/1 var(--fm);letter-spacing:.08em;text-transform:uppercase;text-align:center;color:var(--ink-3)}
+.ph-tabs span:first-child{color:var(--gold)}
+@media (max-width:899px){
+  .app__grid{grid-template-columns:minmax(0,1fr)}
+  .app__ph{order:2}
+}
+
+/* ---------- founders ---------- */
+.team{padding:clamp(88px,12vw,180px) var(--pad);border-top:1px solid var(--line);overflow:hidden}
+.team__grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(40px,6vw,110px);align-items:center}
+.team__txt .body{margin-top:clamp(18px,2.4vw,32px)}
+.team__txt .quiet{margin-top:clamp(14px,2vw,24px)}
+.film{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:34px 10px;background:#0b0b0a;transform:rotate(1.4deg)}
+.film::before,.film::after{content:"";position:absolute;left:0;right:0;height:11px;background:repeating-linear-gradient(90deg,transparent 0 10px,rgba(239,236,228,.3) 10px 21px,transparent 21px 32px)}
+.film::before{top:11px}
+.film::after{bottom:11px}
+.cell{position:relative;display:grid;place-items:center;aspect-ratio:4/5;background:radial-gradient(120% 90% at 50% 30%,#1b1b19,#080808 72%)}
+.cell::before,.cell::after{content:"";position:absolute;width:14px;height:14px;border:1px solid rgba(239,236,228,.5)}
+.cell::before{left:10px;top:10px;border-right:0;border-bottom:0}
+.cell::after{right:10px;bottom:10px;border-left:0;border-top:0}
+.cell__n{position:absolute;left:2px;bottom:-11px;font:500 .5625rem/1 var(--fm);letter-spacing:.14em;color:var(--gold)}
+.cell__n::before{content:"\25B8  "}
+.cell [data-placeholder]{font-size:.75rem;text-align:center}
+.team__names{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:26px;padding:0 10px}
+.team__names h3{font:500 clamp(1.375rem,2.4vw,2.25rem)/1.02 var(--fd);letter-spacing:-.035em}
+.team__names p{margin-top:10px;line-height:1.3}
+@media (max-width:899px){.team__grid{grid-template-columns:minmax(0,1fr)}}
+
+/* ---------- contact ---------- */
+.cta{padding:clamp(100px,15vw,240px) var(--pad) clamp(64px,8vw,120px);border-top:1px solid var(--line)}
+.cta h2{margin-left:-.04em;font:500 clamp(3rem,12.4vw,13.5rem)/.86 var(--fd);letter-spacing:-.058em;text-wrap:balance}
+.cta .body{margin-top:clamp(28px,4vw,56px)}
+.cta__row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px 40px;margin-top:clamp(36px,5vw,72px);padding-top:26px;border-top:1px solid var(--line)}
+.mail{font:500 clamp(1rem,2.3vw,1.875rem)/1.2 var(--fm);letter-spacing:-.01em;padding-bottom:6px;border-bottom:1px solid var(--gold);overflow-wrap:anywhere}
+.mail:hover{color:var(--gold)}
+
+/* ---------- footer ---------- */
+.ft{padding:clamp(48px,6vw,80px) var(--pad) 0;border-top:1px solid var(--line);overflow:hidden}
+.ft__mark{margin:clamp(18px,3vw,44px) 0 -.16em -.04em;font:500 clamp(4.5rem,23vw,24rem)/.8 var(--fd);letter-spacing:-.05em;white-space:nowrap;color:transparent;-webkit-text-stroke:1px rgba(239,236,228,.36);-webkit-user-select:none;user-select:none}
+.ft__grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1fr);gap:40px}
+.ft .brand{margin:0}
+.ft__tag{margin-top:14px;color:var(--ink-2);max-width:20rem}
+.ft h2{font:500 .6875rem/1 var(--fm);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px}
+.ft li a{display:inline-block;padding:7px 0;color:var(--ink)}
+.ft li a:hover,.ft__end a:hover{color:var(--gold)}
+.ft__end{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 30px;margin-top:clamp(40px,6vw,80px);padding-top:20px;border-top:1px solid var(--line);font:400 .6875rem/1.5 var(--fm);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.ft__end a{padding:6px 0}
+@media (max-width:700px){.ft__grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.ft__grid>:first-child{grid-column:1/-1}}
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important;transition-delay:0s!important}
+  .js [data-rv]{opacity:1;transform:none}
+  .reel__in{transform:none!important;opacity:1!important}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="nb" viewBox="0 0 64 64"><rect width="64" height="64" rx="15" fill="#f5b700"/><path fill="#0b0b0d" d="M10 44V20h7.2l8.6 12.9V20H32v24h-6.6l-9.2-13.6V44z"/><path fill="#0b0b0d" fill-rule="evenodd" d="M34.5 44V20h10.9c5 0 8 2.4 8 6.3 0 2.4-1.2 4.2-3.2 5.1 2.7.8 4.3 2.9 4.3 5.7 0 4.3-3.3 6.9-8.6 6.9zm6.4-14.4h3.4c1.7 0 2.7-.8 2.7-2.2s-1-2.1-2.7-2.1h-3.4zm0 9.2h4c1.9 0 3-.9 3-2.4s-1.1-2.4-3-2.4h-4z"/></symbol>
+  <symbol id="arr" viewBox="0 0 16 16"><path d="M2 8h11M8.5 3.5 13 8l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="chev" viewBox="0 0 12 12"><path d="m2.5 4.5 3.5 3.5 3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="x" viewBox="0 0 12 12"><path d="m2 2 8 8M10 2l-8 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+</svg>
+
+<div class="grain" aria-hidden="true"></div>
+
+<div class="pv" id="pv" role="region" aria-label="Preview notice">
+  <i aria-hidden="true"></i><span>Preview of the new homepage. Not live yet.</span>
+  <button type="button" id="pvx" aria-label="Dismiss preview notice"><svg width="12" height="12" aria-hidden="true"><use href="#x"/></svg></button>
+</div>
+
+<header class="nav">
+  <a class="brand" href="./" aria-label="No Brand Baseball Analytics, home"><svg aria-hidden="true"><use href="#nb"/></svg><span>No Brand</span><small>Baseball Analytics</small></a>
+  <nav class="nav__links" aria-label="Main">
+    <a href="#season">Services</a>
+    <a href="#tip">Tip Detection</a>
+    <a href="#team">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <div class="nav__login">
+    <button type="button" class="nav__lb" id="loginBtn" aria-expanded="false" aria-controls="loginMenu">Log in <svg width="12" height="12" aria-hidden="true"><use href="#chev"/></svg></button>
+    <ul class="nav__menu" id="loginMenu" hidden>
+      <li><a href="../../">Athlete log in <svg width="16" height="16" aria-hidden="true"><use href="#arr"/></svg></a></li>
+      <li><a href="../../#/coach">Coach log in <svg width="16" height="16" aria-hidden="true"><use href="#arr"/></svg></a></li>
+      <li><a href="#contact">Team log in <svg width="16" height="16" aria-hidden="true"><use href="#arr"/></svg></a></li>
+      <li><a href="#tip">Pitch Tip Tool <svg width="16" height="16" aria-hidden="true"><use href="#arr"/></svg></a></li>
+    </ul>
+  </div>
+  <a class="pill pill--sm" href="#contact">Work with us <i aria-hidden="true"><svg width="14" height="14"><use href="#arr"/></svg></i></a>
+  <button type="button" class="nav__burger" id="menuBtn" aria-expanded="false" aria-controls="sheet">Menu</button>
+</header>
+
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Menu" hidden>
+  <div class="sheet__top">
+    <a class="brand" href="./" aria-label="No Brand Baseball Analytics, home"><svg aria-hidden="true"><use href="#nb"/></svg><span>No Brand</span><small>Baseball Analytics</small></a>
+    <button type="button" class="nav__burger" id="sheetClose">Close</button>
+  </div>
+  <nav class="sheet__nav" aria-label="Main, full screen">
+    <a href="#season"><span>01</span>Services</a>
+    <a href="#tip"><span>02</span>Tip Detection</a>
+    <a href="#team"><span>03</span>About</a>
+    <a href="#contact"><span>04</span>Contact</a>
+  </nav>
+  <nav class="sheet__log" aria-label="Log in">
+    <a href="../../">Athlete log in</a>
+    <a href="../../#/coach">Coach log in</a>
+    <a href="#contact">Team log in</a>
+    <a href="#tip">Pitch Tip Tool</a>
+  </nav>
+  <a class="pill" href="#contact">Work with us <i aria-hidden="true"><svg width="16" height="16"><use href="#arr"/></svg></i></a>
+</div>
+
+<main id="main">
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="hero" aria-labelledby="hero-h">
+  <img class="hero__plate fit" src="./hero-delivery.jpg" alt="" decoding="async" fetchpriority="high">
+  <video class="hero__film fit" id="film" src="./hero-delivery.mp4" poster="./hero-delivery.jpg" muted playsinline loop autoplay preload="auto" disablepictureinpicture tabindex="-1" aria-label="Slow black-and-white film of a pitcher's delivery, seen from behind home plate"></video>
+  <script>
+  (function(){var v=document.getElementById('film');v.muted=true;v.defaultPlaybackRate=.5;v.playbackRate=.5;
+  if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches){v.removeAttribute('autoplay');v.pause();}})();
+  </script>
+  <div class="hero__shade fit" aria-hidden="true"></div>
+  <div class="hero__scrim" aria-hidden="true"></div>
+  <canvas class="hero__track" id="track" role="img" aria-label="Gold lines drawn over the film trace the pitcher's shoulders, arms, hips and legs through the delivery. Light trails follow his throwing hand and his glove.">Gold lines drawn over the film trace the pitcher's body through the delivery.</canvas>
+  <div class="hero__grain" aria-hidden="true"></div>
+
+  <div class="hero__body">
+    <p class="eyebrow"><span class="hole" aria-hidden="true"></span>Pitching analytics and coaching</p>
+    <h1 id="hero-h"><span>The hitter</span> <span>is watching.</span> <span>We watched <em class="hl">first</em>.</span></h1>
+    <p class="hero__lede">We turn your video and pitch data into a plan you can take to the mound. <span>And we find what your delivery gives away before a hitter does.</span></p>
+    <div class="hero__cta">
+      <a class="pill" href="#contact">Work with us <i aria-hidden="true"><svg width="16" height="16"><use href="#arr"/></svg></i></a>
+      <a class="quiet" href="https://sicher19-dev.github.io/skenes-tip/">See a sample report <svg width="16" height="16" aria-hidden="true"><use href="#arr"/></svg></a>
+    </div>
+  </div>
+
+  <div class="hero__foot">
+    <div class="foot__row">
+      <div class="foot__meta" id="meta" hidden>
+        <button type="button" class="foot__pp" id="pp" aria-label="Pause the film">Pause</button>
+        <span class="foot__ph" id="ph" aria-hidden="true">Set</span>
+        <span class="foot__tc" id="tc" aria-hidden="true">-00.00 s to release</span>
+      </div>
+      <p class="hero__cap">Paul Skenes, 2026. Tracked by No Brand.</p>
+    </div>
+    <div class="rail" id="rail" hidden>
+      <span class="rail__ruler"></span><span class="rail__line"></span><span class="rail__fill" id="fill"></span>
+      <input type="range" id="seek" min="0" max="201" step="1" value="0" aria-label="Scrub through the delivery, one frame per step">
+      <ol class="rail__ticks" id="ticks" aria-label="Jump to a moment in the delivery"></ol>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MANIFESTO ================= -->
+<section class="mani" aria-label="What we believe">
+  <div class="slate"><b><span class="hole" aria-hidden="true"></span>The idea</b><span>Reel 01</span></div>
+  <p class="mani__p" id="mani">You pitch for a living. Every start ends up on film, and every lineup you face has people studying it. They look for the pitch you lean on, the spot you miss to and the small thing your glove does before a changeup. <em>You should know all of it before they do.</em> We watch the same film and we measure it. Then we tell you what we found, in plain words, and what to do about it.</p>
+</section>
+
+<!-- ================= A SEASON ON FILM ================= -->
+<section id="season" class="season" aria-labelledby="season-h">
+  <div class="season__head">
+    <div class="slate" data-rv><b><span class="hole" aria-hidden="true"></span>The work</b><span>Reel 02</span></div>
+    <h2 class="h2" id="season-h" data-rv>A season <em class="hl">on film</em>.</h2>
+    <p class="body" data-rv>The work follows the calendar you live on. There is something for the day before a start, the day after and the months in between.</p>
+  </div>
+
+  <div class="reels" id="reels">
+    <article class="reel">
+      <div class="reel__in">
+        <div class="reel__txt">
+          <p class="reel__when"><span class="hole" aria-hidden="true"></span>Before the start</p>
+          <div class="reel__num" aria-hidden="true">01</div>
+          <h3>Walk out with a plan for every hitter.</h3>
+          <p class="gets__t">You get</p>
+          <ul class="gets">
+            <li>A pregame scouting report</li>
+            <li>A short plan for each hitter</li>
+            <li>Where to attack and where to stay away</li>
+            <li>All of it on your phone before you throw</li>
+          </ul>
+        </div>
+        <figure class="vis zone">
+          <div class="vis__top"><span>Plan by hitter</span><span class="sample">Sample</span></div>
+          <div class="zone__st">
+            <svg viewBox="0 0 400 420" aria-hidden="true" focusable="false">
+              <rect class="fd" style="--d:.9s" x="28" y="38" width="194" height="244" fill="none" stroke="rgba(239,236,228,.34)" stroke-width="1" stroke-dasharray="3 5"/>
+              <rect class="ln" pathLength="1" x="50" y="60" width="150" height="200"/>
+              <path class="ln ln--f" pathLength="1" style="--d:.35s" d="M100 60v200"/>
+              <path class="ln ln--f" pathLength="1" style="--d:.45s" d="M150 60v200"/>
+              <path class="ln ln--f" pathLength="1" style="--d:.55s" d="M50 126.7h150"/>
+              <path class="ln ln--f" pathLength="1" style="--d:.65s" d="M50 193.3h150"/>
+              <path class="ln" pathLength="1" style="--d:.5s" d="M75 348h100v16l-50 22-50-22z"/>
+              <g class="pop" style="--d:1s"><circle cx="185" cy="80" r="25" fill="rgba(245,183,0,.2)" stroke="#f5b700" stroke-width="1.4"/><path d="M185 72v16M177 80h16" stroke="#f5b700" stroke-width="1.4"/></g>
+              <g class="pop" style="--d:1.15s"><circle cx="62" cy="266" r="29" fill="rgba(245,183,0,.2)" stroke="#f5b700" stroke-width="1.4"/><path d="M62 258v16M54 266h16" stroke="#f5b700" stroke-width="1.4"/></g>
+              <g class="pop" style="--d:1.3s"><circle cx="125" cy="160" r="28" fill="none" stroke="#efece4" stroke-width="1.2" stroke-dasharray="4 4"/><path d="M106 141l38 38" stroke="#efece4" stroke-width="1.2"/></g>
+              <path class="ln ln--g" pathLength="1" style="--d:1.3s" d="M210 80h62"/>
+              <path class="ln" pathLength="1" style="--d:1.6s" d="M153 160h119"/>
+              <path class="ln ln--g" pathLength="1" style="--d:1.45s" d="M91 266h181"/>
+            </svg>
+            <span class="zone__lab" style="--x:70%;--y:19%;--d:1.6s"><b>Attack here</b><span>Fastball up</span></span>
+            <span class="zone__lab is-no" style="--x:70%;--y:38.1%;--d:1.9s"><b>Stay away</b><span>Middle</span></span>
+            <span class="zone__lab" style="--x:70%;--y:63.3%;--d:1.75s"><b>Attack here</b><span>Slider down</span></span>
+          </div>
+          <figcaption class="vis__cap">Sample hitter. One page like this for every bat in the lineup.</figcaption>
+        </figure>
+      </div>
+    </article>
+
+    <article class="reel">
+      <div class="reel__in">
+        <div class="reel__txt">
+          <p class="reel__when"><span class="hole" aria-hidden="true"></span>After the start</p>
+          <div class="reel__num" aria-hidden="true">02</div>
+          <h3>See what you threw, where it went and what it did.</h3>
+          <p class="gets__t">You get</p>
+          <ul class="gets">
+            <li>A reverse report after each outing</li>
+            <li>A grade for every pitch you throw</li>
+            <li>How often you hit your spot</li>
+            <li>Zone usage, pitch by pitch</li>
+          </ul>
+        </div>
+        <figure class="vis grades">
+          <div class="vis__top"><span>Pitch grades</span><span class="sample">Sample</span></div>
+          <div class="strip" role="img" aria-label="Sample pitch grades. Fastball 62. Slider 57. Changeup 49.">
+            <div class="strip__fr" aria-hidden="true">
+              <div class="fr" data-n="21" style="--g:.62;--d:.2s"><b>62</b><span>Fastball</span><i></i></div>
+              <div class="fr" data-n="21A" style="--g:.57;--d:.35s"><b>57</b><span>Slider</span><i></i></div>
+              <div class="fr" data-n="22" style="--g:.49;--d:.5s"><b>49</b><span>Changeup</span><i></i></div>
+            </div>
+          </div>
+          <div class="exec">
+            <div class="vis__top"><span>Execution, last outing</span><span class="sample">Sample</span></div>
+            <div class="exec__d" role="img" aria-label="Sample execution. 14 of 20 pitches hit the spot.">
+              <i class="h" style="--i:0"></i><i class="h" style="--i:1"></i><i style="--i:2"></i><i class="h" style="--i:3"></i><i class="h" style="--i:4"></i><i class="h" style="--i:5"></i><i style="--i:6"></i><i class="h" style="--i:7"></i><i class="h" style="--i:8"></i><i style="--i:9"></i><i class="h" style="--i:10"></i><i class="h" style="--i:11"></i><i class="h" style="--i:12"></i><i style="--i:13"></i><i style="--i:14"></i><i class="h" style="--i:15"></i><i class="h" style="--i:16"></i><i style="--i:17"></i><i class="h" style="--i:18"></i><i class="h" style="--i:19"></i>
+            </div>
+            <p class="vis__cap">Hit the spot on 14 of 20. Sample numbers for illustration.</p>
+          </div>
+        </figure>
+      </div>
+    </article>
+
+    <article class="reel">
+      <div class="reel__in">
+        <div class="reel__txt">
+          <p class="reel__when"><span class="hole" aria-hidden="true"></span>All winter</p>
+          <div class="reel__num" aria-hidden="true">03</div>
+          <h3>Use the offseason on purpose.</h3>
+          <p class="gets__t">You get</p>
+          <ul class="gets">
+            <li>Pitch design, to sharpen a pitch or build one</li>
+            <li>Motion-capture delivery analysis</li>
+            <li>An offseason arsenal plan</li>
+            <li>A purpose for every bullpen</li>
+          </ul>
+        </div>
+        <figure class="vis mocap" id="cfFig">
+          <div class="vis__top"><span>Delivery, joint by joint</span><span id="cfN" aria-hidden="true">Frame 000</span></div>
+          <canvas id="cf" role="img" aria-label="A tracked pitching delivery seen from center field, drawn as a figure of lines and joints, with earlier positions left behind it like a multiple exposure.">A tracked pitching delivery seen from center field.</canvas>
+          <figcaption class="vis__cap">A real tracked delivery, seen from center field.</figcaption>
+        </figure>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ================= TIP DETECTION ================= -->
+<section class="tip" id="tip" aria-labelledby="tip-h">
+  <div class="tip__grid">
+    <div class="tip__txt">
+      <div class="slate" data-rv><b><span class="hole" aria-hidden="true"></span>Tip Detection</b><span>Reel 03</span></div>
+      <h2 class="h2" id="tip-h" data-rv>Find the tell before a hitter does.</h2>
+      <p class="body" data-rv>Tip Detection checks video of a pitcher for anything in his delivery that gives the pitch away before release. If something is there, the report shows what it is, when it shows up and how much it gives away.</p>
+    </div>
+    <figure class="tip__fig" id="tipFig">
+      <div class="tip__st">
+        <canvas id="tipc" role="img" aria-label="A tracked delivery seen from the hitter's side. It plays, then stops before release. A gold ring marks the glove, with a note that reads: sample, glove sits lower before a changeup.">A tracked delivery that stops before release with a gold ring around the glove.</canvas>
+        <div class="tell" id="tell" aria-hidden="true">
+          <span class="sample">Sample</span>
+          <p>Glove sits lower before a changeup.</p>
+          <ul><li>Changeup</li><li>Fastball</li></ul>
+        </div>
+      </div>
+      <figcaption class="vis__cap">Hitter's view. The delivery is real tracking. The tell is a sample.</figcaption>
+    </figure>
+  </div>
+
+  <div class="verdicts">
+    <p class="verdicts__t">Every camera angle and delivery gets one of three verdicts</p>
+    <dl>
+      <div class="vd vd--clear" data-rv><dt>Clear tell</dt><dd data-n="01">A hitter who knows what to look for could use it.</dd></div>
+      <div class="vd vd--weak" data-rv><dt>Weak tell</dt><dd data-n="02">A small but real edge.</dd></div>
+      <div class="vd vd--none" data-rv><dt>No tell</dt><dd data-n="03">Nothing readable before release.</dd></div>
+    </dl>
+  </div>
+
+  <div class="tip__send" data-rv>
+    <p>A team sends one clip per pitch and a pitch list. We send back the report.</p>
+    <div class="tip__links">
+      <a class="quiet" href="#tip">How it works <svg width="16" height="16" aria-hidden="true"><use href="#arr"/></svg></a>
+      <a class="quiet" href="https://sicher19-dev.github.io/skenes-tip/">See the sample report <svg width="16" height="16" aria-hidden="true"><use href="#arr"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= WHO ================= -->
+<section class="who" id="who" aria-labelledby="who-h">
+  <div class="slate"><b><span class="hole" aria-hidden="true"></span>Who we work with</b><span>Reel 04</span></div>
+  <h2 class="who__line" id="who-h"><span id="whoLine">Big-league, minor-league and college pitchers.</span></h2>
+  <ul class="who__list" aria-hidden="true">
+    <li data-n="01">Big-league</li>
+    <li data-n="02">Minor-league</li>
+    <li data-n="03">College</li>
+  </ul>
+</section>
+
+<!-- ================= THE APP ================= -->
+<section class="app" aria-labelledby="app-h">
+  <div class="app__grid">
+    <div class="app__txt">
+      <div class="slate" data-rv><b><span class="hole" aria-hidden="true"></span>The pitcher app</b><span>Reel 05</span></div>
+      <h2 class="h2" id="app-h" data-rv>Everything we build for you, in your pocket.</h2>
+      <p class="body" data-rv>Open it on the bus or in the clubhouse. Your work is there when you want it.</p>
+      <ul class="gets" data-rv>
+        <li>Your reports, all interactive</li>
+        <li>Pitch grades from start to start</li>
+        <li>Mobility videos, sent from your phone</li>
+        <li>Messages with your coaches</li>
+      </ul>
+      <a class="pill pill--line" href="../../" data-rv>Athlete log in <i aria-hidden="true"><svg width="16" height="16"><use href="#arr"/></svg></i></a>
+    </div>
+    <figure class="app__ph" data-rv>
+      <div class="app__rig">
+        <div class="phone" role="img" aria-label="Mock phone screen of the pitcher app, with sample content. It shows the week with a bullpen day and a start day, a scouting report for the next start, pitch grades and a message from the coaches.">
+          <div class="phone__scr" aria-hidden="true">
+            <div class="ph-st"><span>9:41</span><span>&#9679;&#9679;&#9679;</span></div>
+            <div class="ph-hd"><svg><use href="#nb"/></svg><b>Today</b><span>Sample pitcher</span></div>
+            <div class="ph-wk"><span>M</span><span>T</span><span class="pen">W<i>Pen</i></span><span>T</span><span class="on">F<i>Start</i></span><span>S</span><span>S</span></div>
+            <div class="ph-c"><h4>Scouting report <em>New</em></h4>
+              <div class="ph-rep">
+                <div class="ph-z"><i></i><i></i><i class="a"></i><i></i><i class="n"></i><i></i><i class="a"></i><i></i><i></i></div>
+                <div><strong>Your next start</strong><p>A plan for every hitter.</p><span class="ph-btn">Open report</span></div>
+              </div>
+            </div>
+            <div class="ph-c"><h4>Pitch grades <em>Sample</em></h4>
+              <div class="ph-g" style="--g:.62"><span>Fastball</span><i></i><b>62</b></div>
+              <div class="ph-g" style="--g:.57"><span>Slider</span><i></i><b>57</b></div>
+              <div class="ph-g" style="--g:.49"><span>Changeup</span><i></i><b>49</b></div>
+            </div>
+            <div class="ph-c"><h4>Messages <em>1</em></h4><div class="ph-m"><svg><use href="#nb"/></svg><span><b>Your coaches</b>Sample message. Notes from your last outing are in.</span></div></div>
+            <div class="ph-tabs"><span>Today</span><span>Reports</span><span>Grades</span><span>Messages</span></div>
+          </div>
+        </div>
+        <ul class="app__notes" aria-hidden="true">
+          <li style="--y:36.7%"><b>01</b>Report</li>
+          <li style="--y:59.2%"><b>02</b>Grades</li>
+          <li style="--y:78.8%"><b>03</b>Messages</li>
+        </ul>
+      </div>
+      <figcaption class="vis__cap">Mock screen with sample numbers.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ================= FOUNDERS ================= -->
+<section id="team" class="team" aria-labelledby="team-h">
+  <div class="team__grid">
+    <div class="team__txt">
+      <div class="slate" data-rv><b><span class="hole" aria-hidden="true"></span>The founders</b><span>Reel 06</span></div>
+      <h2 class="h2" id="team-h" data-rv>The two people watching your film.</h2>
+      <p class="body" data-rv>No Brand Baseball Analytics is Derek Groomer and Brian Sicher. The people who build your reports are the people who answer your messages.</p>
+      <a class="quiet" href="#team" data-rv>About us <svg width="16" height="16" aria-hidden="true"><use href="#arr"/></svg></a>
+    </div>
+    <div class="team__film" data-rv>
+      <div class="film">
+        <div class="cell" data-placeholder="portrait"><span data-placeholder>[Portrait: Derek]</span><span class="cell__n" aria-hidden="true">11A</span></div>
+        <div class="cell" data-placeholder="portrait"><span data-placeholder>[Portrait: Brian]</span><span class="cell__n" aria-hidden="true">12A</span></div>
+      </div>
+      <div class="team__names">
+        <div><h3>Derek Groomer</h3><p><span data-placeholder>[One line about Derek]</span></p></div>
+        <div><h3>Brian Sicher</h3><p><span data-placeholder>[One line about Brian]</span></p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section id="contact" class="cta" aria-labelledby="cta-h">
+  <div class="slate" data-rv><b><span class="hole" aria-hidden="true"></span>Contact</b><span>Reel 07</span></div>
+  <h2 id="cta-h" data-rv>Tell us about <em class="hl">your arm</em>.</h2>
+  <p class="body" data-rv>Send a note about where you pitch and what you want to get better at. Pitchers, agents, college programs and teams are all welcome to write.</p>
+  <div class="cta__row" data-rv>
+    <a class="mail" href="mailto:nobrandbaseball@gmail.com">nobrandbaseball@gmail.com</a>
+    <a class="pill" href="#contact">Work with us <i aria-hidden="true"><svg width="16" height="16"><use href="#arr"/></svg></i></a>
+  </div>
+</section>
+
+</main>
+
+<footer class="ft">
+  <div class="ft__grid">
+    <div>
+      <a class="brand" href="./" aria-label="No Brand Baseball Analytics, home"><svg aria-hidden="true"><use href="#nb"/></svg><span>No Brand</span><small>Baseball Analytics</small></a>
+      <p class="ft__tag">Pitching analytics and coaching for arms that pitch for a living.</p>
+    </div>
+    <nav aria-label="Footer">
+      <h2>Site</h2>
+      <ul>
+        <li><a href="#season">Services</a></li>
+        <li><a href="#tip">Tip Detection</a></li>
+        <li><a href="#team">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <nav aria-label="Log in, footer">
+      <h2>Log in</h2>
+      <ul>
+        <li><a href="../../">Athlete log in</a></li>
+        <li><a href="../../#/coach">Coach log in</a></li>
+        <li><a href="#contact">Team log in</a></li>
+        <li><a href="#tip">Pitch Tip Tool</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="ft__end">
+    <span>&copy; 2026 No Brand Baseball Analytics</span>
+    <a href="../../privacy.html">Privacy</a>
+    <span aria-hidden="true">End of reel</span>
+  </div>
+  <p class="ft__mark" aria-hidden="true">No Brand</p>
+</footer>
+
+<script>
+(function(){
+'use strict';
+var D=document, W=window, root=D.documentElement;
+root.classList.add('js');
+function $(s,c){return (c||D).querySelector(s);}
+function $$(s,c){return Array.prototype.slice.call((c||D).querySelectorAll(s));}
+function clamp(v,a,b){return v<a?a:(v>b?b:v);}
+function median(a){var s=a.slice().sort(function(x,y){return x-y;});return s[s.length>>1];}
+
+var mq=W.matchMedia?W.matchMedia('(prefers-reduced-motion: reduce)'):{matches:false};
+var reduced=!!mq.matches;
+if(!reduced) root.classList.add('motion');
+
+var hero=$('#hero');
+W.requestAnimationFrame(function(){hero.classList.add('is-on');});
+W.setTimeout(function(){hero.classList.add('is-on');},400); /* the headline must never wait on a paint */
+
+/* ---------- preview bar ---------- */
+var needMeasure=true;
+$('#pvx').addEventListener('click',function(){var p=$('#pv');if(p)p.parentNode.removeChild(p);root.classList.add('nobar');needMeasure=true;});
+
+/* ---------- nav: log in menu ---------- */
+var lb=$('#loginBtn'), lm=$('#loginMenu'), lw=$('.nav__login');
+function setLogin(open){lb.setAttribute('aria-expanded',open?'true':'false');lm.hidden=!open;}
+lb.addEventListener('click',function(){setLogin(lm.hidden);});
+D.addEventListener('click',function(e){if(!lm.hidden&&!lw.contains(e.target))setLogin(false);});
+lw.addEventListener('focusout',function(e){if(e.relatedTarget&&!lw.contains(e.relatedTarget))setLogin(false);});
+
+/* ---------- nav: full-screen menu ---------- */
+var mb=$('#menuBtn'), sheet=$('#sheet'), sc=$('#sheetClose');
+function openSheet(){sheet.hidden=false;mb.setAttribute('aria-expanded','true');root.classList.add('lock');W.requestAnimationFrame(function(){sheet.classList.add('open');});sc.focus();}
+function closeSheet(){sheet.classList.remove('open');sheet.hidden=true;mb.setAttribute('aria-expanded','false');root.classList.remove('lock');mb.focus();}
+mb.addEventListener('click',openSheet);
+sc.addEventListener('click',closeSheet);
+sheet.addEventListener('keydown',function(e){
+  if(e.key!=='Tab')return;
+  var f=$$('a[href],button',sheet), a=f[0], z=f[f.length-1];
+  if(e.shiftKey&&D.activeElement===a){e.preventDefault();z.focus();}
+  else if(!e.shiftKey&&D.activeElement===z){e.preventDefault();a.focus();}
+});
+D.addEventListener('keydown',function(e){
+  if(e.key!=='Escape')return;
+  if(!sheet.hidden)closeSheet();
+  else if(!lm.hidden){setLogin(false);lb.focus();}
+});
+if(W.matchMedia){var wide=W.matchMedia('(min-width:981px)');var onWide=function(e){if(e.matches&&!sheet.hidden)closeSheet();};if(wide.addEventListener)wide.addEventListener('change',onWide);}
+
+/* ---------- pitch grades: the sample numbers run up the 20 to 80 scale ---------- */
+var gradeEls=$$('.fr b'), gradeTo=gradeEls.map(function(b){return parseInt(b.textContent,10)||0;}), gradeT0=-1;
+function gradesTick(now){
+  if(gradeT0<0)return;
+  if(reduced){gradeT0=-1;return;}
+  var done=true, i, u, val;
+  for(i=0;i<gradeEls.length;i++){
+    u=clamp((now-gradeT0-250-i*150)/1100,0,1);
+    if(u<1)done=false;
+    val=String(Math.round(20+(gradeTo[i]-20)*(1-Math.pow(1-u,3))));
+    if(gradeEls[i].textContent!==val)gradeEls[i].textContent=val;
+  }
+  if(done)gradeT0=-1;
+}
+
+/* ---------- reveal on scroll ---------- */
+var rv=$$('[data-rv]'), rvis=$$('.vis');
+if('IntersectionObserver' in W){
+  var rio=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');rio.unobserve(e.target);}});},{threshold:.18});
+  rv.forEach(function(el){rio.observe(el);});
+  /* the chapter graphics draw themselves once they are properly on screen, not while they are still sliding in */
+  var gio=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');gio.unobserve(e.target);if(e.target.classList.contains('grades'))gradeT0=performance.now();}});},{threshold:.45});
+  if(!reduced)gradeEls.forEach(function(b){b.textContent='20';});
+  rvis.forEach(function(el){gio.observe(el);});
+}else{rv.concat(rvis).forEach(function(el){el.classList.add('in');});}
+
+/* ---------- shared figure drawing ---------- */
+var GOLD='245,183,0', INK='239,236,228', TAU=6.2832;
+var BONES_B=[[5,7],[7,9],[5,6],[11,12],[5,11],[6,12],[11,13],[13,15],[12,14],[14,16],[15,19],[19,17],[15,17],[16,22],[22,20],[16,20]];
+var BONES_T=[[6,8],[8,10]];   /* the throwing arm, drawn on its own so it can fade where the tracker loses it */
+var DOTS_B=[5,6,7,9,11,12,13,14,15,16], DOTS_T=[8,10];
+var tx=0, ty=0;
+
+/* one joint at a fractional pose frame, mapped to canvas pixels (result in tx, ty) */
+function at(kp,f,j,m){
+  var n=kp.length-1; f=clamp(f,0,n);
+  var i=Math.floor(f), t=f-i, a=kp[i], b=kp[i<n?i+1:n], k=2*j;
+  tx=m.x+(a[k]+(b[k]-a[k])*t)*m.kx;
+  ty=m.y+(a[k+1]+(b[k+1]-a[k+1])*t)*m.ky;
+}
+/* the whole pose at a fractional frame, linearly interpolated, into P */
+function pose(kp,f,m,P){
+  var n=kp.length-1; f=clamp(f,0,n);
+  var i=Math.floor(f), t=f-i, a=kp[i], b=kp[i<n?i+1:n];
+  for(var k=0;k<46;k+=2){
+    P[k]=m.x+(a[k]+(b[k]-a[k])*t)*m.kx;
+    P[k+1]=m.y+(a[k+1]+(b[k+1]-a[k+1])*t)*m.ky;
+  }
+}
+function bonePath(c,P,bones){
+  c.beginPath();
+  for(var i=0;i<bones.length;i++){var a=bones[i][0]*2,b=bones[i][1]*2;c.moveTo(P[a],P[a+1]);c.lineTo(P[b],P[b+1]);}
+}
+function drawBody(c,P,o){
+  c.lineCap='round';c.lineJoin='round';
+  var hx=(P[6]+P[8])/2, hy=(P[7]+P[9])/2, nx=(P[10]+P[12])/2, ny=(P[11]+P[13])/2;
+  var dx=hx-nx, dy=hy-ny, d=Math.sqrt(dx*dx+dy*dy)||1, r=o.headR, al=+o.alpha, arm=o.arm==null?1:o.arm, i, k;
+  bonePath(c,P,BONES_B);
+  if(d>r){c.moveTo(nx,ny);c.lineTo(hx-dx/d*r,hy-dy/d*r);}
+  c.moveTo(hx+r,hy);c.arc(hx,hy,r,0,TAU);
+  if(o.under){c.strokeStyle='rgba(0,0,0,'+o.under+')';c.lineWidth=o.lw+2.6;c.stroke();}
+  c.strokeStyle='rgba('+o.rgb+','+al+')';c.lineWidth=o.lw;c.stroke();
+  if(o.dot){
+    c.fillStyle='rgba('+o.rgb+','+al+')';c.beginPath();
+    for(i=0;i<DOTS_B.length;i++){k=DOTS_B[i]*2;c.moveTo(P[k]+o.dot,P[k+1]);c.arc(P[k],P[k+1],o.dot,0,TAU);}
+    c.fill();
+  }
+  if(arm>.02){
+    var aa=(al*arm).toFixed(3);
+    bonePath(c,P,BONES_T);
+    if(o.under){c.strokeStyle='rgba(0,0,0,'+(o.under*arm).toFixed(3)+')';c.lineWidth=o.lw+2.6;c.stroke();}
+    c.strokeStyle='rgba('+o.rgb+','+aa+')';c.lineWidth=o.lw;c.stroke();
+    if(o.dot){
+      c.fillStyle='rgba('+o.rgb+','+aa+')';c.beginPath();
+      for(i=0;i<DOTS_T.length;i++){k=DOTS_T[i]*2;c.moveTo(P[k]+o.dot,P[k+1]);c.arc(P[k],P[k+1],o.dot,0,TAU);}
+      c.fill();
+    }
+  }
+}
+/* How far to trust the tracked throwing arm, one value per pose frame (1 = draw it in full).
+   In the few frames around release the hand is at top speed. If the tracked forearm shrinks to a fraction of its
+   usual length there, the tracker has lost the hand, so the arm and its trail fade out instead of being drawn
+   somewhere the arm is not. If the clip is tracked again and the arm holds its length, nothing fades. */
+function armConf(kp,peak,ax,ay){
+  var n=kp.length, len=[], c=new Float32Array(n), i, p, r;
+  for(i=0;i<n;i++){p=kp[i];len.push(Math.sqrt(Math.pow((p[16]-p[20])*ax,2)+Math.pow((p[17]-p[21])*ay,2)));c[i]=1;}
+  var m=median(len)||1;
+  for(i=Math.max(0,peak-3);i<=Math.min(n-1,peak+1);i++){r=clamp((len[i]/m-.3)/.2,0,1);c[i]=r*r*(3-2*r);}
+  return c;
+}
+function confAt(c,f){var n=c.length-1;f=clamp(f,0,n);var i=Math.floor(f);return c[i]+(c[i<n?i+1:n]-c[i])*(f-i);}
+/* long-exposure trail: where one joint was over the last n half-frames, fading */
+function trail(c,kp,f,j,m,n,rgb,a0,w0,glow,bb,cf){
+  var px,py,i,u,fi,q,qp,qs;
+  c.lineCap='butt';
+  for(var pass=glow?0:1;pass<2;pass++){
+    c.globalCompositeOperation=pass===0?'lighter':'source-over';
+    at(kp,f,j,m);px=tx;py=ty;qp=cf?confAt(cf,f):1;
+    for(i=1;i<=n;i++){
+      fi=f-i*.5; if(fi<0)break;
+      at(kp,fi,j,m);
+      u=1-i/(n+1);
+      /* a stretch the tracker was unsure of leaves a gap in the trail */
+      q=cf?confAt(cf,fi):1;qs=q<qp?q:qp;qp=q;
+      if(qs>.03){
+        c.beginPath();c.moveTo(px,py);c.lineTo(tx,ty);
+        if(pass===0){c.strokeStyle='rgba('+rgb+','+(a0*.2*u*u*qs).toFixed(3)+')';c.lineWidth=w0*u*5+2;}
+        else{c.strokeStyle='rgba('+rgb+','+(a0*u*u*qs).toFixed(3)+')';c.lineWidth=w0*u+.5;}
+        c.stroke();
+        if(bb){if(tx<bb[0])bb[0]=tx;if(ty<bb[1])bb[1]=ty;if(tx>bb[2])bb[2]=tx;if(ty>bb[3])bb[3]=ty;}
+      }
+      px=tx;py=ty;
+    }
+  }
+  c.globalCompositeOperation='source-over';
+}
+function pad3(n){var t=String(n);while(t.length<3)t='0'+t;return t;}
+var MONO='"DM Mono",ui-monospace,Menlo,Consolas,monospace';
+/* head ring radius in figure units, from ear spread and torso length */
+function headUnits(kp,ax,ay){
+  var e=[],t=[];
+  for(var i=0;i<kp.length;i++){var p=kp[i];
+    e.push(Math.sqrt(Math.pow((p[6]-p[8])*ax,2)+Math.pow((p[7]-p[9])*ay,2)));
+    t.push(Math.sqrt(Math.pow(((p[10]+p[12])-(p[22]+p[24]))/2*ax,2)+Math.pow(((p[11]+p[13])-(p[23]+p[25]))/2*ay,2)));
+  }
+  return Math.max(median(e)*.6,median(t)*.18);
+}
+function sizeCanvas(cv,cw,ch,maxPx){
+  var dpr=Math.min(W.devicePixelRatio||1,2);
+  if(cw*ch*dpr*dpr>maxPx)dpr=Math.max(1,Math.sqrt(maxPx/(cw*ch)));
+  var w=Math.max(1,Math.round(cw*dpr)), h=Math.max(1,Math.round(ch*dpr));
+  if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h;}
+  return dpr;
+}
+/* fit a box-normalised figure (0..1000 on the long side) into a canvas, feet on the ground line */
+function fitFigure(set,cw,ch,padX,padTop,padBot,left){
+  var bw=set.w*1000, bh=set.h*1000;
+  var s=Math.min((cw-2*padX)/bw,(ch-padTop-padBot)/bh);
+  return {x:left?padX:(cw-bw*s)/2, y:ch-padBot-bh*s, kx:s, ky:s, s:s};
+}
+
+/* ---------- state ---------- */
+var vw=0, vh=0, lastY=-1, force=true;
+var io=('IntersectionObserver' in W);
+
+/* ---------- hero: film + live tracking ---------- */
+var VF=60;   /* video frames per second in the film. The tracking has one pose for every two of them. */
+var v=$('#film'), hcv=$('#track'), hctx=hcv.getContext('2d'), navEl=$('.nav');
+var meta=$('#meta'), rail=$('#rail'), seek=$('#seek'), fill=$('#fill'), tc=$('#tc'), ph=$('#ph'), pp=$('#pp'), ticksEl=$('#ticks');
+var H=null, heroOK=false, heroVis=true, heroDirty=true, P=new Float32Array(46);
+var foot=$('.hero__foot');
+var stackMQ=W.matchMedia?W.matchMedia('(max-aspect-ratio:1/1)'):{matches:false};
+var geo={cw:0,ch:0,dpr:1,s:1,floor:1e9,ceil:0,fade:0,mask:null,map:{x:0,y:0,kx:1,ky:1},headR:20};
+var userPaused=reduced, ptrDown=false, kbFocus=false, lastKey=false, holdUntil=0, playPending=false;
+var lastK=-1, vfT=-1, kMax=201, dirty=null, tcTxt='', phIdx=-1, phases=[], tickLis=[];
+
+function heroPlain(){
+  heroOK=false;hero.classList.add('hero--plain');meta.hidden=true;rail.hidden=true;
+  try{v.pause();}catch(e){}
+}
+v.addEventListener('error',heroPlain);
+v.addEventListener('loadedmetadata',function(){needMeasure=true;});
+if('requestVideoFrameCallback' in v){
+  var onVF=function(now,md){vfT=md.mediaTime;v.requestVideoFrameCallback(onVF);};
+  v.requestVideoFrameCallback(onVF);
+}
+D.addEventListener('visibilitychange',function(){if(D.hidden){try{v.pause();}catch(e){}}});
+
+function syncPP(){
+  var paused=userPaused;
+  pp.textContent=paused?'Play':'Pause';
+  pp.setAttribute('aria-label',paused?'Play the film':'Pause the film');
+}
+pp.addEventListener('click',function(){userPaused=!userPaused;if(!userPaused){holdUntil=0;kbFocus=false;}syncPP();});
+
+D.addEventListener('keydown',function(e){var k=e.key||'';if(k==='Tab'||k.indexOf('Arrow')===0)lastKey=true;},true);
+D.addEventListener('pointerdown',function(){lastKey=false;},true);
+seek.addEventListener('focus',function(){kbFocus=lastKey;if(H&&heroOK)seek.setAttribute('aria-valuetext',valueText(Math.max(lastK,0)));});
+seek.addEventListener('blur',function(){kbFocus=false;});
+seek.addEventListener('pointerdown',function(){ptrDown=true;});
+function ptrUp(){if(ptrDown){ptrDown=false;holdUntil=performance.now()+700;}}
+W.addEventListener('pointerup',ptrUp);
+W.addEventListener('pointercancel',ptrUp);
+seek.addEventListener('change',ptrUp);
+/* k is a video frame. Seek to the middle of it, so the frame that lands on screen is never in doubt. */
+function seekTo(k){k=clamp(Math.round(k),0,kMax);try{v.currentTime=(k+.5)/VF;}catch(e){}heroDirty=true;}
+function valueText(k){
+  var dt=k/VF-H.peak/H.fps, i=phaseAt(k/VF*H.fps);
+  if(Math.abs(dt)<.004)return phases[i].n+'. The release frame.';
+  return phases[i].n+'. '+Math.abs(dt).toFixed(2)+' seconds '+(dt<0?'before':'after')+' release.';
+}
+seek.addEventListener('input',function(){
+  var k=+seek.value||0;
+  if(!ptrDown)holdUntil=performance.now()+1400;
+  seekTo(k);
+  if(H)seek.setAttribute('aria-valuetext',valueText(k));
+});
+function phaseAt(f){var i=0;for(var k=0;k<phases.length;k++){if(f>=phases[k].f-.01)i=k;}return i;}
+
+function findPhases(){
+  var kp=H.kp, n=kp.length, ax=H.vw/1000, ay=H.vh/1000, i;
+  /* leg lift: the frame where the lead (left) knee is highest */
+  var lift=0, best=1e9;
+  for(i=0;i<Math.min(H.peak,n);i++){if(kp[i][27]<best){best=kp[i][27];lift=i;}}
+  /* hand break: the first frame the wrists come clearly apart and stay apart */
+  var d=[];
+  for(i=0;i<n;i++)d.push(Math.sqrt(Math.pow((kp[i][18]-kp[i][20])*ax,2)+Math.pow((kp[i][19]-kp[i][21])*ay,2)));
+  var base=median(d.slice(0,Math.max(lift,10))), brk=Math.round((lift+H.peak)/2);
+  for(i=10;i<H.peak-2;i++){if(d[i]>base*2&&d[i+1]>base*2&&d[i+2]>base*2){brk=i;break;}}
+  phases=[{f:0,n:'Set'},{f:lift,n:'Leg lift'},{f:brk,n:'Hand break'},{f:H.peak,n:'Release'}];
+  phases.sort(function(a,b){return a.f-b.f;});
+}
+function buildRail(){
+  var dur=(isFinite(v.duration)&&v.duration>0)?v.duration:H.duration;
+  kMax=Math.max(1,Math.round(dur*VF)-1);
+  seek.max=String(kMax);
+  ticksEl.textContent='';tickLis=[];
+  phases.forEach(function(p,i){
+    var li=D.createElement('li'), b=D.createElement('button'), k=p.f/H.fps*VF;
+    li.style.setProperty('--f',clamp(k/kMax,0,1).toFixed(4));
+    if(i>0&&i<phases.length-1&&(p.f-phases[i-1].f)/H.fps*VF/kMax<.12)li.className='t-min';
+    b.type='button';b.textContent=p.n;b.setAttribute('aria-label','Go to '+p.n.toLowerCase());
+    b.addEventListener('click',function(){holdUntil=performance.now()+1800;seekTo(k);});
+    li.appendChild(b);ticksEl.appendChild(li);tickLis.push(li);
+  });
+  seek.setAttribute('aria-valuetext',valueText(0));
+  meta.hidden=false;rail.hidden=false;syncPP();
+}
+
+function measureHero(){
+  var cw=hero.clientWidth, ch=hero.clientHeight;
+  var bx=v.offsetLeft, by=v.offsetTop, bw=v.offsetWidth, bh=v.offsetHeight;
+  var op=(W.getComputedStyle(v).objectPosition||'50% 50%').split(' ');
+  var px=parseFloat(op[0]), py=parseFloat(op[1]);
+  px=(isFinite(px)&&op[0].indexOf('%')>0)?px/100:.5;
+  py=(isFinite(py)&&op[1]&&op[1].indexOf('%')>0)?py/100:.5;
+  /* the tracking stops at a floor: the top of the timeline. On tall screens the words sit under the film,
+     so the floor is the end of the film and the figure fades into it. */
+  var stacked=!!stackMQ.matches;
+  var floor=rail.hidden?ch:(stacked?foot.offsetTop-6:foot.offsetTop+rail.offsetTop+12);
+  /* and its label never slides under the nav */
+  var ceil=navEl?navEl.offsetTop+navEl.offsetHeight+18:0;
+  return {cw:cw,ch:ch,bx:bx,by:by,bw:bw,bh:bh,px:px,py:py,floor:floor,ceil:ceil,fade:(stacked&&!rail.hidden)?40:0};
+}
+function applyHero(r){
+  if(!H||!r.bw||!r.bh)return;
+  /* the same object-fit: cover math the video uses, inside the video's own box */
+  var VW=v.videoWidth||H.vw, VH=v.videoHeight||H.vh;
+  var s=Math.max(r.bw/VW,r.bh/VH), w=VW*s, h=VH*s;
+  geo.cw=r.cw;geo.ch=r.ch;geo.s=s;geo.floor=r.floor;geo.ceil=r.ceil;geo.fade=r.fade;geo.mask=null;
+  geo.map={x:r.bx+(r.bw-w)*r.px, y:r.by+(r.bh-h)*r.py, kx:w/1000, ky:h/1000};
+  geo.headR=H.headPx*s;
+  geo.dpr=sizeCanvas(hcv,r.cw,r.ch,5.2e6);
+  dirty=null;heroDirty=true;
+}
+function drawHero(f){
+  var c=hctx, g=geo, m=g.map, k=clamp(g.s,.55,1.7), i, x, y;
+  c.setTransform(g.dpr,0,0,g.dpr,0,0);
+  if(dirty)c.clearRect(dirty[0],dirty[1],dirty[2],dirty[3]);else c.clearRect(0,0,g.cw,g.ch);
+  pose(H.kp,f,m,P);
+  var bb=[1e9,1e9,-1e9,-1e9];
+  for(i=10;i<46;i+=2){x=P[i];y=P[i+1];if(x<bb[0])bb[0]=x;if(y<bb[1])bb[1]=y;if(x>bb[2])bb[2]=x;if(y>bb[3])bb[3]=y;}
+  var hx=(P[6]+P[8])/2, hy=(P[7]+P[9])/2;
+  if(hx-g.headR<bb[0])bb[0]=hx-g.headR;if(hy-g.headR<bb[1])bb[1]=hy-g.headR;if(hx+g.headR>bb[2])bb[2]=hx+g.headR;
+  var pad=14*k, bx0=bb[0]-pad, by0=bb[1]-pad, bx1=bb[2]+pad, by1=bb[3]+pad;
+
+  /* light trails: glove in warm white, throwing hand in gold. The gold one flares as the arm comes through after release. */
+  var arm=confAt(H.conf,f);
+  var fl=Math.exp(-Math.pow((f-(H.peak+2))/4.5,2));
+  trail(c,H.kp,f,9,m,14,INK,.45,1.5*k,false,bb,null);
+  trail(c,H.kp,f,10,m,18+Math.round(18*fl),GOLD,.92,(2.1+3.6*fl)*k,true,bb,H.conf);
+  var wx=P[20], wy=P[21], age=f-H.peak, rel=(age>=-.5&&age<7)?1-Math.max(0,age)/7:0;
+
+  /* the tracked body */
+  drawBody(c,P,{rgb:GOLD,alpha:.95,lw:clamp(1+.45*k,1.2,1.9),headR:g.headR,dot:clamp(1.6+.9*k,2,3.1),under:.42,arm:arm});
+  c.fillStyle='rgba('+GOLD+',.95)';c.beginPath();
+  for(i=34;i<46;i+=2){c.moveTo(P[i]+1.4,P[i+1]);c.arc(P[i],P[i+1],1.4,0,TAU);}
+  c.fill();
+  /* throwing hand marker */
+  if(arm>.02){c.strokeStyle='rgba('+GOLD+','+arm.toFixed(3)+')';c.lineWidth=1.2;c.beginPath();c.arc(wx,wy,6.5*k,0,TAU);c.stroke();}
+
+  /* on tall screens the figure fades into the floor with the film */
+  if(g.fade&&bb[3]+pad>g.floor-g.fade){
+    if(!g.mask){g.mask=c.createLinearGradient(0,g.floor-g.fade,0,g.floor);g.mask.addColorStop(0,'rgba(0,0,0,0)');g.mask.addColorStop(1,'rgba(0,0,0,1)');}
+    c.globalCompositeOperation='destination-out';
+    c.fillStyle=g.mask;c.fillRect(0,g.floor-g.fade,g.cw,g.fade);
+    c.fillStyle='#000';c.fillRect(0,g.floor,g.cw,g.ch-g.floor);
+    c.globalCompositeOperation='source-over';
+  }
+
+  /* tracker brackets and frame number */
+  var L=(11+7*rel)*k;
+  if(by0<g.ceil)by0=g.ceil;
+  if(by1>g.floor)by1=g.floor;
+  if(by1<by0+2*L)by1=by0+2*L;
+  c.strokeStyle='rgba('+GOLD+','+(.72+.28*rel).toFixed(2)+')';c.lineWidth=1+rel*.8;c.lineCap='butt';c.lineJoin='miter';c.beginPath();
+  c.moveTo(bx0,by0+L);c.lineTo(bx0,by0);c.lineTo(bx0+L,by0);
+  c.moveTo(bx1-L,by0);c.lineTo(bx1,by0);c.lineTo(bx1,by0+L);
+  c.moveTo(bx1,by1-L);c.lineTo(bx1,by1);c.lineTo(bx1-L,by1);
+  c.moveTo(bx0+L,by1);c.lineTo(bx0,by1);c.lineTo(bx0,by1-L);
+  c.stroke();
+  c.font='500 10px '+MONO;c.fillStyle='rgba('+GOLD+',.95)';
+  c.textBaseline='bottom';c.fillText('TRACKING  '+H.points+' POINTS',Math.max(bx0,12),by0-7);
+  c.fillText(rel>0?'RELEASE':'FRAME '+pad3(Math.round(f)),Math.max(bx0+L+8,12),by1-3);
+
+  var ex=Math.max(64,70*k);
+  if(bb[0]>bx0)bb[0]=bx0;if(bb[1]>by0)bb[1]=by0;if(bb[2]<bx1)bb[2]=bx1;if(bb[3]<by1)bb[3]=by1;
+  if(bb[2]<bx0+170)bb[2]=bx0+170;
+  dirty=[Math.floor(bb[0]-ex),Math.floor(bb[1]-ex),Math.ceil(bb[2]-bb[0]+2*ex),Math.ceil(bb[3]-bb[1]+2*ex)];
+}
+function heroTick(now){
+  if(!heroOK)return;
+  var want=!userPaused&&heroVis&&!ptrDown&&!kbFocus&&now>holdUntil&&!D.hidden;
+  if(want){
+    if(v.playbackRate!==.5)v.playbackRate=.5;
+    if(v.paused&&!playPending){
+      playPending=true;
+      var pr;try{pr=v.play();}catch(e){pr=null;}
+      if(pr&&pr.then){pr.then(function(){playPending=false;},function(err){playPending=false;if(err&&err.name==='NotAllowedError'){userPaused=true;syncPP();}});}
+      else playPending=false;
+    }
+  }else if(!v.paused){v.pause();}
+  if(!heroVis)return;
+  var t=v.currentTime||0;
+  /* while playing, follow the frame that is actually on screen */
+  if(vfT>=0&&!v.paused&&!v.seeking&&Math.abs(vfT-t)<.25)t=vfT;
+  /* the video frame on screen, then the pose that belongs to it: pose frame = seconds x 30, whatever the playback speed.
+     Odd video frames fall halfway between two poses and are interpolated. */
+  var k=clamp(Math.floor(t*VF+.25),0,kMax);
+  if(k===lastK&&!heroDirty)return;
+  lastK=k;heroDirty=false;
+  var f=clamp(k/VF*H.fps,0,H.frames-1);
+  drawHero(f);
+  if(!ptrDown)seek.value=String(k);
+  fill.style.transform='scaleX('+(k/kMax).toFixed(4)+')';
+  var dt=k/VF-H.peak/H.fps, s=Math.abs(dt).toFixed(2);
+  var txt=Math.abs(dt)<.004?' 00.00 s at release':(dt<0?'-':'+')+(s.length<5?'0'+s:s)+(dt<0?' s to release':' s after release');
+  if(txt!==tcTxt){tc.textContent=txt;tcTxt=txt;}
+  var pi=phaseAt(f);
+  if(pi!==phIdx){
+    ph.textContent=phases[pi].n;
+    if(tickLis[phIdx])tickLis[phIdx].classList.remove('on');
+    if(tickLis[pi])tickLis[pi].classList.add('on');
+    phIdx=pi;
+  }
+}
+function initHero(data){
+  H=data.hero;
+  if(!H||!H.kp||!H.kp.length||v.error){heroPlain();return;}
+  H.frames=H.kp.length;H.points=(data.joints&&data.joints.length)||23;
+  H.peak=clamp(H.peak||0,0,H.frames-1);
+  H.headPx=headUnits(H.kp,H.vw/1000,H.vh/1000);
+  H.conf=armConf(H.kp,H.peak,H.vw/1000,H.vh/1000);
+  findPhases();buildRail();
+  heroOK=true;needMeasure=true;
+}
+
+/* ---------- manifesto: words light up with scroll ---------- */
+var mani=$('#mani'), words=[], lit=0, mStart=0, mEnd=1;
+if(!reduced){
+  (function split(node){
+    var kids=Array.prototype.slice.call(node.childNodes);
+    kids.forEach(function(n){
+      if(n.nodeType===3){
+        var parts=n.nodeValue.split(/(\s+)/), frag=D.createDocumentFragment();
+        parts.forEach(function(p){
+          if(!p)return;
+          if(/^\s+$/.test(p)){frag.appendChild(D.createTextNode(' '));return;}
+          var s=D.createElement('span');s.className='w';s.textContent=p;frag.appendChild(s);words.push(s);
+        });
+        node.replaceChild(frag,n);
+      }else if(n.nodeType===1){split(n);}
+    });
+  })(mani);
+  mani.classList.add('split');
+}
+function maniUpdate(y){
+  if(!words.length)return;
+  var n=Math.round(clamp((y-mStart)/(mEnd-mStart),0,1)*words.length), i;
+  if(n===lit)return;
+  if(n>lit){for(i=lit;i<n;i++)words[i].classList.add('on');}
+  else{for(i=n;i<lit;i++)words[i].classList.remove('on');}
+  lit=n;
+}
+
+/* ---------- a season on film: pinned chapters ---------- */
+var reelsEl=$('#reels'), reelEls=$$('.reel',reelsEl), reelIn=reelEls.map(function(r){return $('.reel__in',r);});
+var reelTop=[], reelC=[], stickyMQ=W.matchMedia?W.matchMedia('(min-width:900px) and (min-height:600px)'):{matches:false};
+function reelsUpdate(y){
+  var on=stickyMQ.matches&&!reduced, i, c;
+  for(i=0;i<reelEls.length-1;i++){
+    c=on?clamp((y+vh-reelTop[i+1])/vh,0,1):0;
+    if(Math.abs(c-(reelC[i]||0))>.002||(c===0&&reelC[i])){reelC[i]=c;reelIn[i].style.setProperty('--c',c.toFixed(3));}
+  }
+}
+
+/* ---------- who: one line that travels with the scroll ---------- */
+var who=$('#who'), whoLine=$('#whoLine'), whoTop=0, whoH=1, whoW=0, whoX=null;
+function whoUpdate(y){
+  if(reduced||!whoW)return;
+  var p=(y+vh-whoTop)/(vh+whoH);
+  if(p<-.05||p>1.05)return;
+  p=clamp(p,0,1);
+  var x=Math.round(vw*.16+(-(whoW-vw*.8)-vw*.16)*p);
+  if(x!==whoX){whoX=x;whoLine.style.transform='translate3d('+x+'px,0,0)';}
+}
+
+/* ---------- tip detection figure ---------- */
+var T={cv:$('#tipc'),ctx:null,set:null,ok:false,vis:false,clock:0,last:0,dirty:true,P:new Float32Array(46),geo:null,F0:30,peak:80,fps:30,shown:false};
+var tell=$('#tell');
+T.ctx=T.cv.getContext('2d');
+function applyTip(cw,ch){
+  if(!T.ok||!cw||!ch)return;
+  var left=cw/ch>1.1, g=fitFigure(T.set,cw,ch,left?cw*.04:14,18,26,left);
+  g.cw=cw;g.ch=ch;g.dpr=sizeCanvas(T.cv,cw,ch,4e6);
+  g.headR=T.set.headU*g.s;g.lw=clamp(1.1+g.s*1.7,1.4,2.4);g.dot=clamp(1.6+g.s*2.8,2.2,3.6);
+  g.ring=clamp(g.s*34,13,24);g.ghost=g.s*36;g.gy=ch-26+5;
+  at(T.set.kp,T.F0,9,g);
+  var rx=tx, ry=ty, right=(cw-rx)>=Math.max(70,cw*.16)+190;
+  g.right=right;
+  g.ax=right?rx+Math.max(70,cw*.16):rx-46;
+  g.ay=right?ry-ch*.17:Math.max(8,ry-74);
+  T.geo=g;T.dirty=true;
+  tell.classList.toggle('is-l',!right);
+  tell.style.setProperty('--ax',Math.round(g.ax)+'px');
+  tell.style.setProperty('--ay',Math.round(g.ay)+'px');
+  tell.style.setProperty('--aw',Math.round(right?cw-g.ax:g.ax)+'px');
+}
+function drawTip(f,hold){
+  var c=T.ctx, g=T.geo, Pt=T.P;
+  c.setTransform(g.dpr,0,0,g.dpr,0,0);c.clearRect(0,0,g.cw,g.ch);
+  c.strokeStyle='rgba('+INK+',.16)';c.lineWidth=1;c.beginPath();c.moveTo(0,g.gy);c.lineTo(g.cw,g.gy);c.stroke();
+  /* film-room readout: where this frame sits against release */
+  var dt=(f-T.peak)/T.fps;
+  c.font='500 10px '+MONO;c.textBaseline='top';c.fillStyle='rgba('+INK+',.62)';
+  c.fillText('FRAME '+pad3(Math.round(f))+'   '+(dt<0?'-':'+')+Math.abs(dt).toFixed(2)+' S '+(dt<0?'TO':'AFTER')+' RELEASE',0,2);
+  if(hold>.5){c.fillStyle='rgba('+GOLD+','+hold.toFixed(3)+')';c.fillText('HOLD',0,18);}
+  var dim=1-hold*.62;
+  if(hold<1){trail(c,T.set.kp,f,10,g,14,INK,.5*(1-hold),1.7,false,null,T.set.conf);trail(c,T.set.kp,f,9,g,10,INK,.3*(1-hold),1.3,false,null,null);}
+  pose(T.set.kp,f,g,Pt);
+  drawBody(c,Pt,{rgb:INK,alpha:(.92*dim).toFixed(3),lw:g.lw,headR:g.headR,dot:g.dot,arm:confAt(T.set.conf,f)});
+  if(hold>0){
+    var x=Pt[18], y=Pt[19], R=g.ring, y2=y-g.ghost, side=g.right?-1:1, mx=x+side*(R+11);
+    c.lineCap='round';
+    c.strokeStyle='rgba('+GOLD+','+hold.toFixed(3)+')';c.lineWidth=g.lw+.7;bonePath(c,Pt,[[5,7],[7,9]]);c.stroke();
+    c.setLineDash([3,4]);c.strokeStyle='rgba('+INK+','+(.8*hold).toFixed(3)+')';c.lineWidth=1;c.beginPath();c.arc(x,y2,R,0,TAU);c.stroke();c.setLineDash([]);
+    c.strokeStyle='rgb('+GOLD+')';c.lineWidth=2;c.beginPath();c.arc(x,y,R,-1.5708,-1.5708+TAU*hold);c.stroke();
+    c.lineWidth=1;c.strokeStyle='rgba('+GOLD+','+hold.toFixed(3)+')';c.beginPath();
+    c.moveTo(mx-4,y2);c.lineTo(mx+4,y2);c.moveTo(mx,y2);c.lineTo(mx,y);c.moveTo(mx-4,y);c.lineTo(mx+4,y);
+    var dx=g.ax-x, dy=g.ay-y, d=Math.sqrt(dx*dx+dy*dy)||1, sx=x+dx/d*R, sy=y+dy/d*R;
+    c.moveTo(sx,sy);c.lineTo(sx+(g.ax-sx)*hold,sy+(g.ay-sy)*hold);
+    c.stroke();
+  }
+}
+function tipTick(now){
+  if(!T.ok||!T.geo)return;
+  if(reduced){if(T.dirty){drawTip(T.F0,1);T.dirty=false;if(!T.shown){tell.classList.add('show');T.shown=true;}}return;}
+  if(!T.vis){T.last=0;return;}
+  var dt=T.last?Math.min(now-T.last,50)/1000:0;T.last=now;T.clock+=dt;
+  var n=T.set.kp.length-1, sp=15, A=T.F0/sp, B=5.2, C=(n-T.F0)/sp, E=1, t=T.clock%(A+B+C+E), f, hold=0, show=false;
+  if(t<A){f=t*sp;}
+  else if(t<A+B){f=T.F0;hold=clamp((t-A)/.7,0,1)*clamp((A+B-t)/.45,0,1);hold=hold*hold*(3-2*hold);show=t>A+.35&&t<A+B-.45;}
+  else if(t<A+B+C){f=T.F0+(t-A-B)*sp;}
+  else{f=n;}
+  drawTip(f,hold);
+  if(show!==T.shown){tell.classList.toggle('show',show);T.shown=show;}
+}
+
+/* ---------- center-field figure (all winter) ---------- */
+var C={cv:$('#cf'),ctx:null,set:null,ok:false,vis:false,clock:0,last:0,dirty:true,P:new Float32Array(46),G:new Float32Array(46),geo:null,n:-1};
+var cfN=$('#cfN');
+C.ctx=C.cv.getContext('2d');
+function applyCf(cw,ch){
+  if(!C.ok||!cw||!ch)return;
+  var g=fitFigure(C.set,cw,ch,14,16,26,false);
+  g.cw=cw;g.ch=ch;g.dpr=sizeCanvas(C.cv,cw,ch,4e6);
+  g.headR=C.set.headU*g.s;g.lw=clamp(1+g.s*1.2,1.2,2);g.dot=clamp(1.4+g.s*2.4,2,3.2);g.gy=ch-26+5;
+  C.geo=g;C.dirty=true;
+}
+function drawCf(f){
+  var c=C.ctx, g=C.geo, kp=C.set.kp, k, fg;
+  c.setTransform(g.dpr,0,0,g.dpr,0,0);c.clearRect(0,0,g.cw,g.ch);
+  c.strokeStyle='rgba('+INK+',.16)';c.lineWidth=1;c.beginPath();c.moveTo(0,g.gy);c.lineTo(g.cw,g.gy);c.stroke();
+  for(k=5;k>=1;k--){
+    fg=f-k*7; if(fg<0)continue;
+    pose(kp,fg,g,C.G);
+    drawBody(c,C.G,{rgb:INK,alpha:(.06+.055*(5-k)).toFixed(3),lw:g.lw*.8,headR:g.headR,dot:0,arm:confAt(C.set.conf,fg)});
+  }
+  trail(c,kp,f,10,g,18,GOLD,.85,2,true,null,C.set.conf);
+  pose(kp,f,g,C.P);
+  drawBody(c,C.P,{rgb:GOLD,alpha:.95,lw:g.lw,headR:g.headR,dot:g.dot,arm:confAt(C.set.conf,f)});
+  var n=Math.round(f);
+  if(n!==C.n){C.n=n;cfN.textContent='Frame '+pad3(n);}
+}
+function cfTick(now){
+  if(!C.ok||!C.geo)return;
+  if(reduced){if(C.dirty){drawCf(Math.min(74,C.set.kp.length-1));C.dirty=false;}return;}
+  if(!C.vis){C.last=0;return;}
+  var dt=C.last?Math.min(now-C.last,50)/1000:0;C.last=now;C.clock+=dt;
+  var n=C.set.kp.length-1, sp=15, run=n/sp, t=C.clock%(run+1.4);
+  drawCf(t<run?t*sp:n);
+}
+
+/* ---------- visibility: pause what is off screen ---------- */
+if(io){
+  var vio=new IntersectionObserver(function(es){es.forEach(function(e){
+    var on=e.isIntersecting;
+    if(e.target===hero){heroVis=on;hero.classList.toggle('is-away',!on);if(on)heroDirty=true;}
+    else if(e.target===T.cv){T.vis=on;}
+    else if(e.target===C.cv){C.vis=on;}
+  });},{rootMargin:'60px 0px'});
+  vio.observe(hero);vio.observe(T.cv);vio.observe(C.cv);
+}else{T.vis=true;C.vis=true;}
+
+/* ---------- measure (all reads, then all writes) ---------- */
+function measure(){
+  var y=W.pageYOffset||0, i, r;
+  vw=root.clientWidth;vh=W.innerHeight;
+  var hr=measureHero();
+  r=mani.getBoundingClientRect();
+  var mTop=r.top+y, mH=r.height;
+  var rTop=reelsEl.getBoundingClientRect().top+y, rH=reelEls.map(function(el){return el.offsetHeight;});
+  r=who.getBoundingClientRect();
+  var wTop=r.top+y, wH=r.height, wW=whoLine.offsetWidth;
+  var tw=T.cv.clientWidth, th=T.cv.clientHeight, cw=C.cv.clientWidth, ch=C.cv.clientHeight;
+  /* writes */
+  mStart=mTop-vh*.82;mEnd=mTop+mH-vh*.52;if(mEnd<=mStart)mEnd=mStart+1;
+  var acc=rTop;
+  for(i=0;i<reelEls.length;i++){reelTop[i]=acc;acc+=rH[i];reelEls[i].style.setProperty('--stick',Math.min(0,vh-rH[i])+'px');}
+  whoTop=wTop;whoH=wH;whoW=wW;whoX=null;
+  applyHero(hr);applyTip(tw,th);applyCf(cw,ch);
+}
+W.addEventListener('resize',function(){needMeasure=true;},{passive:true});
+W.addEventListener('orientationchange',function(){needMeasure=true;},{passive:true});
+W.addEventListener('load',function(){needMeasure=true;});
+if(D.fonts&&D.fonts.ready&&D.fonts.ready.then)D.fonts.ready.then(function(){needMeasure=true;});
+if(mq.addEventListener)mq.addEventListener('change',function(){W.location.reload();});
+
+/* ---------- the one loop ---------- */
+function frame(now){
+  if(needMeasure){needMeasure=false;measure();force=true;}
+  var y=W.pageYOffset||0;
+  heroTick(now);
+  if(y!==lastY||force){lastY=y;force=false;maniUpdate(y);reelsUpdate(y);whoUpdate(y);}
+  tipTick(now);cfTick(now);gradesTick(now);
+  W.requestAnimationFrame(frame);
+}
+W.requestAnimationFrame(frame);
+
+/* ---------- data ---------- */
+function figuresOff(){var a=$('#tipFig'),b=$('#cfFig');if(a)a.hidden=true;if(b)b.hidden=true;}
+function initFigures(data){
+  if(data.hitter&&data.hitter.kp&&data.hitter.kp.length){
+    T.set=data.hitter;T.set.headU=headUnits(T.set.kp,1,1);T.F0=Math.min(30,T.set.kp.length-1);
+    T.peak=clamp(T.set.peak||80,0,T.set.kp.length-1);T.fps=T.set.fps||30;
+    T.set.conf=armConf(T.set.kp,T.peak,1,1);T.ok=true;
+  }
+  else{var a=$('#tipFig');if(a)a.hidden=true;}
+  if(data.cf&&data.cf.kp&&data.cf.kp.length){
+    C.set=data.cf;C.set.headU=headUnits(C.set.kp,1,1);
+    C.set.conf=armConf(C.set.kp,clamp(C.set.peak||80,0,C.set.kp.length-1),1,1);C.ok=true;
+  }
+  else{var b=$('#cfFig');if(b)b.hidden=true;}
+  needMeasure=true;
+}
+if(W.fetch){
+  W.fetch('./delivery.json').then(function(r){if(!r.ok)throw new Error('data');return r.json();})
+    .then(function(data){
+      try{initHero(data);}catch(e){heroPlain();}
+      try{initFigures(data);}catch(e){figuresOff();}
+    })
+    .catch(function(){heroPlain();figuresOff();});
+}else{heroPlain();figuresOff();}
+})();
+</script>
+</body>
+</html>
