@@ -52,9 +52,10 @@ th:first-child,td:first-child{text-align:left}
 .pitch .head b{font-size:15px}
 .pitch .head b i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px;vertical-align:0}
 .pitch .head span{font-size:12px;color:var(--mute)}
-.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:start}
 .vid{background:#000;border:1px solid var(--line);border-radius:10px;overflow:hidden;position:relative}
-.vid video,.vid img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;background:#000}
+.vid video,.vid img{display:block;width:100%;height:auto;object-fit:contain;background:#000}
+@media (max-width:560px){.pair{grid-template-columns:1fr}}
 .vid .cap{position:absolute;left:0;right:0;bottom:0;padding:6px 8px;font-size:12px;font-weight:700;background:linear-gradient(transparent,rgba(0,0,0,.75))}
 .vid .cap small{display:block;font-weight:500;color:#cfcfd4;font-size:11px}
 .vid .mark2{position:absolute;top:6px;left:6px;padding:2px 7px;border-radius:999px;font-size:10px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;background:rgba(0,0,0,.6);color:var(--gold)}
