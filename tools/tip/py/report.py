@@ -100,15 +100,22 @@ TIP_WINDOW = 0.5   # seconds before release; later than this the arm itself show
 
 
 def verdict(tl):
-    best = None
+    best = None; graded = []
     early = [s for s in tl['slices'] if s['t_before_release'] >= TIP_WINDOW]
     for s in early:
         lift = s['acc_lr'] - s['baseline_majority']
         over_sit = s['acc_lr'] - s['acc_situation']
         p = s['perm_p'] if s['perm_p'] is not None else 1.0
         grade = 'clear' if (lift >= 0.10 and p < 0.01 and over_sit >= 0.05) else 'weak' if (lift >= 0.05 and p < 0.05 and over_sit >= 0.03) else 'none'
-        if grade != 'none' and (best is None or s['t_before_release'] > best['t']):
-            best = dict(grade=grade, slice=s['slice'], t=s['t_before_release'], acc=s['acc_lr'], baseline=s['baseline_majority'], situation=s['acc_situation'], p=p)
+        if grade != 'none':
+            graded.append(dict(grade=grade, lift=lift, slice=s['slice'], t=s['t_before_release'], acc=s['acc_lr'], baseline=s['baseline_majority'], situation=s['acc_situation'], p=p))
+    if graded:
+        # the headline is the strongest readable moment inside the window (clear beats weak, then the
+        # biggest lift over guessing); the earliest readable moment is kept beside it
+        best = max(graded, key=lambda g: (g['grade'] == 'clear', g['lift']))
+        first = max(graded, key=lambda g: g['t'])
+        best = {k: v for k, v in best.items() if k != 'lift'}
+        best.update(earliest=first['slice'], earliest_t=first['t'])
     if best is None:
         top = max(early, key=lambda s: s['acc_lr'] - s['baseline_majority']) if early else None
         return dict(grade='none', **({'slice': top['slice'], 't': top['t_before_release'], 'acc': top['acc_lr'], 'baseline': top['baseline_majority'], 'situation': top['acc_situation'], 'p': top['perm_p']} if top else {}))

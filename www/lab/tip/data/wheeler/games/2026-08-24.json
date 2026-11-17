@@ -1,0 +1,105 @@
+{
+"pitcher": {
+"id": "wheeler",
+"name": "Zack Wheeler"
+},
+"season": "2026",
+"built": "2026-11-17",
+"label": "game-only",
+"date": "2026-08-24",
+"opp": "SEA",
+"home": false,
+"pitches": 103,
+"entries": [
+{
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "weak",
+"slice": "break",
+"when": "at hand break",
+"n": 41,
+"acc": 0.683,
+"baseline": 0.561,
+"situation": 0.561,
+"flagged": 2
+}
+],
+"flagged": [
+{
+"play_id": "db4a1d14-b9fb-3bed-9d89-f2eaf9469525",
+"family": "FB",
+"family_name": "fastball",
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"slice": "break",
+"when": "at hand break",
+"t": 0.57,
+"conf": 0.7743,
+"conf_sit": 0.4364,
+"tell": "Before a fastball, there tends to be more trunk lean at hand break.",
+"fix": "Same posture in the set: no extra lean on one pitch.",
+"inning": 1,
+"count": "2-2",
+"outs": 1,
+"bat_side": "R",
+"clip": "wheeler/clips/D_db4a1d14-b9fb-3bed-9d89-f2eaf9469525.mp4",
+"still": "wheeler/clips/D_db4a1d14-b9fb-3bed-9d89-f2eaf9469525_break.jpg",
+"compare": {
+"play_id": "3248df85-392f-38db-b1b4-fd3dff25acee",
+"family": "BR",
+"family_name": "breaking ball",
+"clip": "wheeler/clips/D_3248df85-392f-38db-b1b4-fd3dff25acee.mp4",
+"still": "wheeler/clips/D_3248df85-392f-38db-b1b4-fd3dff25acee_break.jpg"
+}
+},
+{
+"play_id": "88b762c8-a15c-34d7-83bb-299f7e2a9c04",
+"family": "BR",
+"family_name": "breaking ball",
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"slice": "break",
+"when": "at hand break",
+"t": 0.57,
+"conf": 0.6334,
+"conf_sit": 0.1773,
+"tell": "Before a breaking ball, lead knee height tends to be lower at hand break.",
+"fix": "Same leg lift height and path on every pitch.",
+"inning": 3,
+"count": "2-0",
+"outs": 0,
+"bat_side": "R",
+"clip": "wheeler/clips/D_88b762c8-a15c-34d7-83bb-299f7e2a9c04.mp4",
+"still": "wheeler/clips/D_88b762c8-a15c-34d7-83bb-299f7e2a9c04_break.jpg",
+"compare": {
+"play_id": "0912cc55-4464-3a11-8f2c-b52aa85c56d8",
+"family": "FB",
+"family_name": "fastball",
+"clip": "wheeler/clips/D_0912cc55-4464-3a11-8f2c-b52aa85c56d8.mp4",
+"still": "wheeler/clips/D_0912cc55-4464-3a11-8f2c-b52aa85c56d8_break.jpg"
+}
+}
+],
+"n_flagged": 2,
+"best": {
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "weak",
+"slice": "break",
+"when": "at hand break",
+"n": 41,
+"acc": 0.683,
+"baseline": 0.561,
+"situation": 0.561,
+"flagged": 2
+},
+"processed": true
+}

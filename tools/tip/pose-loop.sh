@@ -24,7 +24,9 @@ for i in $(seq 1 80); do
     line="$line $V $p/$n"; [ "$p" -ge "$n" ] || done_all=0
   done
   echo "$line" >> "$LOG"
-  if [ "$done_all" = 1 ] && ! pgrep -f download-clips.mjs > /dev/null; then echo "all done $VIEWS" >> "$LOG"; break; fi
+  # downloads still running? (no pgrep on this machine)
+  dl=$(powershell -NoProfile -Command "(Get-CimInstance Win32_Process -Filter \"Name='node.exe'\" | Where-Object { \$_.CommandLine -like '*download-clips*' }).Count" 2>/dev/null | tr -d '[:space:]')
+  if [ "$done_all" = 1 ] && [ "${dl:-0}" = "0" ]; then echo "all done $VIEWS" >> "$LOG"; break; fi
   sleep 240
 done
 tail -3 "$LOG"

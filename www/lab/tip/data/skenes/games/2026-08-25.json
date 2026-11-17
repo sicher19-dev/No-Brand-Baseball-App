@@ -4,7 +4,7 @@
 "name": "Paul Skenes"
 },
 "season": "2026",
-"built": "2026-11-15",
+"built": "2026-11-17",
 "label": "game-only",
 "date": "2026-08-25",
 "opp": "SD",
@@ -20,7 +20,7 @@
 "slice": "break",
 "when": "at hand break",
 "n": 22,
-"acc": 0.545,
+"acc": 0.636,
 "baseline": 0.636,
 "situation": 0.409
 },
@@ -46,7 +46,7 @@
 "slice": "lift_start",
 "when": "as the leg starts up",
 "n": 5,
-"acc": 0.0,
+"acc": 0.2,
 "baseline": 0.8,
 "situation": 1.0
 }

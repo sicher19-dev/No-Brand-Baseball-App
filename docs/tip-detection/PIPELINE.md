@@ -104,6 +104,17 @@ Lessons that shaped events.py:
   where no candidate passed.
 - Hands wiggle in the set (glove taps at 0.3-0.5 heights/s), so the set is
   defined by hands together and a quiet lead knee, not by stillness alone.
+- A slice only carries what a hitter could have seen by then. Durations are
+  features too (set length, lift to release, hand break to release), and a
+  duration is given to a slice only once it has ended: the three spans that end
+  at release exist only on the release slice, and the set length only from the
+  start of the leg lift. Before this rule, a quick or slow finish was credited to
+  the set two seconds earlier and read as a tell there.
+- The center-field camera in some parks sits high and far, so the leg lift is
+  foreshortened and the release reads late; those games come back almost fully
+  `release_unsure low_lift` and drop out of the center-field model. In 2026 that
+  is most of a Phillies season (home park plus several road parks), so for the
+  Phillies the center-field rows are thin and the hitter view carries the verdict.
 
 ## Game pages
 
@@ -116,7 +127,12 @@ only views and deliveries with a weak or clear verdict flag pitches. The verdict
 itself only looks at slices at least 0.5 s before release (`TIP_WINDOW` in
 report.py): at and just before release the arm action shows the pitch, which is
 not a tell, so those slices are drawn on the timeline for context only
-(`--force-flags` overrides that for previews). Each flagged pitch gets a 2.6 s
+(`--force-flags` overrides that for previews). A slice is weak when the video
+beats guessing the usual pitch by 5 points, beats the count-and-runners read by
+3, and the permutation p is under .05; clear at 10 points, 5 and p under .01.
+The headline verdict is the strongest such slice in the window (clear beats
+weak, then the bigger lift); the earliest such slice is kept beside it as
+`earliest`, since how early a hitter can read it matters too. Each flagged pitch gets a 2.6 s
 pitcher-only clip (ffmpeg crop from the tracked box, 480 px, no sound, no
 scorebug) and a comparison clip of the most common other type in that game.
 Clips and stills are gitignored; the JSON files hold only aggregates and play ids.

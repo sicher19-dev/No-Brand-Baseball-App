@@ -113,14 +113,17 @@ def clip_features(npz, ev):
             f.update(glove_speed=float(np.linalg.norm(P[i, GLOVE] - P[j, GLOVE]) / dtj),
                      hand_speed=float(np.linalg.norm(P[i, THROW] - P[j, THROW]) / dtj),
                      knee_speed=float(np.linalg.norm(P[i, LEAD_KNEE] - P[j, LEAD_KNEE]) / dtj))
-        # Timing of the delivery.
-        if ev['t_lift_start']:
-            f['lift_to_release'] = round(t_rel - float(ev['t_lift_start']), 3)
-        if ev['t_lift_top']:
-            f['top_to_release'] = round(t_rel - float(ev['t_lift_top']), 3)
-        if ev['t_break']:
-            f['break_to_release'] = round(t_rel - float(ev['t_break']), 3)
-        if ev['set_dur'] and not int(ev['set_censored'] or 0):
+        # Timing of the delivery: a duration counts only at moments after it has ended, so a slice
+        # never sees how long something that has not happened yet took (the three *_to_release
+        # spans end at release and so only exist at the release slice).
+        if tau >= t_rel - 0.02:
+            if ev['t_lift_start']:
+                f['lift_to_release'] = round(t_rel - float(ev['t_lift_start']), 3)
+            if ev['t_lift_top']:
+                f['top_to_release'] = round(t_rel - float(ev['t_lift_top']), 3)
+            if ev['t_break']:
+                f['break_to_release'] = round(t_rel - float(ev['t_break']), 3)
+        if ev['set_dur'] and not int(ev['set_censored'] or 0) and ev['t_lift_start'] and tau >= float(ev['t_lift_start']) - 0.02:
             f['set_dur'] = float(ev['set_dur'])
         # Camera checks (not pose): kept apart so the model can be run with and without them.
         b = box[i]

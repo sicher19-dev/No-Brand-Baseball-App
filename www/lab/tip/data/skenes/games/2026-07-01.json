@@ -4,7 +4,7 @@
 "name": "Paul Skenes"
 },
 "season": "2026",
-"built": "2026-11-15",
+"built": "2026-11-17",
 "label": "game-only",
 "date": "2026-07-01",
 "opp": "PHI",
@@ -20,7 +20,7 @@
 "slice": "break",
 "when": "at hand break",
 "n": 39,
-"acc": 0.487,
+"acc": 0.513,
 "baseline": 0.538,
 "situation": 0.513
 },
@@ -33,7 +33,7 @@
 "slice": "set",
 "when": "in the set",
 "n": 24,
-"acc": 0.792,
+"acc": 0.708,
 "baseline": 0.417,
 "situation": 0.292
 },
@@ -43,13 +43,13 @@
 "view_label": "Center field",
 "delivery": "stretch",
 "grade": "weak",
-"slice": "top_m1",
-"when": "a second before the top of the leg lift",
+"slice": "m1000",
+"when": "1.0 s before release",
 "n": 3,
 "acc": 0.0,
 "baseline": 0.0,
 "situation": 0.0,
-"flagged": 2
+"flagged": 1
 },
 {
 "key": "cf_windup",
@@ -77,7 +77,7 @@
 "slice": "m1500",
 "when": "1.5 s before release",
 "t": 1.5,
-"conf": 0.9743,
+"conf": 0.8273,
 "conf_sit": 0.1826,
 "tell": "Before a breaking ball, throwing elbow height tends to be higher 1.5 s before release.",
 "fix": "Same throwing elbow in the set on every pitch.",
@@ -94,38 +94,9 @@
 "clip": "skenes/clips/C_cc4e61a7-d174-32d2-b3fb-2ebc5d05d9c8.mp4",
 "still": "skenes/clips/C_cc4e61a7-d174-32d2-b3fb-2ebc5d05d9c8_m1500.jpg"
 }
-},
-{
-"play_id": "cc4e61a7-d174-32d2-b3fb-2ebc5d05d9c8",
-"family": "OS",
-"family_name": "offspeed pitch",
-"key": "cf_stretch",
-"label": "Center field, stretch",
-"view_label": "Center field",
-"delivery": "stretch",
-"slice": "m2000",
-"when": "2.0 s before release",
-"t": 2.0,
-"conf": 0.7733,
-"conf_sit": 0.0974,
-"tell": "Before an offspeed pitch, hand break to release time tends to be longer 2.0 s before release.",
-"fix": "Same tempo from the set to release on every pitch.",
-"inning": 2,
-"count": "3-2",
-"outs": 0,
-"bat_side": "R",
-"clip": "skenes/clips/C_cc4e61a7-d174-32d2-b3fb-2ebc5d05d9c8.mp4",
-"still": "skenes/clips/C_cc4e61a7-d174-32d2-b3fb-2ebc5d05d9c8_m2000.jpg",
-"compare": {
-"play_id": "cf7fb4ae-a29b-34b6-9239-18f23190aa18",
-"family": "BR",
-"family_name": "breaking ball",
-"clip": "skenes/clips/C_cf7fb4ae-a29b-34b6-9239-18f23190aa18.mp4",
-"still": "skenes/clips/C_cf7fb4ae-a29b-34b6-9239-18f23190aa18_m2000.jpg"
-}
 }
 ],
-"n_flagged": 2,
+"n_flagged": 1,
 "best": {
 "key": "hitter_windup",
 "label": "Hitter view, windup",
@@ -135,7 +106,7 @@
 "slice": "set",
 "when": "in the set",
 "n": 24,
-"acc": 0.792,
+"acc": 0.708,
 "baseline": 0.417,
 "situation": 0.292
 },

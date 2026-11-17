@@ -1,0 +1,1416 @@
+{
+"schema": "nb.tip_page/2",
+"pitcher": {
+"id": "wheeler",
+"name": "Zack Wheeler",
+"hand": "R"
+},
+"season": "2026",
+"built": "2026-11-17",
+"label": "game-only",
+"delivery_note": "Windup with the bases empty, stretch with runners on. The video decides which, and each is modeled on its own.",
+"deliveries": [
+"stretch",
+"windup"
+],
+"season_mix": {
+"FB": 1677,
+"BR": 592,
+"OS": 448
+},
+"season_pitches": 2717,
+"type_names": {
+"FF": "four-seam",
+"SI": "sinker",
+"ST": "sweeper",
+"SL": "slider",
+"CH": "changeup",
+"FS": "splitter",
+"FC": "cutter",
+"CU": "curveball",
+"FB": "fastball",
+"BR": "breaking ball",
+"OS": "offspeed pitch"
+},
+"majority": {
+"family": "FB",
+"share": 0.617
+},
+"views": [
+{
+"key": "hitter_stretch",
+"letter": "D",
+"view_label": "Hitter view",
+"label": "Hitter view, stretch",
+"delivery": "stretch",
+"who": "hitter",
+"who_text": "the hitter",
+"clips": 657,
+"games": 25,
+"classes": [
+"FB"
+],
+"class_names": {
+"FB": "fastball",
+"BR": "breaking ball",
+"OS": "offspeed pitch"
+},
+"n_per_class": {
+"FB": 417
+},
+"members": {
+"FB": {
+"FF": 238,
+"SI": 100,
+"FC": 79
+},
+"BR": {
+"ST": 81,
+"CU": 60
+},
+"OS": {
+"FS": 99
+}
+},
+"not_enough_data": {
+"BR": 141,
+"OS": 99
+},
+"min_n": 150,
+"verdict": {
+"grade": "none"
+},
+"timeline": [],
+"tells": [],
+"frames": [
+{
+"view": "D",
+"family": "FB",
+"family_name": "fastball",
+"slice": "set",
+"when": "in the set",
+"src": "wheeler/frames/D_stretch_FB_set.jpg",
+"n": 384
+},
+{
+"view": "D",
+"family": "FB",
+"family_name": "fastball",
+"slice": "lift_top",
+"when": "at the top of the leg lift",
+"src": "wheeler/frames/D_stretch_FB_lift_top.jpg",
+"n": 417
+}
+]
+},
+{
+"key": "hitter_windup",
+"letter": "D",
+"view_label": "Hitter view",
+"label": "Hitter view, windup",
+"delivery": "windup",
+"who": "hitter",
+"who_text": "the hitter",
+"clips": 1259,
+"games": 25,
+"classes": [
+"BR",
+"FB",
+"OS"
+],
+"class_names": {
+"BR": "breaking ball",
+"FB": "fastball",
+"OS": "offspeed pitch"
+},
+"n_per_class": {
+"BR": 268,
+"FB": 796,
+"OS": 195
+},
+"members": {
+"FB": {
+"FF": 457,
+"SI": 208,
+"FC": 131
+},
+"BR": {
+"ST": 172,
+"CU": 96
+},
+"OS": {
+"FS": 195
+}
+},
+"not_enough_data": {},
+"min_n": 150,
+"verdict": {
+"grade": "weak",
+"slice": "break",
+"t": 0.57,
+"acc": 0.7069,
+"baseline": 0.6322,
+"situation": 0.6092,
+"p": 0.0099,
+"earliest": "break",
+"earliest_t": 0.57
+},
+"timeline": [
+{
+"slice": "m2000",
+"when": "2.0 s before release",
+"t": 2.0,
+"n": 1135,
+"acc": 0.6053,
+"acc_gbm": 0.6018,
+"baseline": 0.6308,
+"situation": 0.6009,
+"camera": 0.5833,
+"video_plus_situation": 0.6,
+"perm_p": 0.9505,
+"recall": {
+"BR": 0.053,
+"FB": 0.927,
+"OS": 0.057
+},
+"pairs": {
+"fastball_vs_breaking": {
+"n": 959,
+"acc": 0.7122,
+"auc": 0.5426,
+"baseline": 0.7466
+},
+"fastball_vs_offspeed": {
+"n": 892,
+"acc": 0.796,
+"auc": 0.6463,
+"baseline": 0.8027
+},
+"fastball_vs_rest": {
+"n": 1135,
+"acc": 0.6264,
+"auc": 0.5858,
+"baseline": 0.6308
+}
+}
+},
+{
+"slice": "m1500",
+"when": "1.5 s before release",
+"t": 1.5,
+"n": 1187,
+"acc": 0.6192,
+"acc_gbm": 0.6032,
+"baseline": 0.6302,
+"situation": 0.5914,
+"camera": 0.5535,
+"video_plus_situation": 0.6074,
+"perm_p": 0.396,
+"recall": {
+"BR": 0.031,
+"FB": 0.916,
+"OS": 0.228
+},
+"pairs": {
+"fastball_vs_breaking": {
+"n": 1003,
+"acc": 0.7228,
+"auc": 0.5713,
+"baseline": 0.7458
+},
+"fastball_vs_offspeed": {
+"n": 932,
+"acc": 0.8176,
+"auc": 0.7528,
+"baseline": 0.8026
+},
+"fastball_vs_rest": {
+"n": 1187,
+"acc": 0.6361,
+"auc": 0.6431,
+"baseline": 0.6302
+}
+}
+},
+{
+"slice": "set",
+"when": "in the set",
+"t": 1.93,
+"n": 1147,
+"acc": 0.6094,
+"acc_gbm": 0.5981,
+"baseline": 0.6277,
+"situation": 0.5902,
+"camera": 0.5684,
+"video_plus_situation": 0.5998,
+"perm_p": 1.0,
+"recall": {
+"BR": 0.101,
+"FB": 0.901,
+"OS": 0.14
+},
+"pairs": {
+"fastball_vs_breaking": {
+"n": 968,
+"acc": 0.7252,
+"auc": 0.5888,
+"baseline": 0.7438
+},
+"fastball_vs_offspeed": {
+"n": 899,
+"acc": 0.7931,
+"auc": 0.6679,
+"baseline": 0.8009
+},
+"fastball_vs_rest": {
+"n": 1147,
+"acc": 0.6234,
+"auc": 0.6194,
+"baseline": 0.6277
+}
+}
+},
+{
+"slice": "top_m1",
+"when": "a second before the top of the leg lift",
+"t": 1.87,
+"n": 1156,
+"acc": 0.6107,
+"acc_gbm": 0.6099,
+"baseline": 0.6298,
+"situation": 0.5986,
+"camera": 0.5606,
+"video_plus_situation": 0.6176,
+"perm_p": 0.8515,
+"recall": {
+"BR": 0.109,
+"FB": 0.902,
+"OS": 0.122
+},
+"pairs": {
+"fastball_vs_breaking": {
+"n": 976,
+"acc": 0.7367,
+"auc": 0.5775,
+"baseline": 0.7459
+},
+"fastball_vs_offspeed": {
+"n": 908,
+"acc": 0.7941,
+"auc": 0.6519,
+"baseline": 0.8018
+},
+"fastball_vs_rest": {
+"n": 1156,
+"acc": 0.6384,
+"auc": 0.6237,
+"baseline": 0.6298
+}
+}
+},
+{
+"slice": "lift_start",
+"when": "as the leg starts up",
+"t": 1.43,
+"n": 1259,
+"acc": 0.6148,
+"acc_gbm": 0.5997,
+"baseline": 0.6322,
+"situation": 0.6092,
+"camera": 0.5925,
+"video_plus_situation": 0.6172,
+"perm_p": 0.9802,
+"recall": {
+"BR": 0.075,
+"FB": 0.893,
+"OS": 0.221
+},
+"pairs": {
+"fastball_vs_breaking": {
+"n": 1064,
+"acc": 0.7303,
+"auc": 0.633,
+"baseline": 0.7481
+},
+"fastball_vs_offspeed": {
+"n": 991,
+"acc": 0.8032,
+"auc": 0.7382,
+"baseline": 0.8032
+},
+"fastball_vs_rest": {
+"n": 1259,
+"acc": 0.6418,
+"auc": 0.6515,
+"baseline": 0.6322
+}
+}
+},
+{
+"slice": "m1000",
+"when": "1.0 s before release",
+"t": 1.0,
+"n": 1224,
+"acc": 0.6487,
+"acc_gbm": 0.6389,
+"baseline": 0.6332,
+"situation": 0.6119,
+"camera": 0.594,
+"video_plus_situation": 0.6503,
+"perm_p": 0.0099,
+"recall": {
+"BR": 0.027,
+"FB": 0.941,
+"OS": 0.309
+},
+"pairs": {
+"fastball_vs_breaking": {
+"n": 1036,
+"acc": 0.7403,
+"auc": 0.6029,
+"baseline": 0.7481
+},
+"fastball_vs_offspeed": {
+"n": 963,
+"acc": 0.8328,
+"auc": 0.766,
+"baseline": 0.8048
+},
+"fastball_vs_rest": {
+"n": 1224,
+"acc": 0.6806,
+"auc": 0.6605,
+"baseline": 0.6332
+}
+}
+},
+{
+"slice": "lift_top",
+"when": "at the top of the leg lift",
+"t": 0.87,
+"n": 1259,
+"acc": 0.6338,
+"acc_gbm": 0.614,
+"baseline": 0.6322,
+"situation": 0.6092,
+"camera": 0.587,
+"video_plus_situation": 0.6442,
+"perm_p": 0.0099,
+"recall": {
+"BR": 0.16,
+"FB": 0.874,
+"OS": 0.303
+},
+"pairs": {
+"fastball_vs_breaking": {
+"n": 1064,
+"acc": 0.7209,
+"auc": 0.6419,
+"baseline": 0.7481
+},
+"fastball_vs_offspeed": {
+"n": 991,
+"acc": 0.8264,
+"auc": 0.746,
+"baseline": 0.8032
+},
+"fastball_vs_rest": {
+"n": 1259,
+"acc": 0.6537,
+"auc": 0.6406,
+"baseline": 0.6322
+}
+}
+},
+{
+"slice": "m0750",
+"when": "0.75 s before release",
+"t": 0.75,
+"n": 1246,
+"acc": 0.6437,
+"acc_gbm": 0.6284,
+"baseline": 0.6324,
+"situation": 0.6059,
+"camera": 0.6035,
+"video_plus_situation": 0.6292,
+"perm_p": 0.0099,
+"recall": {
+"BR": 0.125,
+"FB": 0.924,
+"OS": 0.212
+},
+"pairs": {
+"fastball_vs_breaking": {
+"n": 1053,
+"acc": 0.7369,
+"auc": 0.6631,
+"baseline": 0.7483
+},
+"fastball_vs_offspeed": {
+"n": 981,
+"acc": 0.8073,
+"auc": 0.7426,
+"baseline": 0.8033
+},
+"fastball_vs_rest": {
+"n": 1246,
+"acc": 0.6573,
+"auc": 0.6422,
+"baseline": 0.6324
+}
+}
+},
+{
+"slice": "break",
+"when": "at hand break",
+"t": 0.57,
+"n": 1259,
+"acc": 0.7069,
+"acc_gbm": 0.6712,
+"baseline": 0.6322,
+"situation": 0.6092,
+"camera": 0.5798,
+"video_plus_situation": 0.6847,
+"perm_p": 0.0099,
+"recall": {
+"BR": 0.347,
+"FB": 0.877,
+"OS": 0.508
+},
+"pairs": {
+"fastball_vs_breaking": {
+"n": 1064,
+"acc": 0.7735,
+"auc": 0.7648,
+"baseline": 0.7481
+},
+"fastball_vs_offspeed": {
+"n": 991,
+"acc": 0.8496,
+"auc": 0.8443,
+"baseline": 0.8032
+},
+"fastball_vs_rest": {
+"n": 1259,
+"acc": 0.6863,
+"auc": 0.7154,
+"baseline": 0.6322
+}
+}
+},
+{
+"slice": "m0500",
+"when": "0.5 s before release",
+"t": 0.5,
+"n": 1254,
+"acc": 0.6443,
+"acc_gbm": 0.6499,
+"baseline": 0.6332,
+"situation": 0.6061,
+"camera": 0.5805,
+"video_plus_situation": 0.6611,
+"perm_p": 0.0099,
+"recall": {
+"BR": 0.071,
+"FB": 0.951,
+"OS": 0.175
+},
+"pairs": {
+"fastball_vs_breaking": {
+"n": 1060,
+"acc": 0.7453,
+"auc": 0.6324,
+"baseline": 0.7491
+},
+"fastball_vs_offspeed": {
+"n": 988,
+"acc": 0.8117,
+"auc": 0.7473,
+"baseline": 0.8036
+},
+"fastball_vs_rest": {
+"n": 1254,
+"acc": 0.6451,
+"auc": 0.6193,
+"baseline": 0.6332
+}
+}
+},
+{
+"slice": "m0250",
+"when": "0.25 s before release",
+"t": 0.25,
+"n": 1259,
+"acc": 0.6696,
+"acc_gbm": 0.6934,
+"baseline": 0.6322,
+"situation": 0.6092,
+"camera": 0.5997,
+"video_plus_situation": 0.7014,
+"perm_p": 0.0099,
+"recall": {
+"BR": 0.328,
+"FB": 0.915,
+"OS": 0.138
+},
+"pairs": {
+"fastball_vs_breaking": {
+"n": 1064,
+"acc": 0.7829,
+"auc": 0.7639,
+"baseline": 0.7481
+},
+"fastball_vs_offspeed": {
+"n": 991,
+"acc": 0.8163,
+"auc": 0.696,
+"baseline": 0.8032
+},
+"fastball_vs_rest": {
+"n": 1259,
+"acc": 0.6791,
+"auc": 0.6783,
+"baseline": 0.6322
+}
+}
+},
+{
+"slice": "m0000",
+"when": "at release",
+"t": 0.0,
+"n": 1259,
+"acc": 0.7339,
+"acc_gbm": 0.7522,
+"baseline": 0.6322,
+"situation": 0.6092,
+"camera": 0.5894,
+"video_plus_situation": 0.7577,
+"perm_p": 0.0099,
+"recall": {
+"BR": 0.343,
+"FB": 0.918,
+"OS": 0.518
+},
+"pairs": {
+"fastball_vs_breaking": {
+"n": 1064,
+"acc": 0.8073,
+"auc": 0.8083,
+"baseline": 0.7481
+},
+"fastball_vs_offspeed": {
+"n": 991,
+"acc": 0.888,
+"auc": 0.8906,
+"baseline": 0.8032
+},
+"fastball_vs_rest": {
+"n": 1259,
+"acc": 0.7776,
+"auc": 0.8132,
+"baseline": 0.6322
+}
+}
+}
+],
+"tells": [
+{
+"slice": "break",
+"when": "at hand break",
+"t": 0.57,
+"family": "BR",
+"family_name": "breaking ball",
+"text": "Before a breaking ball, lead knee height tends to be lower at hand break.",
+"feature": "lead_knee_y",
+"direction": "lower",
+"weight": -1.123,
+"fix": "Same leg lift height and path on every pitch."
+},
+{
+"slice": "break",
+"when": "at hand break",
+"t": 0.57,
+"family": "FB",
+"family_name": "fastball",
+"text": "Before a fastball, there tends to be more trunk lean at hand break.",
+"feature": "trunk_tilt",
+"direction": "higher",
+"weight": 0.945,
+"fix": "Same posture in the set: no extra lean on one pitch."
+},
+{
+"slice": "break",
+"when": "at hand break",
+"t": 0.57,
+"family": "OS",
+"family_name": "offspeed pitch",
+"text": "Before an offspeed pitch, lead knee height tends to be higher at hand break.",
+"feature": "lead_knee_y",
+"direction": "higher",
+"weight": 1.567,
+"fix": "Same leg lift height and path on every pitch."
+}
+],
+"frames": [
+{
+"view": "D",
+"family": "BR",
+"family_name": "breaking ball",
+"slice": "set",
+"when": "in the set",
+"src": "wheeler/frames/D_windup_BR_set.jpg",
+"n": 248
+},
+{
+"view": "D",
+"family": "FB",
+"family_name": "fastball",
+"slice": "set",
+"when": "in the set",
+"src": "wheeler/frames/D_windup_FB_set.jpg",
+"n": 720
+},
+{
+"view": "D",
+"family": "OS",
+"family_name": "offspeed pitch",
+"slice": "set",
+"when": "in the set",
+"src": "wheeler/frames/D_windup_OS_set.jpg",
+"n": 179
+},
+{
+"view": "D",
+"family": "BR",
+"family_name": "breaking ball",
+"slice": "lift_top",
+"when": "at the top of the leg lift",
+"src": "wheeler/frames/D_windup_BR_lift_top.jpg",
+"n": 268
+},
+{
+"view": "D",
+"family": "FB",
+"family_name": "fastball",
+"slice": "lift_top",
+"when": "at the top of the leg lift",
+"src": "wheeler/frames/D_windup_FB_lift_top.jpg",
+"n": 796
+},
+{
+"view": "D",
+"family": "OS",
+"family_name": "offspeed pitch",
+"slice": "lift_top",
+"when": "at the top of the leg lift",
+"src": "wheeler/frames/D_windup_OS_lift_top.jpg",
+"n": 195
+}
+]
+},
+{
+"key": "cf_stretch",
+"letter": "C",
+"view_label": "Center field",
+"label": "Center field, stretch",
+"delivery": "stretch",
+"who": "cf",
+"who_text": "the center-field camera and a runner on second",
+"clips": 156,
+"games": 16,
+"classes": [],
+"class_names": {
+"FB": "fastball",
+"BR": "breaking ball",
+"OS": "offspeed pitch"
+},
+"n_per_class": {},
+"members": {
+"FB": {
+"FF": 53,
+"SI": 33,
+"FC": 18
+},
+"BR": {
+"ST": 16,
+"CU": 13
+},
+"OS": {
+"FS": 23
+}
+},
+"not_enough_data": {
+"FB": 104,
+"BR": 29,
+"OS": 23
+},
+"min_n": 150,
+"verdict": {
+"grade": "none"
+},
+"timeline": [],
+"tells": [],
+"frames": []
+},
+{
+"key": "cf_windup",
+"letter": "C",
+"view_label": "Center field",
+"label": "Center field, windup",
+"delivery": "windup",
+"who": "cf",
+"who_text": "the center-field camera and a runner on second",
+"clips": 376,
+"games": 17,
+"classes": [
+"FB"
+],
+"class_names": {
+"FB": "fastball",
+"BR": "breaking ball",
+"OS": "offspeed pitch"
+},
+"n_per_class": {
+"FB": 239
+},
+"members": {
+"FB": {
+"FF": 146,
+"SI": 62,
+"FC": 31
+},
+"BR": {
+"ST": 59,
+"CU": 30
+},
+"OS": {
+"FS": 48
+}
+},
+"not_enough_data": {
+"BR": 89,
+"OS": 48
+},
+"min_n": 150,
+"verdict": {
+"grade": "none"
+},
+"timeline": [],
+"tells": [],
+"frames": [
+{
+"view": "C",
+"family": "FB",
+"family_name": "fastball",
+"slice": "set",
+"when": "in the set",
+"src": "wheeler/frames/C_windup_FB_set.jpg",
+"n": 221
+},
+{
+"view": "C",
+"family": "FB",
+"family_name": "fastball",
+"slice": "lift_top",
+"when": "at the top of the leg lift",
+"src": "wheeler/frames/C_windup_FB_lift_top.jpg",
+"n": 239
+}
+]
+}
+],
+"fix_cue": "",
+"fix_suggestions": [
+"Same leg lift height and path on every pitch.",
+"Same posture in the set: no extra lean on one pitch."
+],
+"facility": [],
+"games": [
+{
+"date": "2026-04-25",
+"opp": "ATL",
+"home": false,
+"pitches": 84,
+"processed": true,
+"n_flagged": 10,
+"best": {
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "weak",
+"slice": "break",
+"when": "at hand break",
+"n": 47,
+"acc": 0.532,
+"baseline": 0.66,
+"situation": 0.681,
+"flagged": 10
+}
+},
+{
+"date": "2026-05-01",
+"opp": "MIA",
+"home": false,
+"pitches": 94,
+"processed": false,
+"n_flagged": 0,
+"best": null
+},
+{
+"date": "2026-05-06",
+"opp": "ATH",
+"home": true,
+"pitches": 98,
+"processed": true,
+"n_flagged": 10,
+"best": {
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "weak",
+"slice": "break",
+"when": "at hand break",
+"n": 52,
+"acc": 0.615,
+"baseline": 0.519,
+"situation": 0.5,
+"flagged": 10
+}
+},
+{
+"date": "2026-05-12",
+"opp": "BOS",
+"home": false,
+"pitches": 87,
+"processed": true,
+"n_flagged": 9,
+"best": {
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "weak",
+"slice": "break",
+"when": "at hand break",
+"n": 48,
+"acc": 0.729,
+"baseline": 0.688,
+"situation": 0.667,
+"flagged": 9
+}
+},
+{
+"date": "2026-05-17",
+"opp": "PIT",
+"home": false,
+"pitches": 98,
+"processed": true,
+"n_flagged": 10,
+"best": {
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "weak",
+"slice": "break",
+"when": "at hand break",
+"n": 55,
+"acc": 0.527,
+"baseline": 0.709,
+"situation": 0.727,
+"flagged": 10
+}
+},
+{
+"date": "2026-05-23",
+"opp": "CLE",
+"home": true,
+"pitches": 99,
+"processed": true,
+"n_flagged": 10,
+"best": {
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "weak",
+"slice": "break",
+"when": "at hand break",
+"n": 53,
+"acc": 0.736,
+"baseline": 0.623,
+"situation": 0.604,
+"flagged": 10
+}
+},
+{
+"date": "2026-05-29",
+"opp": "LAD",
+"home": false,
+"pitches": 90,
+"processed": false,
+"n_flagged": 0,
+"best": null
+},
+{
+"date": "2026-06-04",
+"opp": "SD",
+"home": true,
+"pitches": 104,
+"processed": true,
+"n_flagged": 10,
+"best": {
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "weak",
+"slice": "break",
+"when": "at hand break",
+"n": 75,
+"acc": 0.747,
+"baseline": 0.72,
+"situation": 0.64,
+"flagged": 10
+}
+},
+{
+"date": "2026-06-09",
+"opp": "TOR",
+"home": false,
+"pitches": 96,
+"processed": true,
+"n_flagged": 10,
+"best": {
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "weak",
+"slice": "break",
+"when": "at hand break",
+"n": 47,
+"acc": 0.745,
+"baseline": 0.702,
+"situation": 0.66,
+"flagged": 10
+}
+},
+{
+"date": "2026-06-15",
+"opp": "MIA",
+"home": true,
+"pitches": 97,
+"processed": true,
+"n_flagged": 10,
+"best": {
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "weak",
+"slice": "break",
+"when": "at hand break",
+"n": 38,
+"acc": 0.763,
+"baseline": 0.579,
+"situation": 0.605,
+"flagged": 10
+}
+},
+{
+"date": "2026-06-21",
+"opp": "NYM",
+"home": true,
+"pitches": 104,
+"processed": true,
+"n_flagged": 10,
+"best": {
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "weak",
+"slice": "break",
+"when": "at hand break",
+"n": 62,
+"acc": 0.694,
+"baseline": 0.5,
+"situation": 0.516,
+"flagged": 10
+}
+},
+{
+"date": "2026-06-26",
+"opp": "NYM",
+"home": false,
+"pitches": 98,
+"processed": true,
+"n_flagged": 10,
+"best": {
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "weak",
+"slice": "break",
+"when": "at hand break",
+"n": 51,
+"acc": 0.686,
+"baseline": 0.588,
+"situation": 0.588,
+"flagged": 10
+}
+},
+{
+"date": "2026-07-01",
+"opp": "PIT",
+"home": true,
+"pitches": 104,
+"processed": true,
+"n_flagged": 9,
+"best": {
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "weak",
+"slice": "break",
+"when": "at hand break",
+"n": 36,
+"acc": 0.694,
+"baseline": 0.611,
+"situation": 0.667,
+"flagged": 9
+}
+},
+{
+"date": "2026-07-07",
+"opp": "CIN",
+"home": false,
+"pitches": 104,
+"processed": true,
+"n_flagged": 10,
+"best": {
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "weak",
+"slice": "break",
+"when": "at hand break",
+"n": 52,
+"acc": 0.731,
+"baseline": 0.673,
+"situation": 0.635,
+"flagged": 10
+}
+},
+{
+"date": "2026-07-12",
+"opp": "DET",
+"home": false,
+"pitches": 96,
+"processed": false,
+"n_flagged": 0,
+"best": null
+},
+{
+"date": "2026-07-21",
+"opp": "LAD",
+"home": true,
+"pitches": 93,
+"processed": true,
+"n_flagged": 10,
+"best": {
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "weak",
+"slice": "break",
+"when": "at hand break",
+"n": 72,
+"acc": 0.792,
+"baseline": 0.597,
+"situation": 0.597,
+"flagged": 10
+}
+},
+{
+"date": "2026-07-27",
+"opp": "MIA",
+"home": false,
+"pitches": 68,
+"processed": false,
+"n_flagged": 0,
+"best": null
+},
+{
+"date": "2026-08-02",
+"opp": "BAL",
+"home": false,
+"pitches": 32,
+"processed": true,
+"n_flagged": 4,
+"best": {
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "weak",
+"slice": "break",
+"when": "at hand break",
+"n": 14,
+"acc": 0.786,
+"baseline": 0.571,
+"situation": 0.5,
+"flagged": 4
+}
+},
+{
+"date": "2026-08-07",
+"opp": "TOR",
+"home": true,
+"pitches": 116,
+"processed": true,
+"n_flagged": 10,
+"best": {
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "weak",
+"slice": "break",
+"when": "at hand break",
+"n": 61,
+"acc": 0.656,
+"baseline": 0.59,
+"situation": 0.492,
+"flagged": 10
+}
+},
+{
+"date": "2026-08-12",
+"opp": "STL",
+"home": false,
+"pitches": 84,
+"processed": true,
+"n_flagged": 10,
+"best": {
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "weak",
+"slice": "break",
+"when": "at hand break",
+"n": 33,
+"acc": 0.788,
+"baseline": 0.667,
+"situation": 0.636,
+"flagged": 10
+}
+},
+{
+"date": "2026-08-18",
+"opp": "MIA",
+"home": true,
+"pitches": 98,
+"processed": true,
+"n_flagged": 10,
+"best": {
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "weak",
+"slice": "break",
+"when": "at hand break",
+"n": 76,
+"acc": 0.711,
+"baseline": 0.632,
+"situation": 0.632,
+"flagged": 10
+}
+},
+{
+"date": "2026-08-24",
+"opp": "SEA",
+"home": false,
+"pitches": 103,
+"processed": true,
+"n_flagged": 2,
+"best": {
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "weak",
+"slice": "break",
+"when": "at hand break",
+"n": 41,
+"acc": 0.683,
+"baseline": 0.561,
+"situation": 0.561,
+"flagged": 2
+}
+},
+{
+"date": "2026-08-30",
+"opp": "LAA",
+"home": false,
+"pitches": 108,
+"processed": true,
+"n_flagged": 10,
+"best": {
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "weak",
+"slice": "break",
+"when": "at hand break",
+"n": 32,
+"acc": 0.812,
+"baseline": 0.656,
+"situation": 0.625,
+"flagged": 10
+}
+},
+{
+"date": "2026-09-05",
+"opp": "ATL",
+"home": true,
+"pitches": 95,
+"processed": true,
+"n_flagged": 10,
+"best": {
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "weak",
+"slice": "break",
+"when": "at hand break",
+"n": 62,
+"acc": 0.839,
+"baseline": 0.758,
+"situation": 0.758,
+"flagged": 10
+}
+},
+{
+"date": "2026-09-10",
+"opp": "HOU",
+"home": true,
+"pitches": 110,
+"processed": true,
+"n_flagged": 10,
+"best": {
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "weak",
+"slice": "break",
+"when": "at hand break",
+"n": 54,
+"acc": 0.667,
+"baseline": 0.537,
+"situation": 0.537,
+"flagged": 10
+}
+},
+{
+"date": "2026-09-16",
+"opp": "WSH",
+"home": false,
+"pitches": 91,
+"processed": true,
+"n_flagged": 9,
+"best": {
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "weak",
+"slice": "break",
+"when": "at hand break",
+"n": 51,
+"acc": 0.706,
+"baseline": 0.706,
+"situation": 0.686,
+"flagged": 9
+}
+},
+{
+"date": "2026-09-22",
+"opp": "MIL",
+"home": true,
+"pitches": 101,
+"processed": true,
+"n_flagged": 10,
+"best": {
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "weak",
+"slice": "break",
+"when": "at hand break",
+"n": 62,
+"acc": 0.774,
+"baseline": 0.645,
+"situation": 0.613,
+"flagged": 10
+}
+},
+{
+"date": "2026-09-27",
+"opp": "TB",
+"home": true,
+"pitches": 97,
+"processed": true,
+"n_flagged": 10,
+"best": {
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "weak",
+"slice": "break",
+"when": "at hand break",
+"n": 46,
+"acc": 0.674,
+"baseline": 0.609,
+"situation": 0.543,
+"flagged": 10
+}
+},
+{
+"date": "2026-10-01",
+"opp": "ATL",
+"home": false,
+"pitches": 68,
+"processed": true,
+"n_flagged": 10,
+"best": {
+"key": "hitter_windup",
+"label": "Hitter view, windup",
+"view_label": "Hitter view",
+"delivery": "windup",
+"grade": "weak",
+"slice": "break",
+"when": "at hand break",
+"n": 39,
+"acc": 0.615,
+"baseline": 0.641,
+"situation": 0.462,
+"flagged": 10
+}
+}
+]
+}

@@ -214,7 +214,7 @@ function verdictText(v) {
     return `Not enough game video from this angle yet.`;
   }
   if (r.grade === 'none') return `Nothing readable from ${v.who_text} before release. Best point was ${slicePhrase(v, r.slice)}: ${pct(r.acc)} against ${pct(r.baseline)} by guessing the usual pitch, too small an edge to matter.`;
-  return `Pitch type was readable ${pct(r.acc)} of the time ${slicePhrase(v, r.slice)}, against ${pct(r.baseline)} by guessing his usual pitch and ${pct(r.situation)} from the count and runners alone.`;
+  return `Pitch type was readable ${pct(r.acc)} of the time ${slicePhrase(v, r.slice)}, against ${pct(r.baseline)} by guessing his usual pitch and ${pct(r.situation)} from the count and runners alone.${r.earliest && r.earliest !== r.slice ? ` First readable ${slicePhrase(v, r.earliest)}.` : ''}`;
 }
 $('verdicts').innerHTML = D.views.map(v => {
   const g = v.timeline.length ? (v.verdict.grade || 'none') : 'pending';

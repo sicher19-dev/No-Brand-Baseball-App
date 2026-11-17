@@ -4,7 +4,7 @@
 "name": "Paul Skenes"
 },
 "season": "2026",
-"built": "2026-11-15",
+"built": "2026-11-17",
 "label": "game-only",
 "date": "2026-05-28",
 "opp": "CHC",
@@ -33,7 +33,7 @@
 "slice": "set",
 "when": "in the set",
 "n": 65,
-"acc": 0.508,
+"acc": 0.477,
 "baseline": 0.477,
 "situation": 0.462
 },
@@ -43,13 +43,13 @@
 "view_label": "Center field",
 "delivery": "stretch",
 "grade": "weak",
-"slice": "top_m1",
-"when": "a second before the top of the leg lift",
+"slice": "m1000",
+"when": "1.0 s before release",
 "n": 20,
-"acc": 0.4,
+"acc": 0.45,
 "baseline": 0.4,
-"situation": 0.45,
-"flagged": 7
+"situation": 0.5,
+"flagged": 5
 },
 {
 "key": "cf_windup",
@@ -60,7 +60,7 @@
 "slice": "lift_start",
 "when": "as the leg starts up",
 "n": 75,
-"acc": 0.533,
+"acc": 0.52,
 "baseline": 0.427,
 "situation": 0.427
 }
@@ -77,7 +77,7 @@
 "slice": "lift_start",
 "when": "as the leg starts up",
 "t": 0.77,
-"conf": 0.745,
+"conf": 0.7449,
 "conf_sit": 0.3199,
 "tell": "Before a fastball, throwing elbow forward/back tends to sit further right on screen as the leg starts up.",
 "fix": "Same throwing elbow in the set on every pitch.",
@@ -88,11 +88,11 @@
 "clip": "skenes/clips/C_0134a9ff-8fc9-3583-93ba-b4bf4bb36e3b.mp4",
 "still": "skenes/clips/C_0134a9ff-8fc9-3583-93ba-b4bf4bb36e3b_lift_start.jpg",
 "compare": {
-"play_id": "9a9edf06-d470-3401-a581-5d518b6ae20a",
+"play_id": "6c1c6ab6-5f17-39c9-aebf-612c83545609",
 "family": "OS",
 "family_name": "offspeed pitch",
-"clip": "skenes/clips/C_9a9edf06-d470-3401-a581-5d518b6ae20a.mp4",
-"still": "skenes/clips/C_9a9edf06-d470-3401-a581-5d518b6ae20a_lift_start.jpg"
+"clip": "skenes/clips/C_6c1c6ab6-5f17-39c9-aebf-612c83545609.mp4",
+"still": "skenes/clips/C_6c1c6ab6-5f17-39c9-aebf-612c83545609_lift_start.jpg"
 }
 },
 {
@@ -106,7 +106,7 @@
 "slice": "m1500",
 "when": "1.5 s before release",
 "t": 1.5,
-"conf": 0.7354,
+"conf": 0.6748,
 "conf_sit": 0.5183,
 "tell": "Before a fastball, throwing elbow forward/back tends to sit further right on screen 1.5 s before release.",
 "fix": "Same throwing elbow in the set on every pitch.",
@@ -117,40 +117,11 @@
 "clip": "skenes/clips/C_2f926cee-8566-3c4d-aa5f-7dd07dc9d2ca.mp4",
 "still": "skenes/clips/C_2f926cee-8566-3c4d-aa5f-7dd07dc9d2ca_m1500.jpg",
 "compare": {
-"play_id": "9a9edf06-d470-3401-a581-5d518b6ae20a",
+"play_id": "6c1c6ab6-5f17-39c9-aebf-612c83545609",
 "family": "OS",
 "family_name": "offspeed pitch",
-"clip": "skenes/clips/C_9a9edf06-d470-3401-a581-5d518b6ae20a.mp4",
-"still": "skenes/clips/C_9a9edf06-d470-3401-a581-5d518b6ae20a_m1500.jpg"
-}
-},
-{
-"play_id": "36b9064d-b85c-3b0a-b0af-f99665520c69",
-"family": "FB",
-"family_name": "fastball",
-"key": "cf_stretch",
-"label": "Center field, stretch",
-"view_label": "Center field",
-"delivery": "stretch",
-"slice": "m2000",
-"when": "2.0 s before release",
-"t": 2.0,
-"conf": 0.7053,
-"conf_sit": 0.5357,
-"tell": "Before a fastball, throwing elbow forward/back tends to sit further right on screen 2.0 s before release.",
-"fix": "Same throwing elbow in the set on every pitch.",
-"inning": 3,
-"count": "1-1",
-"outs": 2,
-"bat_side": "L",
-"clip": "skenes/clips/C_36b9064d-b85c-3b0a-b0af-f99665520c69.mp4",
-"still": "skenes/clips/C_36b9064d-b85c-3b0a-b0af-f99665520c69_m2000.jpg",
-"compare": {
-"play_id": "9a9edf06-d470-3401-a581-5d518b6ae20a",
-"family": "OS",
-"family_name": "offspeed pitch",
-"clip": "skenes/clips/C_9a9edf06-d470-3401-a581-5d518b6ae20a.mp4",
-"still": "skenes/clips/C_9a9edf06-d470-3401-a581-5d518b6ae20a_m2000.jpg"
+"clip": "skenes/clips/C_6c1c6ab6-5f17-39c9-aebf-612c83545609.mp4",
+"still": "skenes/clips/C_6c1c6ab6-5f17-39c9-aebf-612c83545609_m1500.jpg"
 }
 },
 {
@@ -161,25 +132,25 @@
 "label": "Center field, stretch",
 "view_label": "Center field",
 "delivery": "stretch",
-"slice": "top_m1",
-"when": "a second before the top of the leg lift",
-"t": 1.4,
-"conf": 0.6389,
-"conf_sit": 0.2671,
-"tell": "Before a fastball, throwing elbow forward/back tends to sit further right on screen a second before the top of the leg lift.",
+"slice": "lift_start",
+"when": "as the leg starts up",
+"t": 0.77,
+"conf": 0.6442,
+"conf_sit": 0.3044,
+"tell": "Before a fastball, throwing elbow forward/back tends to sit further right on screen as the leg starts up.",
 "fix": "Same throwing elbow in the set on every pitch.",
 "inning": 6,
 "count": "2-1",
 "outs": 1,
 "bat_side": "L",
 "clip": "skenes/clips/C_b7db2992-6690-3aa9-9548-40b0fe2cdf57.mp4",
-"still": "skenes/clips/C_b7db2992-6690-3aa9-9548-40b0fe2cdf57_top_m1.jpg",
+"still": "skenes/clips/C_b7db2992-6690-3aa9-9548-40b0fe2cdf57_lift_start.jpg",
 "compare": {
-"play_id": "9a9edf06-d470-3401-a581-5d518b6ae20a",
+"play_id": "6c1c6ab6-5f17-39c9-aebf-612c83545609",
 "family": "OS",
 "family_name": "offspeed pitch",
-"clip": "skenes/clips/C_9a9edf06-d470-3401-a581-5d518b6ae20a.mp4",
-"still": "skenes/clips/C_9a9edf06-d470-3401-a581-5d518b6ae20a_top_m1.jpg"
+"clip": "skenes/clips/C_6c1c6ab6-5f17-39c9-aebf-612c83545609.mp4",
+"still": "skenes/clips/C_6c1c6ab6-5f17-39c9-aebf-612c83545609_lift_start.jpg"
 }
 },
 {
@@ -193,7 +164,7 @@
 "slice": "m1000",
 "when": "1.0 s before release",
 "t": 1.0,
-"conf": 0.6333,
+"conf": 0.6334,
 "conf_sit": 0.2727,
 "tell": "Before a fastball, throwing elbow forward/back tends to sit further right on screen 1.0 s before release.",
 "fix": "Same throwing elbow in the set on every pitch.",
@@ -204,11 +175,11 @@
 "clip": "skenes/clips/C_24eb89d3-431b-31b0-a49d-f83a46c8be2e.mp4",
 "still": "skenes/clips/C_24eb89d3-431b-31b0-a49d-f83a46c8be2e_m1000.jpg",
 "compare": {
-"play_id": "9a9edf06-d470-3401-a581-5d518b6ae20a",
+"play_id": "6c1c6ab6-5f17-39c9-aebf-612c83545609",
 "family": "OS",
 "family_name": "offspeed pitch",
-"clip": "skenes/clips/C_9a9edf06-d470-3401-a581-5d518b6ae20a.mp4",
-"still": "skenes/clips/C_9a9edf06-d470-3401-a581-5d518b6ae20a_m1000.jpg"
+"clip": "skenes/clips/C_6c1c6ab6-5f17-39c9-aebf-612c83545609.mp4",
+"still": "skenes/clips/C_6c1c6ab6-5f17-39c9-aebf-612c83545609_m1000.jpg"
 }
 },
 {
@@ -222,7 +193,7 @@
 "slice": "lift_start",
 "when": "as the leg starts up",
 "t": 0.77,
-"conf": 0.6269,
+"conf": 0.6166,
 "conf_sit": 0.4589,
 "tell": "Before a fastball, throwing elbow forward/back tends to sit further right on screen as the leg starts up.",
 "fix": "Same throwing elbow in the set on every pitch.",
@@ -233,44 +204,15 @@
 "clip": "skenes/clips/C_52ebdf82-3696-3e75-afb1-f6505e554a10.mp4",
 "still": "skenes/clips/C_52ebdf82-3696-3e75-afb1-f6505e554a10_lift_start.jpg",
 "compare": {
-"play_id": "9a9edf06-d470-3401-a581-5d518b6ae20a",
+"play_id": "6c1c6ab6-5f17-39c9-aebf-612c83545609",
 "family": "OS",
 "family_name": "offspeed pitch",
-"clip": "skenes/clips/C_9a9edf06-d470-3401-a581-5d518b6ae20a.mp4",
-"still": "skenes/clips/C_9a9edf06-d470-3401-a581-5d518b6ae20a_lift_start.jpg"
-}
-},
-{
-"play_id": "19d0aac8-6fe9-334a-948c-23604b24e153",
-"family": "BR",
-"family_name": "breaking ball",
-"key": "cf_stretch",
-"label": "Center field, stretch",
-"view_label": "Center field",
-"delivery": "stretch",
-"slice": "m2000",
-"when": "2.0 s before release",
-"t": 2.0,
-"conf": 0.6008,
-"conf_sit": 0.1893,
-"tell": "Before a breaking ball, how open the shoulders are to the camera tends to be smaller 2.0 s before release.",
-"fix": "Same chest angle to the plate in the set.",
-"inning": 4,
-"count": "0-1",
-"outs": 2,
-"bat_side": "R",
-"clip": "skenes/clips/C_19d0aac8-6fe9-334a-948c-23604b24e153.mp4",
-"still": "skenes/clips/C_19d0aac8-6fe9-334a-948c-23604b24e153_m2000.jpg",
-"compare": {
-"play_id": "24eb89d3-431b-31b0-a49d-f83a46c8be2e",
-"family": "FB",
-"family_name": "fastball",
-"clip": "skenes/clips/C_24eb89d3-431b-31b0-a49d-f83a46c8be2e.mp4",
-"still": "skenes/clips/C_24eb89d3-431b-31b0-a49d-f83a46c8be2e_m2000.jpg"
+"clip": "skenes/clips/C_6c1c6ab6-5f17-39c9-aebf-612c83545609.mp4",
+"still": "skenes/clips/C_6c1c6ab6-5f17-39c9-aebf-612c83545609_lift_start.jpg"
 }
 }
 ],
-"n_flagged": 7,
+"n_flagged": 5,
 "best": {
 "key": "hitter_stretch",
 "label": "Hitter view, stretch",
