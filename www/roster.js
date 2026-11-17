@@ -1,5 +1,6 @@
 window.NBB_ROSTER = {
   "updated": "2026-11-17",
+  "push": true,
   "coachTools": [
     {
       "id": "mocap-library",
