@@ -134,6 +134,7 @@ span[data-placeholder]{font-family:var(--fm);font-size:.8em;letter-spacing:.02em
 @media (max-width:350px){.nav .pill{display:none}}
 
 .sheet{position:fixed;inset:0;z-index:80;display:flex;flex-direction:column;padding:16px var(--pad) 28px;background:#000;overflow:auto;opacity:0;transition:opacity .3s}
+.sheet[hidden]{display:none}
 .sheet.open{opacity:1}
 .sheet__top{display:flex;align-items:center;justify-content:space-between;height:54px;flex:none}
 .sheet__top .nav__burger{display:inline-flex;align-items:center}
@@ -869,6 +870,7 @@ lw.addEventListener('focusout',function(e){if(e.relatedTarget&&!lw.contains(e.re
 
 /* ---------- nav: full-screen menu ---------- */
 var mb=$('#menuBtn'), sheet=$('#sheet'), sc=$('#sheetClose');
+$$('a.brand').forEach(function(b){b.addEventListener('click',function(e){e.preventDefault();if(!sheet.hidden)closeSheet();W.scrollTo({top:0,behavior:'instant'});});});
 function openSheet(){sheet.hidden=false;mb.setAttribute('aria-expanded','true');root.classList.add('lock');W.requestAnimationFrame(function(){sheet.classList.add('open');});sc.focus();}
 function closeSheet(){sheet.classList.remove('open');sheet.hidden=true;mb.setAttribute('aria-expanded','false');root.classList.remove('lock');mb.focus();}
 mb.addEventListener('click',openSheet);
