@@ -40,7 +40,8 @@ window.NBB_BACKEND = (function () {
   }
   async function sendPasswordReset(email) {
     var c = sb(); if (!c) fail('The backend is not set up yet.');
-    var redirect = location.origin + location.pathname;
+    // Inside the native app location is capacitor://localhost, which Mail cannot open; send the link to the web app instead.
+    var redirect = /^https?:/.test(location.protocol) ? location.origin + location.pathname : (cfg.siteUrl || location.origin + location.pathname);
     var r = await c.auth.resetPasswordForEmail(email, { redirectTo: redirect });
     if (r.error) fail(r.error);
   }

@@ -7,5 +7,6 @@ window.NBB_CONFIG = {
   supabaseAnonKey: "sb_publishable_qEs-DLQ9fS-P1x2Ln4Z5xQ_hftIgdm1",
   maxVideoMB: 50,               // Free plan limit. On Pro: raise Storage -> Settings, set 500 here and in supabase/schema.sql
   coachLabel: "Brian & Derek",
-  coachInbox: "nobrandbaseball@gmail.com"
+  coachInbox: "nobrandbaseball@gmail.com",
+  siteUrl: "https://sicher19-dev.github.io/No-Brand-Baseball-App/"   // where invite / password-reset links land (must be in Supabase -> Auth -> URL Configuration)
 };
