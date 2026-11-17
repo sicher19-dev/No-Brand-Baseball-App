@@ -101,8 +101,10 @@ window.NBB_BACKEND = (function () {
     return r.data || [];
   }
 
-  async function uploadAssessment(p, file, note) {
+  // by = { role: 'pitcher' | 'coach', name } - a coach can film a pitcher in person and save it to that pitcher's page.
+  async function uploadAssessment(p, file, note, by) {
     var c = sb(); if (!c) fail('The backend is not set up yet.');
+    by = by || { role: 'pitcher' };
     if (file.size > MAX_BYTES) {
       fail('That video is ' + Math.round(file.size / 1048576) + ' MB. Please keep it under ' + MAX_MB + ' MB (' + MAX_HINT + ').');
     }
@@ -115,7 +117,8 @@ window.NBB_BACKEND = (function () {
     var s = await session();
     var ins = await c.from('assessments').insert({
       pitcher_id: p.id, user_id: s.user.id, storage_path: path,
-      note: note || null, size_bytes: file.size, content_type: file.type || null
+      note: note || null, size_bytes: file.size, content_type: file.type || null,
+      uploaded_by_role: by.role === 'coach' ? 'coach' : 'pitcher', uploaded_by_name: by.name || null
     }).select().single();
     if (ins.error) fail(ins.error);
     return ins.data;

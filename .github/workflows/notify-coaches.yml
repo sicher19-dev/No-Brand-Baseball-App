@@ -1,0 +1,40 @@
+# Emails the coaches when a pitcher sends a message or uploads a video (tools/notify_coaches.mjs).
+# Runs every 10 minutes (GitHub often delays scheduled runs by a few more minutes) and on demand.
+# Needs secrets SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, SMTP_USER, SMTP_PASS, NOTIFY_TO (see README "Coach email alerts").
+# Note: GitHub pauses scheduled workflows after 60 days without a push to the repo; pushing anything re-enables it.
+name: Notify coaches
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+    inputs:
+      test:
+        description: "Send a test email to the coach addresses instead of checking for new activity"
+        type: boolean
+        default: false
+
+concurrency:
+  group: notify-coaches
+  cancel-in-progress: false
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check for new messages and videos
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          NOTIFY_FROM: ${{ secrets.NOTIFY_FROM }}
+          NOTIFY_TO: ${{ secrets.NOTIFY_TO }}
+        run: node tools/notify_coaches.mjs ${{ inputs.test && '--test' || '' }}

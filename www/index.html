@@ -217,6 +217,23 @@
     <div id="cp-reports"></div>
     <section class="group">
       <div class="group-title"><span>Assessments</span><span class="c" id="cp-assess-count"></span></div>
+      <div class="panel">
+        <div class="panel-text">Run an assessment here and now: film <span id="cp-record-name">the pitcher</span> on this phone and it lands on their page like a remote assessment.</div>
+        <div class="row">
+          <label class="btn-primary btn-file">Record video<input type="file" accept="video/*" capture="environment" id="cp-assess-record" hidden></label>
+          <label class="btn-ghost btn-file">Choose from library<input type="file" accept="video/*" id="cp-assess-pick" hidden></label>
+        </div>
+        <div id="cp-assess-preview" hidden>
+          <video id="cp-assess-video" controls playsinline muted></video>
+          <div class="meta mono" id="cp-assess-meta"></div>
+          <textarea id="cp-assess-note" rows="2" placeholder="Note on this video (optional)"></textarea>
+          <div class="row">
+            <button id="cp-assess-send" class="btn-primary" type="button">Save to pitcher's page</button>
+            <button id="cp-assess-cancel" class="btn-ghost" type="button">Cancel</button>
+          </div>
+        </div>
+        <div id="cp-assess-status" class="status" hidden></div>
+      </div>
       <div id="cp-assess" class="list"></div>
     </section>
     <section class="group">

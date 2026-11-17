@@ -61,6 +61,11 @@ create table if not exists public.assessments (
   coach_note   text
 );
 create index if not exists assessments_pitcher_idx on public.assessments (pitcher_id, created_at desc);
+-- Added later: who filmed it (a coach can record in person) and when the coaches were emailed about it.
+alter table public.assessments add column if not exists uploaded_by_role text not null default 'pitcher'
+  check (uploaded_by_role in ('pitcher', 'coach'));
+alter table public.assessments add column if not exists uploaded_by_name text;
+alter table public.assessments add column if not exists notified_at timestamptz;
 
 -- ---------------------------------------------------------------------------
 -- Messages: one thread per pitcher, shared with all coaches.
@@ -77,6 +82,7 @@ create table if not exists public.messages (
   read_by_pitcher boolean not null default false
 );
 create index if not exists messages_pitcher_idx on public.messages (pitcher_id, created_at);
+alter table public.messages add column if not exists notified_at timestamptz;
 
 -- ---------------------------------------------------------------------------
 -- Row-level security
@@ -155,7 +161,7 @@ create or replace function public.coach_overview()
 returns table (pitcher_id text, new_assessments bigint, unread_messages bigint, last_activity timestamptz)
 language sql stable security definer set search_path = public as $$
   select p.pitcher_id,
-         coalesce((select count(*) from public.assessments a where a.pitcher_id = p.pitcher_id and a.reviewed_at is null), 0),
+         coalesce((select count(*) from public.assessments a where a.pitcher_id = p.pitcher_id and a.reviewed_at is null and a.uploaded_by_role = 'pitcher'), 0),
          coalesce((select count(*) from public.messages m where m.pitcher_id = p.pitcher_id and m.sender_role = 'pitcher' and not m.read_by_coach), 0),
          greatest(
            (select max(created_at) from public.assessments a where a.pitcher_id = p.pitcher_id),
@@ -165,3 +171,31 @@ language sql stable security definer set search_path = public as $$
         union select distinct pitcher_id from public.messages) p
   where public.is_coach();
 $$;
+
+-- ---------------------------------------------------------------------------
+-- Coaches record assessments in person (added 2026-11-17).
+-- A coach can film a pitcher on the coach's own phone and upload it to that pitcher's folder.
+-- ---------------------------------------------------------------------------
+
+drop policy if exists "assessments: pitcher inserts own" on public.assessments;
+create policy "assessments: pitcher inserts own" on public.assessments
+  for insert to authenticated
+  with check (
+    user_id = auth.uid()
+    and (
+      (uploaded_by_role = 'pitcher' and pitcher_id = public.my_pitcher_id())
+      or (uploaded_by_role = 'coach' and public.is_coach())
+    )
+  );
+
+drop policy if exists "assessments bucket: pitcher uploads to own folder" on storage.objects;
+create policy "assessments bucket: pitcher uploads to own folder" on storage.objects
+  for insert to authenticated
+  with check (bucket_id = 'assessments' and ((storage.foldername(name))[1] = public.my_pitcher_id() or public.is_coach()));
+
+-- ---------------------------------------------------------------------------
+-- Coach email alerts (tools/notify_coaches.mjs, run by the notify-coaches workflow).
+-- notified_at is stamped once an email about the row has gone out.
+-- ---------------------------------------------------------------------------
+create index if not exists assessments_unnotified_idx on public.assessments (created_at) where notified_at is null;
+create index if not exists messages_unnotified_idx    on public.messages (created_at) where notified_at is null;

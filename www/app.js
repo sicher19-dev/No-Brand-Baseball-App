@@ -26,7 +26,6 @@
 
   var roster = window.NBB_ROSTER || { updated: '', pitchers: [] };
   var session = null;          // { kind: 'pitcher', id, backend: bool } | { kind: 'coach', name, email }
-  var pendingFile = null;      // video chosen but not yet sent
   var coachLoadedId = null;    // pitcher currently open in coach view
 
   var $ = function (id) { return document.getElementById(id); };
@@ -150,39 +149,55 @@
     if (on) { loadAssessments(p); loadThread(p); }
   }
 
-  // ---------- assessments (pitcher) ----------
-  function chooseFile(file) {
-    if (!file) return;
-    pendingFile = file;
-    var v = $('assess-video');
-    try { v.src = URL.createObjectURL(file); } catch (e) {}
-    $('assess-meta').textContent = (file.name || 'video') + ' · ' + fmtMB(file.size);
-    $('assess-preview').hidden = false;
-    setStatus('assess-status', '');
-    if (file.size > B.MAX_BYTES) setStatus('assess-status', 'This video is ' + fmtMB(file.size) + '. Keep it under ' + B.MAX_MB + ' MB (' + B.MAX_HINT + ').', 'bad');
-  }
-  function cancelFile() {
-    pendingFile = null;
-    $('assess-preview').hidden = true;
-    $('assess-video').removeAttribute('src');
-    $('assess-note').value = '';
-    $('assess-record').value = ''; $('assess-pick').value = '';
-  }
-  async function sendAssessment(p) {
-    if (!pendingFile) return;
-    var btn = $('assess-send');
-    btn.disabled = true; btn.textContent = 'Uploading…';
-    setStatus('assess-status', 'Uploading your video. This can take a minute on cellular; keep the app open.', 'info');
-    try {
-      await B.uploadAssessment(p, pendingFile, $('assess-note').value.trim());
-      setStatus('assess-status', 'Sent. ' + COACH_LABEL + ' will take a look and reply here.', 'good');
-      cancelFile();
-      loadAssessments(p);
-    } catch (e) {
-      setStatus('assess-status', 'Upload failed: ' + e.message, 'bad');
+  // ---------- assessment uploader ----------
+  // One recorder, two homes: the pitcher's own page (ids assess-*) and the coach's in-person recorder on a
+  // pitcher's coach page (ids cp-assess-*). opts: pitcher(), by(), uploading, done(p), after(p).
+  function assessUploader(px, opts) {
+    var pending = null;
+    function id(s) { return px + s; }
+    function choose(file) {
+      if (!file) return;
+      pending = file;
+      var v = $(id('video'));
+      try { v.src = URL.createObjectURL(file); } catch (e) {}
+      $(id('meta')).textContent = (file.name || 'video') + ' · ' + fmtMB(file.size);
+      $(id('preview')).hidden = false;
+      setStatus(id('status'), '');
+      if (file.size > B.MAX_BYTES) setStatus(id('status'), 'This video is ' + fmtMB(file.size) + '. Keep it under ' + B.MAX_MB + ' MB (' + B.MAX_HINT + ').', 'bad');
     }
-    btn.disabled = false; btn.textContent = 'Send to No Brand';
+    function cancel() {
+      pending = null;
+      $(id('preview')).hidden = true;
+      $(id('video')).removeAttribute('src');
+      $(id('note')).value = '';
+      $(id('record')).value = ''; $(id('pick')).value = '';
+    }
+    async function send() {
+      var p = opts.pitcher(); if (!pending || !p) return;
+      var btn = $(id('send')); var label = btn.textContent;
+      btn.disabled = true; btn.textContent = 'Uploading…';
+      setStatus(id('status'), opts.uploading, 'info');
+      try {
+        await B.uploadAssessment(p, pending, $(id('note')).value.trim(), opts.by());
+        setStatus(id('status'), opts.done(p), 'good');
+        cancel();
+        if (opts.after) opts.after(p);
+      } catch (e) {
+        setStatus(id('status'), 'Upload failed: ' + e.message, 'bad');
+      }
+      btn.disabled = false; btn.textContent = label;
+    }
+    $(id('record')).addEventListener('change', function (e) { choose(e.target.files && e.target.files[0]); });
+    $(id('pick')).addEventListener('change', function (e) { choose(e.target.files && e.target.files[0]); });
+    $(id('cancel')).addEventListener('click', cancel);
+    $(id('send')).addEventListener('click', send);
+    return { cancel: cancel };
   }
+  function recordedBy(a) {
+    return a.uploaded_by_role === 'coach' ? 'Recorded in person' + (a.uploaded_by_name ? ' by ' + a.uploaded_by_name : '') : '';
+  }
+
+  // ---------- assessments (pitcher) ----------
   async function loadAssessments(p) {
     try {
       var rows = await B.listAssessments(p.id);
@@ -190,7 +205,8 @@
       $('assess-list').innerHTML = rows.length ? rows.map(function (a) {
         return '<div class="item">' +
           '<div class="item-head"><span class="item-title">' + esc(fmtWhen(a.created_at)) + '</span>' +
-          '<span class="badge ' + (a.reviewed_at ? 'good' : '') + '">' + (a.reviewed_at ? 'Reviewed' : 'Received') + '</span></div>' +
+          '<span class="badge ' + (a.reviewed_at ? 'good' : '') + '">' + (a.reviewed_at ? 'Reviewed' : (a.uploaded_by_role === 'coach' ? 'In person' : 'Received')) + '</span></div>' +
+          (recordedBy(a) ? '<div class="item-meta">' + esc(recordedBy(a)) + '</div>' : '') +
           (a.note ? '<div class="item-text">' + esc(a.note) + '</div>' : '') +
           (a.coach_note ? '<div class="item-reply"><b>' + esc(COACH_LABEL) + ':</b> ' + esc(a.coach_note) + '</div>' : '') +
           '<div class="item-meta mono">' + esc(fmtMB(a.size_bytes)) + '</div>' +
@@ -318,6 +334,8 @@
     coachLoadedId = id;
     $('cp-title').textContent = p.first + ' ' + p.last;
     $('cp-chips').innerHTML = [p.org, p.level, p.role, p.hand].filter(Boolean).map(function (x) { return '<span class="chip">' + esc(x) + '</span>'; }).join('');
+    $('cp-record-name').textContent = p.first;
+    coachRecorder.cancel();
     // Everything on the pitcher's page, opened in the same viewer the pitcher uses.
     var reports = (p.reports || []).slice();
     reports.sort(function (a, b) { return (b.updated || '').localeCompare(a.updated || ''); });
@@ -331,7 +349,8 @@
       $('cp-assess').innerHTML = rows.length ? rows.map(function (a) {
         return '<div class="item" data-id="' + esc(a.id) + '" data-path="' + esc(a.storage_path) + '">' +
           '<div class="item-head"><span class="item-title">' + esc(fmtWhen(a.created_at)) + '</span>' +
-          '<span class="badge ' + (a.reviewed_at ? 'good' : 'gold') + '">' + (a.reviewed_at ? 'Reviewed' : 'New') + '</span></div>' +
+          '<span class="badge ' + (a.reviewed_at ? 'good' : (a.uploaded_by_role === 'coach' ? '' : 'gold')) + '">' + (a.reviewed_at ? 'Reviewed' : (a.uploaded_by_role === 'coach' ? 'In person' : 'New')) + '</span></div>' +
+          (recordedBy(a) ? '<div class="item-meta">' + esc(recordedBy(a)) + '</div>' : '') +
           (a.note ? '<div class="item-text">' + esc(a.note) + '</div>' : '') +
           '<div class="item-meta mono">' + esc(fmtMB(a.size_bytes)) + ' · ' + esc(a.content_type || '') + '</div>' +
           '<div class="row"><button class="btn-ghost js-play" type="button">Play</button><a class="btn-ghost js-open" target="_blank" rel="noopener" href="#">Open / download</a></div>' +
@@ -627,10 +646,21 @@
   $('coach-back').addEventListener('click', function () { location.hash = '#/coach'; });
   $('back').addEventListener('click', function () { location.hash = viewerBack; });
 
-  $('assess-record').addEventListener('change', function (e) { chooseFile(e.target.files && e.target.files[0]); });
-  $('assess-pick').addEventListener('change', function (e) { chooseFile(e.target.files && e.target.files[0]); });
-  $('assess-cancel').addEventListener('click', cancelFile);
-  $('assess-send').addEventListener('click', function () { var p = pitcherById(session.id); if (p) sendAssessment(p); });
+  assessUploader('assess-', {
+    pitcher: function () { return session && pitcherById(session.id); },
+    by: function () { var p = pitcherById(session.id); return { role: 'pitcher', name: p ? p.first + ' ' + p.last : null }; },
+    uploading: 'Uploading your video. This can take a minute on cellular; keep the app open.',
+    done: function () { return 'Sent. ' + COACH_LABEL + ' will take a look and reply here.'; },
+    after: loadAssessments
+  });
+  // Coach films a pitcher in person; the video lands on the pitcher's page like a remote assessment.
+  var coachRecorder = assessUploader('cp-assess-', {
+    pitcher: function () { return coachLoadedId && pitcherById(coachLoadedId); },
+    by: function () { return { role: 'coach', name: (session && session.name) || 'Coach' }; },
+    uploading: 'Uploading. Keep the app open until it finishes.',
+    done: function (p) { return 'Saved to ' + p.first + '\'s page.'; },
+    after: function () { if (coachLoadedId) renderCoachPitcher(coachLoadedId); }
+  });
   $('msg-form').addEventListener('submit', function (e) { e.preventDefault(); var p = pitcherById(session.id); if (p) sendPitcherMessage(p); });
 
   window.addEventListener('hashchange', route);

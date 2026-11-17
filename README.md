@@ -74,6 +74,33 @@ Coaches use Coach sign in with their username (or email) and password.
 | Messages | table `messages`, one thread per pitcher |
 | Who is a coach | table `profiles`, `role = 'coach'` |
 
+Coaches can also **run an assessment in person**: on a pitcher's coach page, *Record video* films them on the coach's phone
+and the video lands on the pitcher's page like a remote assessment, marked "In person". Same size cap as pitcher uploads.
+
+### Coach email alerts
+The **Notify coaches** workflow runs every 10 minutes and emails the coaches one digest of every new pitcher message and
+video since the last email (nothing is sent when there is nothing new). Set it up once:
+
+1. Re-run `supabase/schema.sql` in the Supabase SQL editor (adds the `notified_at` columns). Safe to re-run.
+2. Pick the mailbox that sends the alerts. For a Gmail account: turn on 2-Step Verification, then
+   Google Account -> Security -> **App passwords** -> create one named "No Brand app" (16 characters).
+   For iCloud: appleid.apple.com -> Sign-In and Security -> App-Specific Passwords, and use host `smtp.mail.me.com`, port `587`.
+3. Add these repo secrets (Settings -> Secrets and variables -> Actions):
+
+| Secret | Value |
+|---|---|
+| `SMTP_USER` | The sending address, e.g. the No Brand Gmail |
+| `SMTP_PASS` | The app password from step 2 (not the normal account password) |
+| `NOTIFY_TO` | Coach addresses to alert, comma-separated |
+| `SMTP_HOST` / `SMTP_PORT` | Optional. Default `smtp.gmail.com` / `465`. iCloud: `smtp.mail.me.com` / `587` |
+| `NOTIFY_FROM` | Optional. Sender shown in the email; defaults to `SMTP_USER` |
+
+4. Actions -> **Notify coaches** -> Run workflow with *test* ticked. Both coach inboxes should get "coach alerts are working".
+
+Pitcher activity older than two days when the workflow first runs is marked as seen without an email. Coach-recorded
+videos and coach replies never trigger an alert. GitHub pauses scheduled workflows after 60 days without a push; any
+push to the repo turns them back on.
+
 ## Ship to the App Store and Google Play (no Mac needed)
 
 The native apps are built in the cloud by GitHub Actions: iOS on a GitHub-hosted Mac, Android on Linux.
