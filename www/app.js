@@ -136,22 +136,7 @@
         '<span class="hero-cta">Open report &rarr;</span>' +
       '</a>' : '';
 
-    var groups = {};
-    reports.forEach(function (r) { (groups[r.kind] = groups[r.kind] || []).push(r); });
-    var html = '';
-    KIND_ORDER.forEach(function (k) {
-      var list = groups[k]; if (!list || !list.length) return;
-      html += '<section class="group"><div class="group-title"><span>' + esc(KIND_LABEL[k] || k) + '</span><span class="c">' + list.length + '</span></div>';
-      list.forEach(function (r) {
-        html += '<a class="card" href="#/r/' + esc(r.id) + '">' +
-          '<div class="card-ico">' + (KIND_ICO[r.kind] || 'RPT') + '</div>' +
-          '<div class="card-body"><div class="card-title">' + esc(r.title) + '</div>' +
-          '<div class="card-meta">' + esc(fmtDate(r.updated)) + (r.note ? ' &middot; ' + esc(r.note) : '') + '</div></div>' +
-          '<div class="card-arrow">&#8250;</div></a>';
-      });
-      html += '</section>';
-    });
-    $('report-groups').innerHTML = html;
+    $('report-groups').innerHTML = reportGroupsHtml(reports, function (r) { return '#/r/' + r.id; });
     $('empty').hidden = reports.length > 0;
     renderBioOffer();
 
@@ -251,11 +236,35 @@
   // =====================================================================
   // REPORT VIEWER
   // =====================================================================
-  function openReport(id) {
-    var p = session && session.kind === 'pitcher' && pitcherById(session.id);
-    if (!p) { location.hash = '#/login'; return; }
+  // Report cards grouped by kind, shared by the pitcher's home page and the coach's view of a pitcher.
+  function reportGroupsHtml(reports, hrefFor) {
+    var groups = {};
+    reports.forEach(function (r) { (groups[r.kind] = groups[r.kind] || []).push(r); });
+    var html = '';
+    KIND_ORDER.forEach(function (k) {
+      var list = groups[k]; if (!list || !list.length) return;
+      html += '<section class="group"><div class="group-title"><span>' + esc(KIND_LABEL[k] || k) + '</span><span class="c">' + list.length + '</span></div>';
+      list.forEach(function (r) {
+        html += '<a class="card" href="' + esc(hrefFor(r)) + '">' +
+          '<div class="card-ico">' + (KIND_ICO[r.kind] || 'RPT') + '</div>' +
+          '<div class="card-body"><div class="card-title">' + esc(r.title) + '</div>' +
+          '<div class="card-meta">' + esc(fmtDate(r.updated)) + (r.note ? ' &middot; ' + esc(r.note) : '') + '</div></div>' +
+          '<div class="card-arrow">&#8250;</div></a>';
+      });
+      html += '</section>';
+    });
+    return html;
+  }
+
+  // Where the viewer's Back button goes: the pitcher's home, or the coach's page for that pitcher.
+  var viewerBack = '#/home';
+  function openReport(id, pitcherId) {
+    var coach = !!(session && session.kind === 'coach');
+    var p = coach ? pitcherById(pitcherId) : (session && session.kind === 'pitcher' && pitcherById(session.id));
+    if (!p) { location.hash = coach ? '#/coach' : '#/login'; return; }
+    viewerBack = coach ? '#/coach/' + encodeURIComponent(p.id) : '#/home';
     var r = (p.reports || []).filter(function (x) { return x.id === id; })[0];
-    if (!r) { location.hash = '#/home'; return; }
+    if (!r) { location.hash = viewerBack; return; }
     $('viewer-title').textContent = r.title;
     $('viewer-ext').href = r.url;
     var frame = $('viewer-frame'); var loading = $('viewer-loading');
@@ -309,6 +318,12 @@
     coachLoadedId = id;
     $('cp-title').textContent = p.first + ' ' + p.last;
     $('cp-chips').innerHTML = [p.org, p.level, p.role, p.hand].filter(Boolean).map(function (x) { return '<span class="chip">' + esc(x) + '</span>'; }).join('');
+    // Everything on the pitcher's page, opened in the same viewer the pitcher uses.
+    var reports = (p.reports || []).slice();
+    reports.sort(function (a, b) { return (b.updated || '').localeCompare(a.updated || ''); });
+    $('cp-reports').innerHTML = reports.length
+      ? reportGroupsHtml(reports, function (r) { return '#/coach/' + encodeURIComponent(p.id) + '/r/' + encodeURIComponent(r.id); })
+      : '<div class="panel-text muted">Nothing on ' + esc(p.first) + '\'s page yet.</div>';
     setStatus('cp-status', 'Loading…', 'info');
     try {
       var rows = await B.listAssessments(id);
@@ -387,6 +402,9 @@
       return;
     }
     if (session.kind === 'coach') {
+      var mr = h.match(/^#\/coach\/([^/]+)\/r\/(.+)$/);
+      if (mr) { openReport(decodeURIComponent(mr[2]), decodeURIComponent(mr[1])); return; }
+      try { $('viewer-frame').contentWindow.location.replace('about:blank'); } catch (e0) { $('viewer-frame').src = 'about:blank'; }
       var m = h.match(/^#\/coach\/(.+)$/);
       if (m) { renderCoachPitcher(decodeURIComponent(m[1])); show('coachPitcher'); return; }
       renderCoach(); show('coach');
@@ -607,7 +625,7 @@
   $('coach-refresh').addEventListener('click', renderCoach);
   $('cp-refresh').addEventListener('click', function () { if (coachLoadedId) renderCoachPitcher(coachLoadedId); });
   $('coach-back').addEventListener('click', function () { location.hash = '#/coach'; });
-  $('back').addEventListener('click', function () { location.hash = '#/home'; });
+  $('back').addEventListener('click', function () { location.hash = viewerBack; });
 
   $('assess-record').addEventListener('change', function (e) { chooseFile(e.target.files && e.target.files[0]); });
   $('assess-pick').addEventListener('change', function (e) { chooseFile(e.target.files && e.target.files[0]); });

@@ -1,5 +1,5 @@
 window.NBB_ROSTER = {
-  "updated": "2026-11-12",
+  "updated": "2026-11-17",
   "season": "2027",
   "pitchers": [
     {
@@ -101,6 +101,27 @@ window.NBB_ROSTER = {
           "title": "Contact Point Lab",
           "updated": "2026-06-01",
           "url": "https://sicher19-dev.github.io/skenes-contact-lab/"
+        },
+        {
+          "id": "skenes-execution-lab",
+          "kind": "lab",
+          "title": "Execution Lab",
+          "updated": "2026-11-13",
+          "url": "https://sicher19-dev.github.io/execution-lab-preview/"
+        },
+        {
+          "id": "skenes-tip",
+          "kind": "lab",
+          "title": "Pitch Tipping Report 2026",
+          "updated": "2026-11-17",
+          "url": "https://sicher19-dev.github.io/skenes-tip/"
+        },
+        {
+          "id": "skenes-tip-compare",
+          "kind": "lab",
+          "title": "Tip Report Comparison (Skenes, Wheeler, Sanchez)",
+          "updated": "2026-11-17",
+          "url": "https://sicher19-dev.github.io/skenes-tip/compare/"
         }
       ]
     },
