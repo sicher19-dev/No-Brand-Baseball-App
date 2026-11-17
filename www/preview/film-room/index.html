@@ -125,6 +125,15 @@ span[data-placeholder]{font-family:var(--fm);font-size:.8em;letter-spacing:.02em
   .nav__links,.nav__login{display:none}
   .nav__burger{display:inline-flex;align-items:center}
 }
+@media (max-width:640px){
+  .nav .brand small,.sheet .brand small{display:none}
+  .nav .brand{min-width:0;flex:0 1 auto;overflow:hidden}
+  .nav .pill,.nav .nav__burger{flex:none;white-space:nowrap}
+}
+@media (max-width:480px){
+  .nav .pill--sm>i{display:none}
+  .nav .pill--sm{padding:0 14px}
+}
 @media (max-width:420px){
   .nav .brand small,.sheet .brand small{display:none}
   .nav{gap:6px;padding:0 6px 0 12px}
