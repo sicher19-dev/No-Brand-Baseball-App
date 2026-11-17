@@ -122,6 +122,13 @@ window.NBB_ROSTER = {
           "title": "Tip Report Comparison (Skenes, Wheeler, Sanchez)",
           "updated": "2026-11-17",
           "url": "https://sicher19-dev.github.io/skenes-tip/compare/"
+        },
+        {
+          "id": "skenes-grips",
+          "kind": "lab",
+          "title": "Pitch Grip Library",
+          "updated": "2026-09-07",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-Pitch-Grip-Library/"
         }
       ]
     },
@@ -161,6 +168,13 @@ window.NBB_ROSTER = {
           "title": "2026 Full Picture",
           "updated": "2026-09-28",
           "url": "https://sicher19-dev.github.io/Bubba-Chandler-Full-Picture-2026/"
+        },
+        {
+          "id": "chandler-grips",
+          "kind": "lab",
+          "title": "Pitch Grip Library",
+          "updated": "2026-09-07",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-Pitch-Grip-Library/"
         }
       ]
     },
@@ -200,6 +214,13 @@ window.NBB_ROSTER = {
           "title": "2026 Full Picture",
           "updated": "2026-09-28",
           "url": "https://sicher19-dev.github.io/Mackenzie-Gore-Full-Picture-2026/"
+        },
+        {
+          "id": "gore-grips",
+          "kind": "lab",
+          "title": "Pitch Grip Library",
+          "updated": "2026-09-07",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-Pitch-Grip-Library/"
         }
       ]
     },
@@ -246,6 +267,13 @@ window.NBB_ROSTER = {
           "title": "BioMech + Analytics Player Report",
           "updated": "2026-10-09",
           "url": "https://sicher19-dev.github.io/Griffin-Jax-Player-Report/"
+        },
+        {
+          "id": "jax-grips",
+          "kind": "lab",
+          "title": "Pitch Grip Library",
+          "updated": "2026-09-07",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-Pitch-Grip-Library/"
         }
       ]
     },
@@ -271,6 +299,13 @@ window.NBB_ROSTER = {
           "title": "ALDS Scout",
           "updated": "2026-10-01",
           "url": "https://sicher19-dev.github.io/taylor-scout/"
+        },
+        {
+          "id": "taylor-grips",
+          "kind": "lab",
+          "title": "Pitch Grip Library",
+          "updated": "2026-09-07",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-Pitch-Grip-Library/"
         }
       ]
     },
@@ -289,6 +324,13 @@ window.NBB_ROSTER = {
           "title": "Offseason Bullpen Plan 2026-27",
           "updated": "2026-11-06",
           "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pens/index.html#joyce"
+        },
+        {
+          "id": "joyce-grips",
+          "kind": "lab",
+          "title": "Pitch Grip Library",
+          "updated": "2026-09-07",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-Pitch-Grip-Library/"
         }
       ]
     },
@@ -321,6 +363,13 @@ window.NBB_ROSTER = {
           "title": "2026 Season Snapshot",
           "updated": "2026-09-26",
           "url": "https://sicher19-dev.github.io/No-Brand-2026-Season-Snapshots/cole-henry.pdf"
+        },
+        {
+          "id": "henry-grips",
+          "kind": "lab",
+          "title": "Pitch Grip Library",
+          "updated": "2026-09-07",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-Pitch-Grip-Library/"
         }
       ]
     },
@@ -353,6 +402,13 @@ window.NBB_ROSTER = {
           "title": "2026 Season Snapshot",
           "updated": "2026-09-26",
           "url": "https://sicher19-dev.github.io/No-Brand-2026-Season-Snapshots/tom-cosgrove.pdf"
+        },
+        {
+          "id": "cosgrove-grips",
+          "kind": "lab",
+          "title": "Pitch Grip Library",
+          "updated": "2026-09-07",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-Pitch-Grip-Library/"
         }
       ]
     },
@@ -378,6 +434,13 @@ window.NBB_ROSTER = {
           "title": "2026 Season Snapshot",
           "updated": "2026-09-26",
           "url": "https://sicher19-dev.github.io/No-Brand-2026-Season-Snapshots/josh-ekness.pdf"
+        },
+        {
+          "id": "ekness-grips",
+          "kind": "lab",
+          "title": "Pitch Grip Library",
+          "updated": "2026-09-07",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-Pitch-Grip-Library/"
         }
       ]
     },
@@ -410,6 +473,13 @@ window.NBB_ROSTER = {
           "title": "2026 Season Snapshot",
           "updated": "2026-09-26",
           "url": "https://sicher19-dev.github.io/No-Brand-2026-Season-Snapshots/hunter-barco.pdf"
+        },
+        {
+          "id": "barco-grips",
+          "kind": "lab",
+          "title": "Pitch Grip Library",
+          "updated": "2026-09-07",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-Pitch-Grip-Library/"
         }
       ]
     },
@@ -431,6 +501,13 @@ window.NBB_ROSTER = {
           "title": "Wild Card Game 1 Scout",
           "updated": "2026-09-30",
           "url": "https://sicher19-dev.github.io/boyd_scout/"
+        },
+        {
+          "id": "boyd-grips",
+          "kind": "lab",
+          "title": "Pitch Grip Library",
+          "updated": "2026-09-07",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-Pitch-Grip-Library/"
         }
       ]
     },
@@ -449,6 +526,13 @@ window.NBB_ROSTER = {
           "title": "Offseason Bullpen Plan 2026-27",
           "updated": "2026-11-06",
           "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pens/index.html#dana"
+        },
+        {
+          "id": "dana-grips",
+          "kind": "lab",
+          "title": "Pitch Grip Library",
+          "updated": "2026-09-07",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-Pitch-Grip-Library/"
         }
       ]
     },
@@ -467,6 +551,13 @@ window.NBB_ROSTER = {
           "title": "Offseason Bullpen Plan 2026-27",
           "updated": "2026-11-06",
           "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pens/index.html#kudrna"
+        },
+        {
+          "id": "kudrna-grips",
+          "kind": "lab",
+          "title": "Pitch Grip Library",
+          "updated": "2026-09-07",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-Pitch-Grip-Library/"
         }
       ]
     },
@@ -485,6 +576,13 @@ window.NBB_ROSTER = {
           "title": "Offseason Bullpen Plan 2026-27",
           "updated": "2026-11-06",
           "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pens/index.html#bwhite"
+        },
+        {
+          "id": "white-brandon-grips",
+          "kind": "lab",
+          "title": "Pitch Grip Library",
+          "updated": "2026-09-07",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-Pitch-Grip-Library/"
         }
       ]
     },
@@ -517,6 +615,13 @@ window.NBB_ROSTER = {
           "title": "2026 Season Snapshot",
           "updated": "2026-09-26",
           "url": "https://sicher19-dev.github.io/No-Brand-2026-Season-Snapshots/patrick-monteverde.pdf"
+        },
+        {
+          "id": "monteverde-grips",
+          "kind": "lab",
+          "title": "Pitch Grip Library",
+          "updated": "2026-09-07",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-Pitch-Grip-Library/"
         }
       ]
     },
@@ -549,6 +654,13 @@ window.NBB_ROSTER = {
           "title": "2026 Season Snapshot",
           "updated": "2026-09-26",
           "url": "https://sicher19-dev.github.io/No-Brand-2026-Season-Snapshots/marcus-johnson.pdf"
+        },
+        {
+          "id": "johnson-grips",
+          "kind": "lab",
+          "title": "Pitch Grip Library",
+          "updated": "2026-09-07",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-Pitch-Grip-Library/"
         }
       ]
     },
@@ -581,6 +693,13 @@ window.NBB_ROSTER = {
           "title": "2026 Season Snapshot",
           "updated": "2026-09-26",
           "url": "https://sicher19-dev.github.io/No-Brand-2026-Season-Snapshots/garrett-edwards.pdf"
+        },
+        {
+          "id": "edwards-grips",
+          "kind": "lab",
+          "title": "Pitch Grip Library",
+          "updated": "2026-09-07",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-Pitch-Grip-Library/"
         }
       ]
     },
@@ -613,6 +732,13 @@ window.NBB_ROSTER = {
           "title": "2026 Season Snapshot",
           "updated": "2026-09-26",
           "url": "https://sicher19-dev.github.io/No-Brand-2026-Season-Snapshots/jt-quinn.pdf"
+        },
+        {
+          "id": "quinn-grips",
+          "kind": "lab",
+          "title": "Pitch Grip Library",
+          "updated": "2026-09-07",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-Pitch-Grip-Library/"
         }
       ]
     },
@@ -645,6 +771,13 @@ window.NBB_ROSTER = {
           "title": "2026 Season Snapshot",
           "updated": "2026-09-26",
           "url": "https://sicher19-dev.github.io/No-Brand-2026-Season-Snapshots/brian-curley.pdf"
+        },
+        {
+          "id": "curley-grips",
+          "kind": "lab",
+          "title": "Pitch Grip Library",
+          "updated": "2026-09-07",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-Pitch-Grip-Library/"
         }
       ]
     },
@@ -677,6 +810,13 @@ window.NBB_ROSTER = {
           "title": "2026 Season Snapshot",
           "updated": "2026-09-26",
           "url": "https://sicher19-dev.github.io/No-Brand-2026-Season-Snapshots/joey-volchko.pdf"
+        },
+        {
+          "id": "volchko-grips",
+          "kind": "lab",
+          "title": "Pitch Grip Library",
+          "updated": "2026-09-07",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-Pitch-Grip-Library/"
         }
       ]
     },
@@ -695,6 +835,13 @@ window.NBB_ROSTER = {
           "title": "Offseason Bullpen Plan 2026-27",
           "updated": "2026-11-06",
           "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pens/index.html#jwhite"
+        },
+        {
+          "id": "white-josh-grips",
+          "kind": "lab",
+          "title": "Pitch Grip Library",
+          "updated": "2026-09-07",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-Pitch-Grip-Library/"
         }
       ]
     },
@@ -727,6 +874,13 @@ window.NBB_ROSTER = {
           "title": "2026 Season Snapshot",
           "updated": "2026-09-26",
           "url": "https://sicher19-dev.github.io/No-Brand-2026-Season-Snapshots/caleb-bolden.pdf"
+        },
+        {
+          "id": "bolden-grips",
+          "kind": "lab",
+          "title": "Pitch Grip Library",
+          "updated": "2026-09-07",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-Pitch-Grip-Library/"
         }
       ]
     },
@@ -752,6 +906,13 @@ window.NBB_ROSTER = {
           "title": "2026 Season Snapshot",
           "updated": "2026-09-26",
           "url": "https://sicher19-dev.github.io/No-Brand-2026-Season-Snapshots/matt-scott.pdf"
+        },
+        {
+          "id": "scott-grips",
+          "kind": "lab",
+          "title": "Pitch Grip Library",
+          "updated": "2026-09-07",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-Pitch-Grip-Library/"
         }
       ]
     },
@@ -784,6 +945,13 @@ window.NBB_ROSTER = {
           "title": "2026 Season Snapshot",
           "updated": "2026-09-26",
           "url": "https://sicher19-dev.github.io/No-Brand-2026-Season-Snapshots/thomas-harrington.pdf"
+        },
+        {
+          "id": "harrington-grips",
+          "kind": "lab",
+          "title": "Pitch Grip Library",
+          "updated": "2026-09-07",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-Pitch-Grip-Library/"
         }
       ]
     },
@@ -809,6 +977,13 @@ window.NBB_ROSTER = {
           "title": "2026 Season Snapshot",
           "updated": "2026-09-26",
           "url": "https://sicher19-dev.github.io/No-Brand-2026-Season-Snapshots/frank-mozzicato.pdf"
+        },
+        {
+          "id": "mozzicato-grips",
+          "kind": "lab",
+          "title": "Pitch Grip Library",
+          "updated": "2026-09-07",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-Pitch-Grip-Library/"
         }
       ]
     },
@@ -841,6 +1016,13 @@ window.NBB_ROSTER = {
           "title": "Sample Pitch Grades (Skenes 2026)",
           "updated": "2026-08-13",
           "url": "https://sicher19-dev.github.io/Skenes-Pitch-Grades/"
+        },
+        {
+          "id": "demo-grips",
+          "kind": "lab",
+          "title": "Pitch Grip Library",
+          "updated": "2026-09-07",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-Pitch-Grip-Library/"
         }
       ]
     }
