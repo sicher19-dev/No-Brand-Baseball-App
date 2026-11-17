@@ -92,7 +92,8 @@ video since the last email (nothing is sent when there is nothing new). Set it u
 | `SMTP_USER` | The sending address, e.g. the No Brand Gmail |
 | `SMTP_PASS` | The app password from step 2 (not the normal account password) |
 | `NOTIFY_TO` | Coach addresses to alert, comma-separated |
-| `SMTP_HOST` / `SMTP_PORT` | Optional. Default `smtp.gmail.com` / `465`. iCloud: `smtp.mail.me.com` / `587` |
+| `SMTP_USER_2` / `SMTP_PASS_2` | Optional second mailbox (e.g. an iCloud address + app-specific password). Used only if the first one fails |
+| `SMTP_HOST` / `SMTP_PORT` | Optional. Worked out from the address: Gmail `smtp.gmail.com` / `465`, iCloud `smtp.mail.me.com` / `587`. `_2` versions for the second mailbox |
 | `NOTIFY_FROM` | Optional. Sender shown in the email; defaults to `SMTP_USER` |
 
 4. Actions -> **Notify coaches** -> Run workflow with *test* ticked. Both coach inboxes should get "coach alerts are working".

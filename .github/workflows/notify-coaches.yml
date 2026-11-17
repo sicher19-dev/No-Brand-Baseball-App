@@ -36,5 +36,9 @@ jobs:
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_PASS: ${{ secrets.SMTP_PASS }}
           NOTIFY_FROM: ${{ secrets.NOTIFY_FROM }}
+          SMTP_HOST_2: ${{ secrets.SMTP_HOST_2 }}
+          SMTP_PORT_2: ${{ secrets.SMTP_PORT_2 }}
+          SMTP_USER_2: ${{ secrets.SMTP_USER_2 }}
+          SMTP_PASS_2: ${{ secrets.SMTP_PASS_2 }}
           NOTIFY_TO: ${{ secrets.NOTIFY_TO }}
         run: node tools/notify_coaches.mjs ${{ inputs.test && '--test' || '' }}

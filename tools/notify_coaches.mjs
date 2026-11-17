@@ -19,19 +19,27 @@ import tls from 'node:tls';
 const clean = s => String(s || '').trim().replace(/^["'`]+|["'`]+$/g, '');
 const URL_ = clean(process.env.SUPABASE_URL).replace(/\/+$/, '');
 const KEY = clean(process.env.SUPABASE_SERVICE_ROLE_KEY);
-const SMTP = {
-  host: clean(process.env.SMTP_HOST) || 'smtp.gmail.com',
-  port: Number(clean(process.env.SMTP_PORT)) || 465,
-  user: clean(process.env.SMTP_USER),
-  pass: String(process.env.SMTP_PASS || '').trim()
-};
-const FROM = clean(process.env.NOTIFY_FROM) || SMTP.user;
+// Sending mailboxes, tried in order: SMTP_* first, then SMTP_*_2 if the first one fails (expired app password, outage).
+function account(sfx) {
+  const user = clean(process.env['SMTP_USER' + sfx]);
+  const host = clean(process.env['SMTP_HOST' + sfx]) || (/@(icloud|me|mac)\.com$/i.test(user) ? 'smtp.mail.me.com' : 'smtp.gmail.com');
+  return {
+    host,
+    port: Number(clean(process.env['SMTP_PORT' + sfx])) || (host === 'smtp.mail.me.com' ? 587 : 465),
+    user,
+    pass: String(process.env['SMTP_PASS' + sfx] || '').trim(),
+    from: clean(process.env['NOTIFY_FROM' + sfx]) || user
+  };
+}
+const ACCOUNTS = [account(''), account('_2')].filter(a => a.user && a.pass);
+const SMTP = ACCOUNTS[0] || {};
+const FROM = SMTP.from;
 const TO = String(process.env.NOTIFY_TO || '').split(/[,;\s]+/).map(clean).filter(s => s.includes('@'));
 const APP_URL = (clean(process.env.APP_URL) || 'https://sicher19-dev.github.io/No-Brand-Baseball-App/').replace(/\/?$/, '/');
 const TEST = process.argv.includes('--test');
 const STALE_HOURS = 48;
 
-if (!SMTP.user || !SMTP.pass || !TO.length) { console.error('SMTP_USER, SMTP_PASS and NOTIFY_TO are required.'); process.exit(1); }
+if (!ACCOUNTS.length || !TO.length) { console.error('SMTP_USER, SMTP_PASS and NOTIFY_TO are required.'); process.exit(1); }
 if (!TEST && (!URL_ || !KEY)) { console.error('SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required.'); process.exit(1); }
 
 // ---------- roster (for names) ----------
@@ -105,11 +113,11 @@ function compose(groups) {
 }
 
 function b64wrap(s) { return Buffer.from(s, 'utf8').toString('base64').replace(/(.{76})/g, '$1\r\n'); }
-function buildMime({ subject, text, html }) {
+function buildMime({ subject, text, html, from }) {
   const boundary = 'nbb-' + Date.now().toString(36) + Math.random().toString(36).slice(2);
   const id = `<${Date.now()}.${Math.random().toString(36).slice(2)}@nobrandbaseball.app>`;
   return [
-    `From: No Brand Baseball <${FROM}>`,
+    `From: No Brand Baseball <${from || FROM}>`,
     `To: ${TO.join(', ')}`,
     `Subject: =?UTF-8?B?${Buffer.from(subject, 'utf8').toString('base64')}?=`,
     `Date: ${new Date().toUTCString()}`,
@@ -133,7 +141,16 @@ function buildMime({ subject, text, html }) {
 }
 
 // Minimal SMTP client: implicit TLS on 465, STARTTLS otherwise, AUTH PLAIN.
-async function sendMail(mime) {
+async function sendMail(message) {
+  let lastErr;
+  for (const acct of ACCOUNTS) {
+    try { await sendVia(acct, buildMime({ ...message, from: acct.from })); return acct; }
+    catch (e) { lastErr = e; console.warn(`Could not send through ${acct.host} as ${acct.user.replace(/^(.).*(@.*)$/, '$1***$2')}: ${e.message}`); }
+  }
+  throw lastErr || new Error('No sending mailbox configured.');
+}
+async function sendVia(SMTP, mime) {
+  const FROM = SMTP.from;
   let sock = SMTP.port === 465
     ? tls.connect({ host: SMTP.host, port: SMTP.port, servername: net.isIP(SMTP.host) ? undefined : SMTP.host })
     : net.connect({ host: SMTP.host, port: SMTP.port });
@@ -185,12 +202,12 @@ async function sendMail(mime) {
 
 // ---------- main ----------
 if (TEST) {
-  await sendMail(buildMime({
+  const used = await sendMail({
     subject: 'No Brand Baseball: coach alerts are working',
     text: `This is a test from the No Brand Baseball app. Coaches will be emailed here when a pitcher sends a message or a video.\n\nCoach view: ${APP_URL}#/coach`,
     html: `<p style="font:15px -apple-system,Segoe UI,Helvetica,Arial,sans-serif">This is a test from the No Brand Baseball app. Coaches will be emailed here when a pitcher sends a message or a video.</p><p><a href="${APP_URL}#/coach">Open the coach view</a></p>`
-  }));
-  console.log(`Test email sent to ${TO.length} address${TO.length > 1 ? 'es' : ''}.`);
+  });
+  console.log(`Test email sent to ${TO.length} address${TO.length > 1 ? 'es' : ''} via ${used.host}.`);
   process.exit(0);
 }
 
@@ -214,7 +231,7 @@ for (const v of freshV) group(v.pitcher_id).vids.push(v);
 const groups = [...byId.values()].sort((a, b) => a.name.localeCompare(b.name));
 
 const mail = compose(groups);
-await sendMail(buildMime(mail));
+const via = await sendMail(mail);
 await stamp('messages', freshM.map(m => m.id));
 await stamp('assessments', freshV.map(v => v.id));
-console.log(`Emailed ${TO.length} coach address${TO.length > 1 ? 'es' : ''}: ${mail.subject}`);
+console.log(`Emailed ${TO.length} coach address${TO.length > 1 ? 'es' : ''} via ${via.host}: ${mail.subject}`);
