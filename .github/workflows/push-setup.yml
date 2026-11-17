@@ -1,0 +1,42 @@
+# One-time: turn on Push Notifications for the iOS app.
+# Enables the capability on the App ID, regenerates the App Store provisioning profile (match), and sets the
+# PUSH_ENABLED secret so the next iOS build is signed with the push entitlement.
+# Before running: add secrets APNS_KEY_ID and APNS_KEY_CONTENT (see README "Push notifications"), then run
+# "Supabase - deploy" too so the server side can send.
+name: One-time push setup
+
+on:
+  workflow_dispatch:
+
+jobs:
+  push-setup:
+    runs-on: macos-26
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+      - run: bundle install
+        working-directory: ios/App
+
+      - name: Enable the capability and refresh the profile
+        working-directory: ios/App
+        run: bundle exec fastlane push_setup
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          MATCH_GIT_TOKEN: ${{ secrets.MATCH_GIT_TOKEN }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_GIT_URL: ${{ vars.MATCH_GIT_URL || 'https://github.com/sicher19-dev/No-Brand-Certificates.git' }}
+          MATCH_GIT_USER: ${{ vars.MATCH_GIT_USER || 'sicher19-dev' }}
+          FASTLANE_SKIP_UPDATE_CHECK: "1"
+
+      - name: Mark push as enabled for future builds
+        env:
+          GH_TOKEN: ${{ secrets.MATCH_GIT_TOKEN }}
+        run: |
+          gh secret set PUSH_ENABLED --repo "$GITHUB_REPOSITORY" --body "true"
+          echo "PUSH_ENABLED=true saved. Push a new tag (e.g. v1.4.0) to ship a build with push notifications."

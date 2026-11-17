@@ -1,5 +1,19 @@
 window.NBB_ROSTER = {
   "updated": "2026-11-17",
+  "coachTools": [
+    {
+      "id": "mocap-library",
+      "title": "Motion Capture Library",
+      "updated": "2026-11-17",
+      "url": "https://sicher19-dev.github.io/No-Brand-Baseball-MoCap-Library/"
+    },
+    {
+      "id": "grip-library",
+      "title": "Pitch Grip Library",
+      "updated": "2026-09-07",
+      "url": "https://sicher19-dev.github.io/No-Brand-Baseball-Pitch-Grip-Library/"
+    }
+  ],
   "season": "2027",
   "pitchers": [
     {

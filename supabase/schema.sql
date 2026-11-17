@@ -199,3 +199,20 @@ create policy "assessments bucket: pitcher uploads to own folder" on storage.obj
 -- ---------------------------------------------------------------------------
 create index if not exists assessments_unnotified_idx on public.assessments (created_at) where notified_at is null;
 create index if not exists messages_unnotified_idx    on public.messages (created_at) where notified_at is null;
+
+-- ---------------------------------------------------------------------------
+-- Push notification devices (added 2026-11-17). One row per phone; the app upserts the APNs token after sign-in
+-- and deletes it on sign-out. supabase/functions/push sends to these (see supabase/push_webhook.sql).
+-- ---------------------------------------------------------------------------
+create table if not exists public.devices (
+  token      text primary key,
+  user_id    uuid not null references auth.users(id) on delete cascade,
+  platform   text not null default 'ios',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+create index if not exists devices_user_idx on public.devices (user_id);
+alter table public.devices enable row level security;
+drop policy if exists "devices: own rows" on public.devices;
+create policy "devices: own rows" on public.devices
+  for all to authenticated using (user_id = auth.uid()) with check (user_id = auth.uid());

@@ -173,6 +173,19 @@ window.NBB_BACKEND = (function () {
     return r.error ? 0 : (r.count || 0);
   }
 
+  // ---------- push devices ----------
+  async function registerDevice(token, platform) {
+    var c = sb(); var s = await session(); if (!c || !s) return;
+    var r = await c.from('devices').upsert(
+      { token: token, user_id: s.user.id, platform: platform || 'ios', updated_at: new Date().toISOString() },
+      { onConflict: 'token' });
+    if (r.error) fail(r.error);
+  }
+  async function unregisterDevice(token) {
+    var c = sb(); if (!c || !token) return;
+    await c.from('devices').delete().eq('token', token);
+  }
+
   async function coachOverview() {
     var c = sb();
     var r = await c.rpc('coach_overview');
@@ -183,6 +196,7 @@ window.NBB_BACKEND = (function () {
   return {
     enabled: enabled, session: session, myProfile: myProfile,
     signInPitcher: signInPitcher, signInCoach: signInCoach, signOut: signOut,
+    registerDevice: registerDevice, unregisterDevice: unregisterDevice,
     listAssessments: listAssessments, uploadAssessment: uploadAssessment, videoUrl: videoUrl, reviewAssessment: reviewAssessment,
     listMessages: listMessages, sendMessage: sendMessage, markRead: markRead, unreadForPitcher: unreadForPitcher,
     coachOverview: coachOverview, MAX_BYTES: MAX_BYTES, MAX_MB: MAX_MB, MAX_HINT: MAX_HINT,

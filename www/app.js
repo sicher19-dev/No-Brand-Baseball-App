@@ -10,6 +10,7 @@
   var LIVE_ROSTER_URL = 'https://sicher19-dev.github.io/No-Brand-Baseball-App/roster.js';
   var STORE_KEY = 'nbb.session';
   var B = window.NBB_BACKEND;
+  var PUSH = window.NBB_PUSH || null;
   var CFG = window.NBB_CONFIG || {};
   var COACH_LABEL = CFG.coachLabel || 'the coaches';
 
@@ -281,13 +282,23 @@
     viewerBack = coach ? '#/coach/' + encodeURIComponent(p.id) : '#/home';
     var r = (p.reports || []).filter(function (x) { return x.id === id; })[0];
     if (!r) { location.hash = viewerBack; return; }
-    $('viewer-title').textContent = r.title;
-    $('viewer-ext').href = r.url;
+    showInViewer(r.title, r.url);
+  }
+  // Coach-wide libraries (roster.coachTools: MoCap library, grip library...) open in the same viewer.
+  function openTool(id) {
+    var t = (roster.coachTools || []).filter(function (x) { return x.id === id; })[0];
+    if (!t) { location.hash = '#/coach'; return; }
+    viewerBack = '#/coach';
+    showInViewer(t.title, t.url);
+  }
+  function showInViewer(title, url) {
+    $('viewer-title').textContent = title;
+    $('viewer-ext').href = url;
     var frame = $('viewer-frame'); var loading = $('viewer-loading');
     loading.hidden = false;
     frame.onload = function () { loading.hidden = true; };
     // location.replace keeps the report out of the browser history, so Back is a single tap.
-    try { frame.contentWindow.location.replace(r.url); } catch (e) { frame.src = r.url; }
+    try { frame.contentWindow.location.replace(url); } catch (e) { frame.src = url; }
     show('report');
   }
 
@@ -297,6 +308,8 @@
   async function renderCoach() {
     $('coach-name').textContent = session.name || 'Coach';
     renderBioOffer();
+    var tools = (roster.coachTools || []).map(function (t) { return { id: t.id, kind: 'lab', title: t.title, updated: t.updated, note: t.note }; });
+    $('coach-tools').innerHTML = tools.length ? reportGroupsHtml(tools, function (t) { return '#/coach/lib/' + encodeURIComponent(t.id); }) : '';
     setStatus('coach-status', 'Loading…', 'info');
     var overview = [];
     try { overview = await B.coachOverview(); setStatus('coach-status', ''); }
@@ -421,6 +434,8 @@
       return;
     }
     if (session.kind === 'coach') {
+      var mt = h.match(/^#\/coach\/lib\/(.+)$/);
+      if (mt) { openTool(decodeURIComponent(mt[1])); return; }
       var mr = h.match(/^#\/coach\/([^/]+)\/r\/(.+)$/);
       if (mr) { openReport(decodeURIComponent(mr[2]), decodeURIComponent(mr[1])); return; }
       try { $('viewer-frame').contentWindow.location.replace('about:blank'); } catch (e0) { $('viewer-frame').src = 'about:blank'; }
@@ -447,7 +462,16 @@
     var backend = false;
     if (B.enabled()) { try { await B.signInPitcher(p); backend = true; } catch (be) { backend = false; } }
     saveSession({ kind: 'pitcher', id: p.id, backend: backend });
+    syncPush();
     return p;
+  }
+  // Native app: ask for notification permission once signed in and store this phone for the user.
+  function syncPush() {
+    // roster.push is flipped to true (live, no app update) once the APNs key and profile are in place,
+    // so phones are not asked for notification permission before pushes can actually arrive.
+    if (!PUSH || !B.enabled() || !session || !roster.push) return;
+    if (session.kind === 'pitcher' && !session.backend) return;
+    PUSH.enable(B.registerDevice, function (hash) { location.hash = hash; }).catch(function (e) { console.warn('push', e && e.message); });
   }
   // Coaches may sign in with a username instead of an email; usernames live at @coaches.nobrandbaseball.app.
   function coachLoginId(entered) {
@@ -467,6 +491,7 @@
       throw e;
     }
     saveSession({ kind: 'coach', name: prof.display_name || 'Coach', email: email });
+    syncPush();
     return prof;
   }
 
@@ -633,6 +658,7 @@
   async function doSignOut() {
     clearSession();
     bioPending = null; renderBioOffer();
+    if (PUSH) { try { await PUSH.disable(B.unregisterDevice); } catch (e0) {} }
     try { await B.signOut(); } catch (e) {}
     location.hash = '#/login';
     route();
@@ -694,9 +720,11 @@
   // If the backend session expired or was never established, retry quietly for pitchers.
   if (session && session.kind === 'pitcher' && B.enabled()) {
     B.session().then(function (s) {
-      if (!s) { var p = pitcherById(session.id); if (p) return B.signInPitcher(p).then(function () { session.backend = true; saveSession(session); if (!views.home.hidden) renderHome(p); }); }
-      else if (!session.backend) { session.backend = true; saveSession(session); }
+      if (!s) { var p = pitcherById(session.id); if (p) return B.signInPitcher(p).then(function () { session.backend = true; saveSession(session); syncPush(); if (!views.home.hidden) renderHome(p); }); }
+      else { if (!session.backend) { session.backend = true; saveSession(session); } syncPush(); }
     }).catch(function () {});
+  } else if (session && session.kind === 'coach') {
+    syncPush();
   }
   route();
   refreshRoster().then(function (changed) {

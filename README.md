@@ -102,6 +102,34 @@ Pitcher activity older than two days when the workflow first runs is marked as s
 videos and coach replies never trigger an alert. GitHub pauses scheduled workflows after 60 days without a push; any
 push to the repo turns them back on.
 
+### Database changes without the dashboard
+The **Supabase - deploy** workflow applies `supabase/schema.sql` to the live project (and deploys the push function below)
+every time something under `supabase/` is pushed, or on Run workflow. It needs one secret: `SUPABASE_ACCESS_TOKEN`
+(supabase.com -> Account -> Access Tokens -> Generate new token). With that in place nobody has to paste SQL again.
+
+### Push notifications
+Pitchers get a buzz when a coach replies, reviews their video or saves an in-person video to their page; coaches get one
+when a pitcher messages or uploads. iOS goes straight through Apple (APNs); Android waits for a Firebase project.
+
+How it fits together: the app stores the phone's token in the `devices` table after sign-in (`www/push.js`); a database
+trigger (`supabase/push_webhook.sql`) calls the edge function `supabase/functions/push` on each new message or video,
+and the function sends through APNs.
+
+One-time setup, in this order:
+1. developer.apple.com -> Certificates, IDs & Profiles -> **Keys** -> (+) name "No Brand Push", tick
+   **Apple Push Notifications service (APNs)** -> Continue -> Register -> **Download** the `.p8` (only offered once; keep it with
+   the other key) and note its **Key ID**.
+2. Repo secrets: `APNS_KEY_ID` (from step 1) and `APNS_KEY_CONTENT` (the `.p8` file, base64 on one line like `ASC_KEY_CONTENT`),
+   plus `SUPABASE_ACCESS_TOKEN` if not already there.
+3. Actions -> **One-time push setup** -> Run workflow. It enables Push Notifications on the App ID, regenerates the
+   provisioning profile and sets `PUSH_ENABLED=true` so builds sign with `ios/App/App/App.entitlements`.
+   (If the API refuses the capability, tick *Push Notifications* on developer.apple.com -> Identifiers -> com.nobrandbaseball.app and re-run.)
+4. Actions -> **Supabase - deploy** -> Run workflow (deploys the function with the APNs key).
+5. In `www/roster.js` set `"push": true` at the top level and push. Then tag a new build (`git tag v1.4.0`).
+   Phones ask for notification permission on the next sign-in or app open, and only then.
+
+`APNS_HOST` defaults to Apple's production gateway, which is what TestFlight and App Store builds use.
+
 ## Ship to the App Store and Google Play (no Mac needed)
 
 The native apps are built in the cloud by GitHub Actions: iOS on a GitHub-hosted Mac, Android on Linux.

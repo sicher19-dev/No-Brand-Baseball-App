@@ -43,10 +43,11 @@ def certs_auth
   Base64.strict_encode64("#{CERTS_USER}:#{ENV.fetch('MATCH_GIT_TOKEN')}")
 end
 
-def sync_certs(key, readonly:)
+def sync_certs(key, readonly:, force: false)
   match(
     type: "appstore",
     readonly: readonly,
+    force: force,
     api_key: key,
     app_identifier: APP_ID,
     team_id: ENV.fetch("APPLE_TEAM_ID"),
@@ -89,6 +90,30 @@ platform :ios do
     UI.success("Signing is set up. Push a tag like v1.0.0 (or run the iOS workflow) to ship a build to TestFlight.")
   end
 
+  desc "One-time: enable Push Notifications on the App ID and regenerate the provisioning profile"
+  lane :push_setup do
+    setup_ci
+    ENV["MATCH_READONLY"] = "false"
+    key = asc_key
+    bid = Spaceship::ConnectAPI::BundleId.find(APP_ID)
+    UI.user_error!("Bundle ID #{APP_ID} is not registered; run the setup lane first.") unless bid
+    push = Spaceship::ConnectAPI::BundleIdCapability::Type::PUSH_NOTIFICATIONS
+    if bid.get_capabilities.any? { |c| c.is_type?(push) }
+      UI.message("Push Notifications is already enabled on #{APP_ID}")
+    else
+      begin
+        bid.create_capability(push)
+        UI.success("Enabled Push Notifications on #{APP_ID}")
+      rescue => e
+        UI.user_error!("Could not enable the capability through the API (#{e.message}). Tick 'Push Notifications' on " \
+                       "developer.apple.com -> Identifiers -> #{APP_ID}, save, and re-run this workflow.")
+      end
+    end
+    # The old profile does not carry the aps-environment entitlement; force a fresh one (certificate is reused).
+    sync_certs(key, readonly: false, force: true)
+    UI.success("Profile regenerated with push. Builds now sign with App/App.entitlements when PUSH_ENABLED=true.")
+  end
+
   desc "Build, sign and upload to TestFlight"
   lane :beta do
     setup_ci
@@ -99,7 +124,7 @@ platform :ios do
     build_number = ENV.fetch("BUILD_NUMBER", Time.now.strftime("%Y%m%d%H%M"))
     version = ENV.fetch("APP_VERSION", "1.0.0")
 
-    update_code_signing_settings(
+    signing = {
       path: "App.xcodeproj",
       targets: ["App"],
       use_automatic_signing: false,
@@ -107,7 +132,16 @@ platform :ios do
       code_sign_identity: "Apple Distribution",
       bundle_identifier: APP_ID,
       profile_name: profile
-    )
+    }
+    # Push notifications need the aps-environment entitlement, which only signs once the App ID has the
+    # capability and the profile was regenerated (fastlane push_setup sets PUSH_ENABLED).
+    if ENV["PUSH_ENABLED"].to_s.strip == "true"
+      signing[:entitlements_file_path] = "App/App.entitlements"
+      UI.message("Push notifications: ON (signing with App/App.entitlements)")
+    else
+      UI.message("Push notifications: off (run the 'One-time push setup' workflow to enable)")
+    end
+    update_code_signing_settings(signing)
 
     build_app(
       project: "App.xcodeproj",
