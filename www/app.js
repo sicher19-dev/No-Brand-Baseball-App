@@ -1,6 +1,7 @@
 /* No Brand Baseball - pitcher portal
    Pitchers: username = last name, password = first name (case-insensitive).
-   Coaches: email + password (Coach sign in).
+   Coaches: username (or email) + password (Coach sign in). A username maps to
+   <username>@coaches.nobrandbaseball.app in Supabase; tools/provision_users.mjs creates those from COACH_LOGINS.
    Roster lives in roster.js and is refreshed from the live site on launch.
    Assessments + messages live in Supabase via backend.js (optional; see config.js). */
 (function () {
@@ -411,9 +412,23 @@
     saveSession({ kind: 'pitcher', id: p.id, backend: backend });
     return p;
   }
-  async function signInCoachWith(email, password) {
+  // Coaches may sign in with a username instead of an email; usernames live at @coaches.nobrandbaseball.app.
+  function coachLoginId(entered) {
+    var v = String(entered || '').trim();
+    if (v.indexOf('@') >= 0) return v.toLowerCase();
+    return v.toLowerCase().replace(/[^a-z0-9]/g, '') + '@coaches.nobrandbaseball.app';
+  }
+  async function signInCoachWith(entered, password) {
     if (!B.enabled()) throw new Error('Coach sign in is not set up yet.');
-    var prof = await B.signInCoach(email, password);
+    var email = coachLoginId(entered);
+    var prof;
+    try { prof = await B.signInCoach(email, password); }
+    catch (e) {
+      if (email.indexOf('@coaches.nobrandbaseball.app') > 0 && /invalid|credentials/i.test(e.message || '')) {
+        throw new Error('That username and password did not match.');
+      }
+      throw e;
+    }
     saveSession({ kind: 'coach', name: prof.display_name || 'Coach', email: email });
     return prof;
   }
@@ -508,6 +523,7 @@
     var err = $('login-error'), info = $('login-info');
     err.hidden = true; info.hidden = true;
     if (!email) { err.textContent = 'Type your coach email first, then tap Forgot password.'; err.hidden = false; return; }
+    if (email.indexOf('@') < 0) { err.textContent = 'Username logins do not have email reset. Ask Brian to reset your password.'; err.hidden = false; return; }
     try {
       await B.sendPasswordReset(email);
       info.textContent = 'Check ' + email + ' for a link to set a new password.'; info.hidden = false;

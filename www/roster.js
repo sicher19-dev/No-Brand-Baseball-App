@@ -19,13 +19,6 @@ window.NBB_ROSTER = {
           "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pens/index.html#skenes"
         },
         {
-          "id": "skenes-scout",
-          "kind": "scout",
-          "title": "Scouting Report - STL @ PIT, Sep 24 (The Finale)",
-          "updated": "2026-09-21",
-          "url": "https://sicher19-dev.github.io/skenes-scout/"
-        },
-        {
           "id": "skenes-reverse",
           "kind": "reverse",
           "title": "Reverse Report - vs STL, 9.24.26",
@@ -82,13 +75,6 @@ window.NBB_ROSTER = {
           "url": "https://sicher19-dev.github.io/skenes-defense-probability/"
         },
         {
-          "id": "skenes-altitude",
-          "kind": "lab",
-          "title": "Altitude Study",
-          "updated": "2026-06-17",
-          "url": "https://sicher19-dev.github.io/skenes-altitude/"
-        },
-        {
           "id": "skenes-economy",
           "kind": "lab",
           "title": "Pitch Economy",
@@ -110,25 +96,11 @@ window.NBB_ROSTER = {
           "url": "https://sicher19-dev.github.io/skenes-miss-diagnostic/"
         },
         {
-          "id": "skenes-dodgers",
-          "kind": "lab",
-          "title": "Dodgers Attack Plan",
-          "updated": "2026-06-09",
-          "url": "https://sicher19-dev.github.io/skenes-dodgers-attack-plan/"
-        },
-        {
           "id": "skenes-contact",
           "kind": "lab",
           "title": "Contact Point Lab",
           "updated": "2026-06-01",
           "url": "https://sicher19-dev.github.io/skenes-contact-lab/"
-        },
-        {
-          "id": "skenes-projection",
-          "kind": "lab",
-          "title": "Start-to-Start Projections",
-          "updated": "2026-05-22",
-          "url": "https://sicher19-dev.github.io/skenes-projection/"
         }
       ]
     },

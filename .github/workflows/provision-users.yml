@@ -2,6 +2,7 @@
 # Run it after adding pitchers to the roster, or with reset_passwords after fixing a name.
 # Needs secrets SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY (Supabase -> Project Settings -> API).
 # Coach emails come from the COACH_EMAILS secret (comma-separated; a secret so they are masked in public logs).
+# Username coaches come from the COACH_LOGINS secret: one "username:password:Display Name" per line.
 name: Provision app users
 
 on:
@@ -13,6 +14,10 @@ on:
         default: false
       resend_coach_links:
         description: "Email a fresh set-password link to coaches who have never signed in"
+        type: boolean
+        default: false
+      reset_coach_passwords:
+        description: "Also reset the password of every username coach in the COACH_LOGINS secret"
         type: boolean
         default: false
 
@@ -30,4 +35,5 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           COACH_EMAILS: ${{ secrets.COACH_EMAILS || vars.COACH_EMAILS || 'nobrandbaseball@gmail.com' }}
-        run: node tools/provision_users.mjs ${{ inputs.reset_passwords && '--reset-passwords' || '' }} ${{ inputs.resend_coach_links && '--resend-coach-links' || '' }}
+          COACH_LOGINS: ${{ secrets.COACH_LOGINS }}
+        run: node tools/provision_users.mjs ${{ inputs.reset_passwords && '--reset-passwords' || '' }} ${{ inputs.resend_coach_links && '--resend-coach-links' || '' }} ${{ inputs.reset_coach_passwords && '--reset-coach-passwords' || '' }}

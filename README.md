@@ -57,11 +57,14 @@ Pitchers can record a mobility video and message the coaches from their player p
 5. Project Settings -> API: copy **Project URL** and the **anon public** key into `www/config.js`, commit and push.
 6. In this repo add secrets `SUPABASE_URL` (same Project URL) and `SUPABASE_SERVICE_ROLE_KEY` (the **service_role** key, never put this one in the app),
    and a secret `COACH_EMAILS` with the coach addresses, comma-separated (a secret so the public workflow logs mask them).
+   For a coach who should sign in with a username instead of an email, add a secret `COACH_LOGINS` with one
+   `username:password:Display Name` per line; the account is created as `<username>@coaches.nobrandbaseball.app` and
+   the app maps the username to it. Tick *reset_coach_passwords* when you change one of those passwords.
 7. Actions -> **Provision app users** -> Run workflow. Every pitcher in `www/roster.js` gets a login; coaches get an invite email to set a password.
    Re-run it whenever you add a pitcher. Tick *reset_passwords* after fixing a pitcher's first name.
 
 Pitchers keep signing in with last name / first name; the app derives their backend login from the roster.
-Coaches use Coach sign in with their email and the password from the invite.
+Coaches use Coach sign in with their username (or email) and password.
 
 ### Where things live
 | Thing | Where |

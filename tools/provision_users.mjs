@@ -2,6 +2,10 @@
 //
 //   SUPABASE_URL=https://xxxx.supabase.co SUPABASE_SERVICE_ROLE_KEY=... node tools/provision_users.mjs [--reset-passwords]
 //   COACH_EMAILS="a@x.com,b@y.com"   coaches: invited by email if missing, then given the coach role
+//   COACH_LOGINS="user:password:Display Name" (one per line or ;-separated)
+//                                     coaches who sign in with a username instead of an email. The account is
+//                                     <user>@coaches.nobrandbaseball.app; the app maps the username to it.
+//                                     Existing ones keep their password unless --reset-coach-passwords is passed.
 //
 // Idempotent: existing users are left alone unless --reset-passwords is passed (then their derived
 // password and metadata are rewritten, e.g. after a name fix in the roster).
@@ -15,6 +19,12 @@ const KEY = clean(process.env.SUPABASE_SERVICE_ROLE_KEY);
 const COACHES = (process.env.COACH_EMAILS || '').split(/[,\s]+/).map(s => s.trim().toLowerCase()).filter(Boolean);
 const RESET = process.argv.includes('--reset-passwords');
 const RESEND = process.argv.includes('--resend-coach-links'); // email a fresh set-password link to coaches who never signed in
+const RESET_COACH = process.argv.includes('--reset-coach-passwords');
+const COACH_LOGINS = String(process.env.COACH_LOGINS || '').split(/[;\r\n]+/).map(s => s.trim()).filter(Boolean).map(line => {
+  const [user, password, ...rest] = line.split(':');
+  const username = String(user || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+  return { username, password: String(password || '').trim(), name: rest.join(':').trim() || user.trim() };
+}).filter(c => c.username && c.password);
 
 if (!URL_ || !KEY) { console.error('SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required.'); process.exit(1); }
 
@@ -98,4 +108,23 @@ for (const email of COACHES) {
   coachesDone++;
 }
 
-console.log(`\nPitchers: ${created} created, ${reset} reset, ${kept} unchanged (${roster.pitchers.length} in roster). Coaches: ${coachesDone} done${rateLimited ? `, ${rateLimited} waiting on the email limit` : ''}.`);
+// Username coaches: no email involved, so no mailer limit. Logs show only the first letter of the username.
+let coachLogins = 0;
+for (const c of COACH_LOGINS) {
+  const email = `${c.username}@coaches.nobrandbaseball.app`;
+  const meta = { role: 'coach', display_name: c.name, username: c.username };
+  let u = byEmail.get(email);
+  if (!u) {
+    u = await api('/auth/v1/admin/users', { method: 'POST', body: JSON.stringify({ email, password: c.password, email_confirm: true, user_metadata: meta }) });
+    console.log(`created   coach login ${c.username[0]}*** (${c.name})`);
+  } else if (RESET_COACH) {
+    await api(`/auth/v1/admin/users/${u.id}`, { method: 'PUT', body: JSON.stringify({ password: c.password, user_metadata: meta }) });
+    console.log(`reset     coach login ${c.username[0]}*** (${c.name})`);
+  } else {
+    console.log(`unchanged coach login ${c.username[0]}*** (${c.name})`);
+  }
+  await upsertProfile({ user_id: u.id, pitcher_id: null, role: 'coach', display_name: c.name });
+  coachLogins++;
+}
+
+console.log(`\nPitchers: ${created} created, ${reset} reset, ${kept} unchanged (${roster.pitchers.length} in roster). Coaches: ${coachesDone} by email${rateLimited ? ` (${rateLimited} waiting on the email limit)` : ''}, ${coachLogins} by username.`);
