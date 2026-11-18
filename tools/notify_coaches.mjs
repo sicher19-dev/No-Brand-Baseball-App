@@ -17,8 +17,9 @@ import net from 'node:net';
 import tls from 'node:tls';
 
 const clean = s => String(s || '').trim().replace(/^["'`]+|["'`]+$/g, '');
-const URL_ = clean(process.env.SUPABASE_URL).replace(/\/+$/, '');
-const KEY = clean(process.env.SUPABASE_SERVICE_ROLE_KEY);
+// A key pasted with a line break in it (long values wrap) is rejected as an HTTP header value: drop all inner whitespace.
+const URL_ = clean(process.env.SUPABASE_URL).replace(/\s+/g, '').replace(/\/+$/, '');
+const KEY = clean(process.env.SUPABASE_SERVICE_ROLE_KEY).replace(/\s+/g, '');
 // Sending mailboxes, tried in order: SMTP_* first, then SMTP_*_2 if the first one fails (expired app password, outage).
 function account(sfx) {
   const user = clean(process.env['SMTP_USER' + sfx]);
