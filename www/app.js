@@ -703,7 +703,6 @@
   });
 
   // ---------- boot ----------
-  $('roster-stamp').textContent = 'reports as of ' + (roster.updated || '-');
   if (linkType) { return; } // set-password screen is up; routing resumes after the password is saved
   loadSession();
   // Face ID lock: when it is turned on, every cold start asks for a glance before showing anything.
@@ -728,7 +727,6 @@
   }
   route();
   refreshRoster().then(function (changed) {
-    $('roster-stamp').textContent = 'reports as of ' + (roster.updated || '-');
     if (changed && session && session.kind === 'pitcher' && !views.home.hidden) renderHome(pitcherById(session.id));
   });
 
