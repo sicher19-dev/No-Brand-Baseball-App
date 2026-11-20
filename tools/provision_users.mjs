@@ -76,7 +76,7 @@ let created = 0, reset = 0, kept = 0;
 
 for (const p of roster.pitchers) {
   const c = creds(p);
-  const own = PITCHER_LOGINS.get(p.id);   // the pitcher's own password, if he has one
+  const own = p.auth === 'password' ? PITCHER_LOGINS.get(p.id) : undefined;   // own password only once the roster says so
   if (own) c.password = own;
   const meta = { pitcher_id: p.id, display_name: `${p.first} ${p.last}`, role: 'pitcher' };
   let u = byEmail.get(c.email);

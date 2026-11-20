@@ -1007,7 +1007,6 @@ window.NBB_ROSTER = {
       "first": "Striker",
       "last": "Pence",
       "username": "strikerpence",
-      "auth": "password",
       "org": "Santiago HS (Corona, CA)",
       "level": "High School - Class of 2027",
       "role": "Starter",
