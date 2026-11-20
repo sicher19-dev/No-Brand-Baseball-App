@@ -1,5 +1,5 @@
 window.NBB_ROSTER = {
-  "updated": "2026-11-17",
+  "updated": "2026-11-20",
   "push": true,
   "coachTools": [
     {
@@ -995,6 +995,40 @@ window.NBB_ROSTER = {
         },
         {
           "id": "mozzicato-grips",
+          "kind": "lab",
+          "title": "Pitch Grip Library",
+          "updated": "2026-09-07",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-Pitch-Grip-Library/"
+        }
+      ]
+    },
+    {
+      "id": "pence",
+      "first": "Striker",
+      "last": "Pence",
+      "username": "strikerpence",
+      "auth": "password",
+      "org": "Santiago HS (Corona, CA)",
+      "level": "High School - Class of 2027",
+      "role": "Starter",
+      "hand": "RHP",
+      "reports": [
+        {
+          "id": "pence-program",
+          "kind": "pen",
+          "title": "2026-27 Off-Season Throwing Program",
+          "updated": "2026-11-20",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/docs/pence/offseason-throwing-program-2026-27.pdf"
+        },
+        {
+          "id": "pence-pen",
+          "kind": "pen",
+          "title": "Offseason Bullpen Plan 2026-27",
+          "updated": "2026-11-20",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/docs/pence/offseason-bullpen-plan-2026-27.pdf"
+        },
+        {
+          "id": "pence-grips",
           "kind": "lab",
           "title": "Pitch Grip Library",
           "updated": "2026-09-07",

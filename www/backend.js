@@ -77,6 +77,15 @@ window.NBB_BACKEND = (function () {
     return r.data.user;
   }
 
+  // Pitchers with their own password (roster auth: "password"): the entered password goes to Supabase as typed.
+  // The password is set by Provision app users from the PITCHER_LOGINS secret, never written into the roster.
+  async function signInPitcherWith(p, password) {
+    var c = sb(); if (!c) fail('The backend is not set up yet.');
+    var r = await c.auth.signInWithPassword({ email: p.id + '@pitchers.nobrandbaseball.app', password: String(password || '') });
+    if (r.error) fail(r.error);
+    return r.data.user;
+  }
+
   async function signInCoach(email, password) {
     var c = sb(); if (!c) fail('The backend is not set up yet.');
     var r = await c.auth.signInWithPassword({ email: email, password: password });
@@ -196,7 +205,7 @@ window.NBB_BACKEND = (function () {
 
   return {
     enabled: enabled, session: session, myProfile: myProfile,
-    signInPitcher: signInPitcher, signInCoach: signInCoach, signOut: signOut,
+    signInPitcher: signInPitcher, signInPitcherWith: signInPitcherWith, signInCoach: signInCoach, signOut: signOut,
     registerDevice: registerDevice, unregisterDevice: unregisterDevice,
     listAssessments: listAssessments, uploadAssessment: uploadAssessment, videoUrl: videoUrl, reviewAssessment: reviewAssessment,
     listMessages: listMessages, sendMessage: sendMessage, markRead: markRead, unreadForPitcher: unreadForPitcher,

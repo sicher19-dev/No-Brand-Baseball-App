@@ -64,6 +64,11 @@ Pitchers can record a mobility video and message the coaches from their player p
    Re-run it whenever you add a pitcher. Tick *reset_passwords* after fixing a pitcher's first name.
 
 Pitchers keep signing in with last name / first name; the app derives their backend login from the roster.
+A pitcher can have his own username and real password instead: give his roster entry `"username": "..."` and
+`"auth": "password"`, put `pitcher_id:password` in the `PITCHER_LOGINS` secret, and run Provision app users. The password
+never appears in the roster; Supabase checks it. (Needs app 1.5 or the web app.)
+PDFs for a pitcher (throwing programs, plans) go in `docs/<pitcher>/`; the Pages deploy publishes them under `/docs/`
+without bundling them into the phone builds.
 Coaches use Coach sign in with their username (or email) and password.
 
 ### Where things live

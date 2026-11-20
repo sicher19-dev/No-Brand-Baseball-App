@@ -97,6 +97,8 @@
     var p = (password || '').trim().toLowerCase();
     var matches = roster.pitchers.filter(function (x) { return (x.username || x.last).toLowerCase() === u; });
     for (var i = 0; i < matches.length; i++) {
+      // auth: "password" = the pitcher has a real password that only the backend knows (nothing to compare here).
+      if (matches[i].auth === 'password') return matches[i];
       var ok = [matches[i].first].concat(matches[i].aliases || []);
       for (var j = 0; j < ok.length; j++) if (ok[j].toLowerCase() === p) return matches[i];
     }
@@ -460,7 +462,12 @@
     var p = findPitcher(username, password);
     if (!p) throw new Error('That username and password did not match. Username is your last name, password is your first name.');
     var backend = false;
-    if (B.enabled()) { try { await B.signInPitcher(p); backend = true; } catch (be) { backend = false; } }
+    if (p.auth === 'password') {
+      // Real password: Supabase checks it, so there is no view-only fallback for this pitcher.
+      if (!B.enabled()) throw new Error('Sign in is not available right now. Try again in a minute.');
+      try { await B.signInPitcherWith(p, password); } catch (pe) { throw new Error('That username and password did not match.'); }
+      backend = true;
+    } else if (B.enabled()) { try { await B.signInPitcher(p); backend = true; } catch (be) { backend = false; } }
     saveSession({ kind: 'pitcher', id: p.id, backend: backend });
     syncPush();
     return p;

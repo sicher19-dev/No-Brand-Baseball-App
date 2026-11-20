@@ -21,8 +21,15 @@ jobs:
       - uses: actions/configure-pages@v5
         with:
           enablement: true
+      # docs/ (pitcher PDFs such as throwing programs) is published next to the app but is not part of www/,
+      # so the native builds, which bundle www/, do not carry those files.
+      - name: Assemble the site (www + docs)
+        run: |
+          mkdir -p _site
+          cp -r www/. _site/
+          if [ -d docs ]; then cp -r docs _site/docs; fi
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: www
+          path: _site
       - id: deployment
         uses: actions/deploy-pages@v4

@@ -6,6 +6,9 @@
 //                                     coaches who sign in with a username instead of an email. The account is
 //                                     <user>@coaches.nobrandbaseball.app; the app maps the username to it.
 //                                     Existing ones keep their password unless --reset-coach-passwords is passed.
+//   PITCHER_LOGINS="pitcher_id:password" (one per line or ;-separated)
+//                                     pitchers with their own password (roster entry has "auth": "password" and
+//                                     usually a "username"). Applied on every run, so the secret is the source of truth.
 //
 // Idempotent: existing users are left alone unless --reset-passwords is passed (then their derived
 // password and metadata are rewritten, e.g. after a name fix in the roster).
@@ -25,6 +28,10 @@ const COACH_LOGINS = String(process.env.COACH_LOGINS || '').split(/[;\r\n]+/).ma
   const username = String(user || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
   return { username, password: String(password || '').trim(), name: rest.join(':').trim() || user.trim() };
 }).filter(c => c.username && c.password);
+const PITCHER_LOGINS = new Map(String(process.env.PITCHER_LOGINS || '').split(/[;\r\n]+/).map(s => s.trim()).filter(Boolean).map(line => {
+  const i = line.indexOf(':');
+  return [line.slice(0, i).trim(), line.slice(i + 1).trim()];
+}).filter(([id, pw]) => id && pw));
 
 if (!URL_ || !KEY) { console.error('SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required.'); process.exit(1); }
 
@@ -69,12 +76,14 @@ let created = 0, reset = 0, kept = 0;
 
 for (const p of roster.pitchers) {
   const c = creds(p);
+  const own = PITCHER_LOGINS.get(p.id);   // the pitcher's own password, if he has one
+  if (own) c.password = own;
   const meta = { pitcher_id: p.id, display_name: `${p.first} ${p.last}`, role: 'pitcher' };
   let u = byEmail.get(c.email);
   if (!u) {
     u = await api('/auth/v1/admin/users', { method: 'POST', body: JSON.stringify({ email: c.email, password: c.password, email_confirm: true, user_metadata: meta }) });
-    created++; console.log(`created   ${p.first} ${p.last}`);
-  } else if (RESET) {
+    created++; console.log(`created   ${p.first} ${p.last}${own ? ' (own password)' : ''}`);
+  } else if (RESET || own) {
     await api(`/auth/v1/admin/users/${u.id}`, { method: 'PUT', body: JSON.stringify({ password: c.password, user_metadata: meta }) });
     reset++; console.log(`reset     ${p.first} ${p.last}`);
   } else {

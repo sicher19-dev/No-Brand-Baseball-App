@@ -3,6 +3,9 @@
 # Needs secrets SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY (Supabase -> Project Settings -> API).
 # Coach emails come from the COACH_EMAILS secret (comma-separated; a secret so they are masked in public logs).
 # Username coaches come from the COACH_LOGINS secret: one "username:password:Display Name" per line.
+# Pitchers with their own password (roster entry has auth: "password") come from the PITCHER_LOGINS secret:
+# one "pitcher_id:password" per line. Those passwords are applied on every run, so editing the secret and
+# re-running is how you change one.
 name: Provision app users
 
 on:
@@ -36,4 +39,5 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           COACH_EMAILS: ${{ secrets.COACH_EMAILS || vars.COACH_EMAILS || 'nobrandbaseball@gmail.com' }}
           COACH_LOGINS: ${{ secrets.COACH_LOGINS }}
+          PITCHER_LOGINS: ${{ secrets.PITCHER_LOGINS }}
         run: node tools/provision_users.mjs ${{ inputs.reset_passwords && '--reset-passwords' || '' }} ${{ inputs.resend_coach_links && '--resend-coach-links' || '' }} ${{ inputs.reset_coach_passwords && '--reset-coach-passwords' || '' }}
