@@ -1017,14 +1017,14 @@ window.NBB_ROSTER = {
           "kind": "pen",
           "title": "2026-27 Off-Season Throwing Program",
           "updated": "2026-11-20",
-          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/docs/pence/offseason-throwing-program-2026-27.pdf"
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pdfview.html?f=docs%2Fpence%2Foffseason-throwing-program-2026-27.pdf&t=2026-27%20Off-Season%20Throwing%20Program"
         },
         {
           "id": "pence-pen",
           "kind": "pen",
           "title": "Offseason Bullpen Plan 2026-27",
           "updated": "2026-11-20",
-          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/docs/pence/offseason-bullpen-plan-2026-27.pdf"
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pdfview.html?f=docs%2Fpence%2Foffseason-bullpen-plan-2026-27.pdf&t=Offseason%20Bullpen%20Plan%202026-27"
         },
         {
           "id": "pence-grips",

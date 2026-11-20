@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Document</title>
+<!--
+  PDF viewer for the app's report frame. A PDF loaded straight into an <iframe> only paints its first page
+  on iOS (WebKit), so pitcher documents open through this page instead:
+    pdfview.html?f=docs/pence/offseason-bullpen-plan-2026-27.pdf&t=Offseason%20Bullpen%20Plan
+  Every page is drawn with PDF.js, fitted to the width of the screen, rendered as it scrolls into view.
+-->
+<style>
+  :root { color-scheme: dark; }
+  html, body { margin: 0; background: #0b0b0d; color: #e8e6e1; font: 15px/1.4 -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+  #pages { padding: 8px 8px calc(24px + env(safe-area-inset-bottom)); }
+  .page { position: relative; margin: 0 auto 10px; background: #15151a; border-radius: 6px; overflow: hidden; box-shadow: 0 1px 0 rgba(255,255,255,.04); }
+  .page canvas { display: block; width: 100%; height: 100%; }
+  .page .n { position: absolute; right: 8px; bottom: 6px; font: 11px/1 ui-monospace, Menlo, monospace; color: rgba(232,230,225,.45); }
+  #status { position: fixed; left: 50%; bottom: calc(12px + env(safe-area-inset-bottom)); transform: translateX(-50%); padding: 6px 12px; border-radius: 999px;
+            background: rgba(21,21,26,.92); border: 1px solid rgba(255,255,255,.1); font: 12px/1 ui-monospace, Menlo, monospace; color: #e8e6e1; pointer-events: none; transition: opacity .3s; }
+  #status.hide { opacity: 0; }
+  #msg { padding: 40px 20px; text-align: center; color: #b9b6ae; }
+  #msg a { color: #e8e6e1; }
+</style>
+</head>
+<body>
+<div id="pages"></div>
+<div id="msg" hidden></div>
+<div id="status">Loading…</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+(function () {
+  var q = new URLSearchParams(location.search);
+  var file = q.get('f') || '';
+  var title = q.get('t') || '';
+  if (title) document.title = title;
+  var status = document.getElementById('status'), pagesEl = document.getElementById('pages'), msg = document.getElementById('msg');
+
+  function fail(text) {
+    status.classList.add('hide');
+    msg.hidden = false;
+    msg.innerHTML = text + (file ? '<br><br><a href="' + file.replace(/"/g, '&quot;') + '" target="_blank" rel="noopener">Open the PDF directly</a>' : '');
+  }
+  // Only same-site files or https links; anything else is refused.
+  if (!file || !(/^https:\/\//i.test(file) || !/^[a-z]+:/i.test(file))) { fail('No document to show.'); return; }
+  if (!window.pdfjsLib) { fail('The document viewer could not load.'); return; }
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+  var dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+  var pdf = null, holders = [], rendered = {}, rendering = {};
+
+  function widthAvailable() { return Math.max(240, pagesEl.clientWidth - 16); }
+
+  function renderPage(i) {
+    if (rendered[i] || rendering[i]) return;
+    rendering[i] = true;
+    pdf.getPage(i).then(function (page) {
+      var base = page.getViewport({ scale: 1 });
+      var scale = widthAvailable() / base.width;
+      var vp = page.getViewport({ scale: scale });
+      var holder = holders[i - 1];
+      var canvas = document.createElement('canvas');
+      canvas.width = Math.floor(vp.width * dpr); canvas.height = Math.floor(vp.height * dpr);
+      holder.style.width = Math.floor(vp.width) + 'px'; holder.style.height = Math.floor(vp.height) + 'px';
+      var ctx = canvas.getContext('2d', { alpha: false });
+      ctx.scale(dpr, dpr);
+      return page.render({ canvasContext: ctx, viewport: vp }).promise.then(function () {
+        holder.insertBefore(canvas, holder.firstChild);
+        rendered[i] = true; rendering[i] = false;
+      });
+    }).catch(function (e) { rendering[i] = false; console.warn('page ' + i, e); });
+  }
+
+  function layout() {
+    // Placeholder boxes sized from page 1 so the scroll height is right before anything is drawn.
+    return pdf.getPage(1).then(function (p1) {
+      var base = p1.getViewport({ scale: 1 });
+      var w = widthAvailable(), h = Math.floor(w * base.height / base.width);
+      pagesEl.innerHTML = ''; holders = []; rendered = {}; rendering = {};
+      for (var i = 1; i <= pdf.numPages; i++) {
+        var d = document.createElement('div');
+        d.className = 'page'; d.style.width = Math.floor(w) + 'px'; d.style.height = h + 'px'; d.dataset.page = i;
+        var n = document.createElement('span'); n.className = 'n'; n.textContent = i + ' / ' + pdf.numPages; d.appendChild(n);
+        pagesEl.appendChild(d); holders.push(d);
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) { if (en.isIntersecting) renderPage(Number(en.target.dataset.page)); });
+      }, { rootMargin: '150% 0px' });
+      holders.forEach(function (d) { io.observe(d); });
+      renderPage(1);
+    });
+  }
+
+  var shown = 1;
+  window.addEventListener('scroll', function () {
+    var mid = window.scrollY + window.innerHeight / 2, best = 1;
+    for (var i = 0; i < holders.length; i++) { if (holders[i].offsetTop <= mid) best = i + 1; }
+    if (best !== shown) { shown = best; status.textContent = 'Page ' + shown + ' of ' + pdf.numPages; status.classList.remove('hide'); }
+    clearTimeout(window.__hideT); window.__hideT = setTimeout(function () { status.classList.add('hide'); }, 1200);
+  }, { passive: true });
+
+  var resizeT; window.addEventListener('resize', function () { clearTimeout(resizeT); resizeT = setTimeout(function () { if (pdf) layout(); }, 200); });
+
+  pdfjsLib.getDocument({ url: file }).promise.then(function (doc) {
+    pdf = doc;
+    status.textContent = 'Page 1 of ' + pdf.numPages;
+    setTimeout(function () { status.classList.add('hide'); }, 1500);
+    return layout();
+  }).catch(function (e) {
+    console.warn(e);
+    fail('This document could not be opened.');
+  });
+})();
+</script>
+</body>
+</html>
