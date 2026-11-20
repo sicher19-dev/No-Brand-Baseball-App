@@ -337,11 +337,16 @@
     }
     $('coach-attn').innerHTML = attn.length ? attn.map(card).join('') : '<div class="panel-text muted">Nothing waiting on you.</div>';
     $('coach-attn-count').textContent = attn.length || '';
-    $('coach-all').innerHTML = all.map(card).join('');
+    // The demo account is left out of the roster lists, so its test uploads and messages must not be counted
+    // in the header either; when it has activity it gets one card at the end of All pitchers so it can be cleared.
+    var demo = pitcherById('demo'), od = byId.demo || {};
+    var demoBusy = demo && (Number(od.new_assessments) > 0 || Number(od.unread_messages) > 0);
+    $('coach-all').innerHTML = all.map(card).join('') + (demoBusy ? card(demo) : '');
     $('coach-all-count').textContent = all.length;
-    var totalNew = overview.reduce(function (n, o) { return n + Number(o.new_assessments || 0); }, 0);
-    var totalUnread = overview.reduce(function (n, o) { return n + Number(o.unread_messages || 0); }, 0);
-    $('coach-summary').textContent = totalNew + ' new videos · ' + totalUnread + ' unread';
+    var sum = function (key) { return all.reduce(function (n, p) { return n + Number((byId[p.id] || {})[key] || 0); }, 0); };
+    var totalNew = sum('new_assessments'), totalUnread = sum('unread_messages');
+    $('coach-summary').textContent = totalNew + ' new videos · ' + totalUnread + ' unread' +
+      (demoBusy ? ' · demo account: ' + (Number(od.new_assessments) || 0) + ' videos, ' + (Number(od.unread_messages) || 0) + ' unread' : '');
   }
 
   async function renderCoachPitcher(id) {
