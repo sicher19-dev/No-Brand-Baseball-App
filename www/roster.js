@@ -839,6 +839,13 @@ window.NBB_ROSTER = {
           "title": "Pitch Grip Library",
           "updated": "2026-09-07",
           "url": "https://sicher19-dev.github.io/No-Brand-Baseball-Pitch-Grip-Library/"
+        },
+        {
+          "id": "volchko-design",
+          "kind": "lab",
+          "title": "Pitch Design Project: Splitter + Sinker",
+          "updated": "2026-11-21",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/docs/volchko/pitch-design-2026-27.html"
         }
       ]
     },
