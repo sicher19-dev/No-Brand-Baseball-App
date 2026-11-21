@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>2026 Pitch Grades</title>
+<meta name="description" content="Joey Volchko · 2026 pitch grades, pitch by pitch, with the progression log for the winter pens. No Brand Baseball Analytics.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0b0b0d; --card: #15151a; --card2: #1c1c22; --line: rgba(255,255,255,.09);
+    --ink: #e8e6e1; --ink2: #b9b6ae; --ink3: #8a877f;
+    --mech: #36E2B4; --flight: #FF8A3D; --grip: #A98BFF; --shape: #4DA8FF;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      color-scheme: light;
+      --bg: #f6f5f1; --card: #ffffff; --card2: #f0efe9; --line: rgba(0,0,0,.09);
+      --ink: #15151a; --ink2: #4a4944; --ink3: #767470;
+      --mech: #0e9f7c; --flight: #d9631a; --grip: #6d4fd6; --shape: #1f74d1;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 Inter, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; -webkit-text-size-adjust: 100%; }
+  body { padding: 16px 16px calc(28px + env(safe-area-inset-bottom)); max-width: 760px; margin: 0 auto; }
+  h1, h2, h3 { font-family: "Space Grotesk", Inter, sans-serif; letter-spacing: -.01em; margin: 0; }
+  h1 { font-size: 26px; line-height: 1.15; }
+  h2 { font-size: 19px; margin-bottom: 10px; }
+  h3 { font-size: 15px; color: var(--ink2); font-weight: 600; margin: 14px 0 6px; }
+  p { margin: 0 0 10px; }
+  .mono { font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace; }
+  .brand { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink3); margin-bottom: 8px; }
+  .sub { color: var(--ink2); margin-top: 6px; }
+  .meta { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 10px; font-size: 12.5px; color: var(--ink2); }
+  .meta b { color: var(--ink); font-weight: 600; }
+  .note { margin-top: 14px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--shape); background: var(--card); font-size: 13.5px; color: var(--ink2); }
+  .note b { color: var(--shape); font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; display: block; margin-bottom: 4px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-top: 14px; }
+  .card.flight { border-top: 3px solid var(--flight); }
+  .card.grip { border-top: 3px solid var(--grip); }
+  .card.shape { border-top: 3px solid var(--shape); }
+  .card.mech { border-top: 3px solid var(--mech); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 4px; }
+  .chip { font: 500 11.5px/1 "IBM Plex Mono", ui-monospace, monospace; padding: 6px 9px; border-radius: 999px; border: 1px solid transparent; white-space: nowrap; }
+  .chip.measured { background: var(--flight); color: #0b0b0d; }
+  .chip.reported { border: 1px solid var(--ink3); color: var(--ink2); }
+  .chip.not { border: 1px dashed var(--grip); color: var(--grip); }
+  .chip.exp { border: 1px dashed var(--ink3); color: var(--ink2); }
+  .chip.path { border: 1px solid var(--shape); color: var(--shape); }
+  .chip.plus { background: var(--mech); color: #0b0b0d; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 6px 0 4px; }
+  th, td { text-align: left; padding: 7px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--ink3); font-weight: 500; font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; }
+  td.num { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 13px; white-space: nowrap; }
+  td.dim { color: var(--ink3); }
+  .scale { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin: 8px 0 4px; }
+  .scale div { text-align: center; font: 500 11px/1.3 "IBM Plex Mono", monospace; color: var(--ink3); padding: 6px 2px; border-radius: 6px; background: var(--card2); }
+  .scale div span { display: block; font-size: 13px; color: var(--ink); }
+  /* pitch card */
+  .pitch { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-top: 14px; border-left: 4px solid var(--ink3); }
+  .pitch.ff { border-left-color: var(--flight); } .pitch.ct { border-left-color: var(--shape); } .pitch.sl { border-left-color: var(--mech); }
+  .pitch.cb { border-left-color: var(--grip); } .pitch.spl { border-left-color: var(--flight); } .pitch.si { border-left-color: var(--grip); }
+  .ph { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .ph h2 { margin: 0; }
+  .ph .velo { font: 500 12px/1.3 "IBM Plex Mono", monospace; color: var(--ink2); margin-top: 3px; }
+  .grades { display: flex; gap: 8px; flex-shrink: 0; }
+  .g { text-align: center; min-width: 58px; padding: 6px 8px; border-radius: 10px; background: var(--card2); border: 1px solid var(--line); }
+  .g small { display: block; font: 500 10px/1 "IBM Plex Mono", monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--ink3); margin-bottom: 4px; }
+  .g b { font-family: "Space Grotesk", sans-serif; font-size: 22px; line-height: 1; }
+  .g.future b { color: var(--shape); }
+  .g.na b { color: var(--ink3); }
+  .why { margin-top: 10px; }
+  .why b { font-weight: 600; }
+  ul.tight { margin: 6px 0 4px; padding-left: 18px; }
+  ul.tight li { margin-bottom: 5px; font-size: 14px; }
+  .mover { border-left: 3px solid var(--mech); padding: 8px 12px; background: var(--card2); border-radius: 0 10px 10px 0; font-size: 14px; margin-top: 10px; }
+  .mover small { display: block; font: 500 11px/1.4 "IBM Plex Mono", monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--mech); margin-bottom: 3px; }
+  .log td.pending { color: var(--ink3); font-style: italic; }
+  .foot { margin-top: 22px; font-size: 12px; color: var(--ink3); line-height: 1.5; }
+  @media (max-width: 480px) { .ph { flex-direction: column; } .grades { width: 100%; } .g { flex: 1; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">No Brand Baseball Analytics · Pitch Grades</div>
+  <h1>Joey Volchko<br>2026 Pitch Grades</h1>
+  <div class="sub">Every pitch he threw in 2026, graded on what we can measure and what the season showed. The grades reset pitch by pitch as the winter pens come in.</div>
+  <div class="meta">
+    <span><b>RHP</b> · 6'4" 225</span>
+    <span><b>White Sox</b> · 3rd round, 2026</span>
+    <span>Georgia 2026: <b>11-2 · 3.68 ERA · 95.1 IP · 119 K · 46 BB</b></span>
+  </div>
+  <div class="chips">
+    <span class="chip measured">Measured · shape reads</span>
+    <span class="chip reported">Reported · velocity and spin</span>
+    <span class="chip not">Not measured</span>
+  </div>
+  <div class="note"><b>Progression · updates start in December</b>This report and the Pitch Design Project are re-graded once Joey begins on-mound bullpens in December. Each pen adds a column to the progression log at the bottom, so the winter reads as a line, not a before and after.</div>
+</header>
+
+<section class="card shape">
+  <h2>How to read the grades</h2>
+  <p>These are No Brand reads on the 20–80 scale, not model grades. There is no pitch tracking from the 2026 Georgia season in hand, so each pitch is graded from the shapes we measured in our own in-season and bullpen work, from the season's results, and from reported velocity and spin. <b>Present</b> is the pitch as it played in 2026. <b>Future</b> is what the winter plan is aiming at, and it is only credited when tagged pen data gets there.</p>
+  <div class="scale">
+    <div>20<span>poor</span></div><div>30<span>well below</span></div><div>40<span>below</span></div><div>50<span>average</span></div><div>60<span>plus</span></div><div>70<span>plus-plus</span></div><div>80<span>elite</span></div>
+  </div>
+  <p class="sub" style="font-size:13px">Scale is against a pro starter, not a college one. That is why a season with 11.2 strikeouts per nine still grades out with a fastball under 50.</p>
+</section>
+
+<section class="pitch ff">
+  <div class="ph">
+    <div><h2>Four-seam fastball</h2><div class="velo">94–96 reported · ~2,700 rpm reported</div></div>
+    <div class="grades"><div class="g"><small>Present</small><b>45</b></div><div class="g future"><small>Future</small><b>55</b></div></div>
+  </div>
+  <div class="chips"><span class="chip measured">Shape measured · 2025, 2026, Jul 3 pen</span><span class="chip reported">Velo reported</span></div>
+  <table>
+    <tr><th></th><th>2025</th><th>2026</th><th>Jul 3 pen</th></tr>
+    <tr><td>IVB</td><td class="num">10.4"</td><td class="num">5.2"</td><td class="num">~1"</td></tr>
+    <tr><td>HB</td><td class="num">+5.1" arm side</td><td class="num">−1.4" cut</td><td class="num">~1"</td></tr>
+    <tr><td>Spin efficiency</td><td class="num">~62%</td><td class="num">~26%</td><td class="dim">—</td></tr>
+  </table>
+  <p class="why"><b>Why 45.</b> The velocity is real and the pitch still got outs up in the zone, which is the only reason it is not lower. But in 2026 it was a cutter without the intent: the ride and the arm-side run from 2025 were gone, the release dropped on every pitch, and three in-season grip fixes did not bring it back. A fastball he could not trust for shape is also the walk problem: 46 walks, about 11% of batters.</p>
+  <div class="mover"><small>What moves it</small>Path A in the pen plan: 9"+ IVB with arm-side run back, with the slot cue, on 2 of 3 throws across Pens 3 and 4. If the ride comes back at this velocity it is a 55 or better. If it does not, this pitch stops being graded as a four-seam and becomes the cutter below on purpose.</div>
+</section>
+
+<section class="pitch ct">
+  <div class="ph">
+    <div><h2>Cutter</h2><div class="velo">90–92 reported · ~2,700 rpm reported</div></div>
+    <div class="grades"><div class="g"><small>Present</small><b>50</b></div><div class="g future"><small>Future</small><b>55</b></div></div>
+  </div>
+  <div class="chips"><span class="chip reported">Reported</span><span class="chip exp">Blends with the fastball</span></div>
+  <p class="why"><b>Why 50.</b> The glove-side workhorse in the Texas plan: off the barrel away from righties, in on the hands of lefties, and the pitch he stole strikes with on the outer edge. The honest caveat is that in 2026 the four-seam and the cutter were one family with two speeds. The one that beat him was the cutter that backed up over the middle, the only pitch a hitter could extend on.</p>
+  <div class="mover"><small>What moves it</small>Path B turns the accident into a pitch: the harder, fingertip cutter hold with fastball intent, graded in the band IVB 8–12", HB −2 to −6", 2–4 mph off the old fastball. A cutter that keeps ride at that speed is a 55. Most failed cutters turn into slow sliders, which is what the band guards against.</div>
+</section>
+
+<section class="pitch sl">
+  <div class="ph">
+    <div><h2>Slider</h2><div class="velo">87–89 reported · ~2,900 rpm reported</div></div>
+    <div class="grades"><div class="g"><small>Present</small><b>60</b></div><div class="g future"><small>Future</small><b>60</b></div></div>
+  </div>
+  <div class="chips"><span class="chip plus">Plus · hold it</span><span class="chip reported">Reported</span></div>
+  <p class="why"><b>Why 60.</b> His highest-spin pitch and the primary swing-and-miss pitch all season. Down and away to righties for the chase, backfoot to lefties when ahead. The 15-strikeout complete game against Texas at the College World Series ran through this pitch and the curve, and it breaks toward first base like everything else he throws, so it pairs off the cutter line without any extra work.</p>
+  <div class="mover"><small>What moves it</small>Nothing, on purpose. The winter job is maintenance: hold IVB and HB within 2" of the lab-day baseline while the fastball and splitter work happens. The grade only changes if the slot cue moves it, which the pens will show.</div>
+</section>
+
+<section class="pitch cb">
+  <div class="ph">
+    <div><h2>Curveball</h2><div class="velo">84–87 reported · ~2,600 rpm reported</div></div>
+    <div class="grades"><div class="g"><small>Present</small><b>55</b></div><div class="g future"><small>Future</small><b>55</b></div></div>
+  </div>
+  <div class="chips"><span class="chip plus">Plus · hold it</span><span class="chip reported">Reported</span></div>
+  <p class="why"><b>Why 55.</b> The depth pitch. Down and away to righties for the chase, and the second half of the two plus breaking balls that carried the strikeout rate. It is a half grade under the slider because it is a slower version of the same glove-side direction: a third pitch that breaks toward first base adds depth, not a new look for a lefty.</p>
+  <div class="mover"><small>What moves it</small>Same as the slider: hold shape within 2" of baseline. Its value goes up on its own once something runs the other way, because the hitter can no longer sit on one direction.</div>
+</section>
+
+<section class="pitch spl">
+  <div class="ph">
+    <div><h2>Splitter</h2><div class="velo">87.6 measured · one test session</div></div>
+    <div class="grades"><div class="g"><small>Present</small><b>40</b></div><div class="g future"><small>Future</small><b>55</b></div></div>
+  </div>
+  <div class="chips"><span class="chip measured">Measured · Jul 2026</span><span class="chip exp">Not yet off a mound</span></div>
+  <table>
+    <tr><th></th><th>July test</th><th>Target band</th></tr>
+    <tr><td>Velocity</td><td class="num">87.6 mph</td><td class="num">7–10 off the fastball</td></tr>
+    <tr><td>IVB</td><td class="num">0.6"</td><td class="num">3" or less</td></tr>
+    <tr><td>HB</td><td class="num">+7.6" arm side</td><td class="num">+6" or more</td></tr>
+    <tr><td>Spin efficiency</td><td class="num">28% · 74° gyro</td><td class="num">35% or less</td></tr>
+  </table>
+  <p class="why"><b>Why 40.</b> It is not a 2026 pitch; he did not throw it to a hitter. The grade is for a shape that showed up once, in a test, and has not been repeated or located. The shape itself is the one we want: it is the first thing in his arsenal that moves away from a left-handed hitter, which is the structural hole in the whole profile.</p>
+  <div class="mover"><small>What moves it</small>Gate B in the pen plan: 60% of splitters in the band across Pens 3 to 8 and 50% on the spot in Pens 7 and 8, then lefty swings and misses in the live at-bats of Pen 12. That is a 55. The full project is on the Pitch Design page.</div>
+</section>
+
+<section class="pitch si">
+  <div class="ph">
+    <div><h2>Sinker</h2><div class="velo">no measured shape</div></div>
+    <div class="grades"><div class="g na"><small>Present</small><b>—</b></div><div class="g future"><small>Future</small><b>50</b></div></div>
+  </div>
+  <div class="chips"><span class="chip not">Not measured</span><span class="chip path">Path B only</span></div>
+  <p class="why"><b>Why no present grade.</b> He has had a sinker as an arm-side option, but nothing we hold measured it, and it was not part of the 2026 plan against hitters. Grading it now would be optimism.</p>
+  <div class="mover"><small>What moves it</small>Only Path B brings it in: a one-seam sinker graded in the band HB +10" or more, IVB 4–10", velocity set from Pen 5. Two pens in the band is a 50, which is all it needs to be: run in on a righty and away from a lefty, without asking his wrist to do anything.</div>
+</section>
+
+<section class="card mech">
+  <h2>What the season said</h2>
+  <table>
+    <tr><th>Season</th><th>G/GS</th><th>IP</th><th>W-L</th><th>ERA</th><th>K</th><th>BB</th></tr>
+    <tr><td>2026 Georgia</td><td class="num">18/18</td><td class="num">95.1</td><td class="num">11-2</td><td class="num">3.68</td><td class="num">119</td><td class="num">46</td></tr>
+    <tr><td>2025 Stanford</td><td class="num">15/15</td><td class="num">70.1</td><td class="num">3-4</td><td class="num">6.01</td><td class="num">56</td><td class="dim">—</td></tr>
+  </table>
+  <ul class="tight">
+    <li><b>Strikeouts came from the breaking balls.</b> 11.2 per nine with a fastball that had lost its shape says the slider and curve are carrying more than their share.</li>
+    <li><b>Walks are the fastball tax.</b> 4.3 per nine, about 11% of batters. A fastball he cannot trust for shape gets nibbled with.</li>
+    <li><b>The lefty hole is structural, not command.</b> Every pitch breaks toward first base. The Texas plan had to be built around that, and it is the reason the splitter and sinker exist as projects.</li>
+    <li><b>The year got better while the fastball got worse.</b> 6.01 to 3.68 with the four-seam drifting the whole time. The breaking balls and the competitiveness did that, which is the reason the organization paid for him in the third round.</li>
+  </ul>
+</section>
+
+<section class="card shape">
+  <h2>Progression log</h2>
+  <p class="sub" style="font-size:13.5px; margin-top:0">One column per pen from December. Each cell is the pitch's grade on that day from tagged data, with the shape number that drove it. Blank until the pen happens.</p>
+  <table class="log">
+    <tr><th>Pitch</th><th>2026</th><th>Pen 1 · Wk 11</th><th>Pen 3 · Wk 12</th><th>Pen 4 · Gate A</th><th>Pen 8 · Gate B</th><th>Pen 12 · Live</th></tr>
+    <tr><td>Four-seam</td><td class="num">45</td><td class="pending">pending</td><td class="pending">pending</td><td class="pending">pending</td><td class="pending">pending</td><td class="pending">pending</td></tr>
+    <tr><td>Cutter</td><td class="num">50</td><td class="pending">—</td><td class="pending">—</td><td class="pending">Path B?</td><td class="pending">pending</td><td class="pending">pending</td></tr>
+    <tr><td>Slider</td><td class="num">60</td><td class="pending">—</td><td class="pending">—</td><td class="pending">pending</td><td class="pending">pending</td><td class="pending">pending</td></tr>
+    <tr><td>Curveball</td><td class="num">55</td><td class="pending">—</td><td class="pending">—</td><td class="pending">pending</td><td class="pending">pending</td><td class="pending">pending</td></tr>
+    <tr><td>Splitter</td><td class="num">40</td><td class="pending">—</td><td class="pending">pending</td><td class="pending">pending</td><td class="pending">pending</td><td class="pending">pending</td></tr>
+    <tr><td>Sinker</td><td class="num">—</td><td class="pending">—</td><td class="pending">—</td><td class="pending">Path B?</td><td class="pending">pending</td><td class="pending">pending</td></tr>
+  </table>
+  <p class="sub" style="font-size:13px">Pens 1 and 2 are fastball only. Breaking balls come back in Pen 4, the splitter in Pen 3, and the cutter and sinker only if Gate A picks Path B.</p>
+</section>
+
+<div class="foot">
+  <span class="mono">No Brand Baseball Analytics · Updated 2026-11-21</span><br>
+  Season stats from Georgia Athletics and Stanford Athletics. Shape reads from No Brand's own 2025 and 2026 in-season and bullpen work and one July 2026 test session. Velocity and spin ranges are reported, not measured by us. Grades are No Brand reads on the 20–80 scale and are re-graded from tagged pen data starting in December.
+</div>
+
+</body>
+</html>

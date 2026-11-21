@@ -820,6 +820,13 @@ window.NBB_ROSTER = {
           "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pdfview.html?f=docs%2Fvolchko%2Foffseason-throwing-program-2026-27-wk9-12.pdf&t=2026-27%20Off-Season%20Throwing%20Program%20(Weeks%209-12)"
         },
         {
+          "id": "volchko-grades",
+          "kind": "grades",
+          "title": "2026 Pitch Grades",
+          "updated": "2026-11-21",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/docs/volchko/pitch-grades-2026.html"
+        },
+        {
           "id": "volchko-scout",
           "kind": "scout",
           "title": "Scouting Report & Pitch Sequencing - Texas (CWS)",
