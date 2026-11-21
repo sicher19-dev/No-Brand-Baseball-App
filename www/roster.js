@@ -1,5 +1,5 @@
 window.NBB_ROSTER = {
-  "updated": "2026-11-20",
+  "updated": "2026-11-21",
   "push": true,
   "coachTools": [
     {
@@ -377,7 +377,7 @@ window.NBB_ROSTER = {
           "kind": "snapshot",
           "title": "2026 Season Snapshot",
           "updated": "2026-09-26",
-          "url": "https://sicher19-dev.github.io/No-Brand-2026-Season-Snapshots/cole-henry.pdf"
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pdfview.html?f=https%3A%2F%2Fsicher19-dev.github.io%2FNo-Brand-2026-Season-Snapshots%2Fcole-henry.pdf&t=2026%20Season%20Snapshot"
         },
         {
           "id": "henry-grips",
@@ -416,7 +416,7 @@ window.NBB_ROSTER = {
           "kind": "snapshot",
           "title": "2026 Season Snapshot",
           "updated": "2026-09-26",
-          "url": "https://sicher19-dev.github.io/No-Brand-2026-Season-Snapshots/tom-cosgrove.pdf"
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pdfview.html?f=https%3A%2F%2Fsicher19-dev.github.io%2FNo-Brand-2026-Season-Snapshots%2Ftom-cosgrove.pdf&t=2026%20Season%20Snapshot"
         },
         {
           "id": "cosgrove-grips",
@@ -448,7 +448,7 @@ window.NBB_ROSTER = {
           "kind": "snapshot",
           "title": "2026 Season Snapshot",
           "updated": "2026-09-26",
-          "url": "https://sicher19-dev.github.io/No-Brand-2026-Season-Snapshots/josh-ekness.pdf"
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pdfview.html?f=https%3A%2F%2Fsicher19-dev.github.io%2FNo-Brand-2026-Season-Snapshots%2Fjosh-ekness.pdf&t=2026%20Season%20Snapshot"
         },
         {
           "id": "ekness-grips",
@@ -487,7 +487,7 @@ window.NBB_ROSTER = {
           "kind": "snapshot",
           "title": "2026 Season Snapshot",
           "updated": "2026-09-26",
-          "url": "https://sicher19-dev.github.io/No-Brand-2026-Season-Snapshots/hunter-barco.pdf"
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pdfview.html?f=https%3A%2F%2Fsicher19-dev.github.io%2FNo-Brand-2026-Season-Snapshots%2Fhunter-barco.pdf&t=2026%20Season%20Snapshot"
         },
         {
           "id": "barco-grips",
@@ -629,7 +629,7 @@ window.NBB_ROSTER = {
           "kind": "snapshot",
           "title": "2026 Season Snapshot",
           "updated": "2026-09-26",
-          "url": "https://sicher19-dev.github.io/No-Brand-2026-Season-Snapshots/patrick-monteverde.pdf"
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pdfview.html?f=https%3A%2F%2Fsicher19-dev.github.io%2FNo-Brand-2026-Season-Snapshots%2Fpatrick-monteverde.pdf&t=2026%20Season%20Snapshot"
         },
         {
           "id": "monteverde-grips",
@@ -668,7 +668,7 @@ window.NBB_ROSTER = {
           "kind": "snapshot",
           "title": "2026 Season Snapshot",
           "updated": "2026-09-26",
-          "url": "https://sicher19-dev.github.io/No-Brand-2026-Season-Snapshots/marcus-johnson.pdf"
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pdfview.html?f=https%3A%2F%2Fsicher19-dev.github.io%2FNo-Brand-2026-Season-Snapshots%2Fmarcus-johnson.pdf&t=2026%20Season%20Snapshot"
         },
         {
           "id": "johnson-grips",
@@ -707,7 +707,7 @@ window.NBB_ROSTER = {
           "kind": "snapshot",
           "title": "2026 Season Snapshot",
           "updated": "2026-09-26",
-          "url": "https://sicher19-dev.github.io/No-Brand-2026-Season-Snapshots/garrett-edwards.pdf"
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pdfview.html?f=https%3A%2F%2Fsicher19-dev.github.io%2FNo-Brand-2026-Season-Snapshots%2Fgarrett-edwards.pdf&t=2026%20Season%20Snapshot"
         },
         {
           "id": "edwards-grips",
@@ -746,7 +746,7 @@ window.NBB_ROSTER = {
           "kind": "snapshot",
           "title": "2026 Season Snapshot",
           "updated": "2026-09-26",
-          "url": "https://sicher19-dev.github.io/No-Brand-2026-Season-Snapshots/jt-quinn.pdf"
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pdfview.html?f=https%3A%2F%2Fsicher19-dev.github.io%2FNo-Brand-2026-Season-Snapshots%2Fjt-quinn.pdf&t=2026%20Season%20Snapshot"
         },
         {
           "id": "quinn-grips",
@@ -785,7 +785,7 @@ window.NBB_ROSTER = {
           "kind": "snapshot",
           "title": "2026 Season Snapshot",
           "updated": "2026-09-26",
-          "url": "https://sicher19-dev.github.io/No-Brand-2026-Season-Snapshots/brian-curley.pdf"
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pdfview.html?f=https%3A%2F%2Fsicher19-dev.github.io%2FNo-Brand-2026-Season-Snapshots%2Fbrian-curley.pdf&t=2026%20Season%20Snapshot"
         },
         {
           "id": "curley-grips",
@@ -813,6 +813,13 @@ window.NBB_ROSTER = {
           "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pens/index.html#volchko"
         },
         {
+          "id": "volchko-program",
+          "kind": "pen",
+          "title": "2026-27 Off-Season Throwing Program (Weeks 9-12)",
+          "updated": "2026-11-21",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pdfview.html?f=docs%2Fvolchko%2Foffseason-throwing-program-2026-27-wk9-12.pdf&t=2026-27%20Off-Season%20Throwing%20Program%20(Weeks%209-12)"
+        },
+        {
           "id": "volchko-scout",
           "kind": "scout",
           "title": "Scouting Report & Pitch Sequencing - Texas (CWS)",
@@ -824,7 +831,7 @@ window.NBB_ROSTER = {
           "kind": "snapshot",
           "title": "2026 Season Snapshot",
           "updated": "2026-09-26",
-          "url": "https://sicher19-dev.github.io/No-Brand-2026-Season-Snapshots/joey-volchko.pdf"
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pdfview.html?f=https%3A%2F%2Fsicher19-dev.github.io%2FNo-Brand-2026-Season-Snapshots%2Fjoey-volchko.pdf&t=2026%20Season%20Snapshot"
         },
         {
           "id": "volchko-grips",
@@ -888,7 +895,7 @@ window.NBB_ROSTER = {
           "kind": "snapshot",
           "title": "2026 Season Snapshot",
           "updated": "2026-09-26",
-          "url": "https://sicher19-dev.github.io/No-Brand-2026-Season-Snapshots/caleb-bolden.pdf"
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pdfview.html?f=https%3A%2F%2Fsicher19-dev.github.io%2FNo-Brand-2026-Season-Snapshots%2Fcaleb-bolden.pdf&t=2026%20Season%20Snapshot"
         },
         {
           "id": "bolden-grips",
@@ -920,7 +927,7 @@ window.NBB_ROSTER = {
           "kind": "snapshot",
           "title": "2026 Season Snapshot",
           "updated": "2026-09-26",
-          "url": "https://sicher19-dev.github.io/No-Brand-2026-Season-Snapshots/matt-scott.pdf"
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pdfview.html?f=https%3A%2F%2Fsicher19-dev.github.io%2FNo-Brand-2026-Season-Snapshots%2Fmatt-scott.pdf&t=2026%20Season%20Snapshot"
         },
         {
           "id": "scott-grips",
@@ -959,7 +966,7 @@ window.NBB_ROSTER = {
           "kind": "snapshot",
           "title": "2026 Season Snapshot",
           "updated": "2026-09-26",
-          "url": "https://sicher19-dev.github.io/No-Brand-2026-Season-Snapshots/thomas-harrington.pdf"
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pdfview.html?f=https%3A%2F%2Fsicher19-dev.github.io%2FNo-Brand-2026-Season-Snapshots%2Fthomas-harrington.pdf&t=2026%20Season%20Snapshot"
         },
         {
           "id": "harrington-grips",
@@ -991,7 +998,7 @@ window.NBB_ROSTER = {
           "kind": "snapshot",
           "title": "2026 Season Snapshot",
           "updated": "2026-09-26",
-          "url": "https://sicher19-dev.github.io/No-Brand-2026-Season-Snapshots/frank-mozzicato.pdf"
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pdfview.html?f=https%3A%2F%2Fsicher19-dev.github.io%2FNo-Brand-2026-Season-Snapshots%2Ffrank-mozzicato.pdf&t=2026%20Season%20Snapshot"
         },
         {
           "id": "mozzicato-grips",
