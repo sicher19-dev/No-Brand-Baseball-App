@@ -216,3 +216,33 @@ alter table public.devices enable row level security;
 drop policy if exists "devices: own rows" on public.devices;
 create policy "devices: own rows" on public.devices
   for all to authenticated using (user_id = auth.uid()) with check (user_id = auth.uid());
+
+-- ---------------------------------------------------------------------------
+-- Last sign-in on the coach list (added 2026-11-22).
+-- auth.users.last_sign_in_at only moves on a password sign-in, and the app keeps a session for weeks,
+-- so the app also stamps the profile each time it opens with a live session (touch_profile). The
+-- overview reports the later of the two, and now lists every pitcher with a profile, active or not.
+-- ---------------------------------------------------------------------------
+alter table public.profiles add column if not exists last_seen_at timestamptz;
+
+create or replace function public.touch_profile() returns void
+language sql security definer set search_path = public as $$
+  update public.profiles set last_seen_at = now() where user_id = auth.uid();
+$$;
+
+drop function if exists public.coach_overview();
+create function public.coach_overview()
+returns table (pitcher_id text, new_assessments bigint, unread_messages bigint, last_activity timestamptz, last_seen timestamptz)
+language sql stable security definer set search_path = public as $$
+  select pr.pitcher_id,
+         coalesce((select count(*) from public.assessments a where a.pitcher_id = pr.pitcher_id and a.reviewed_at is null and a.uploaded_by_role = 'pitcher'), 0),
+         coalesce((select count(*) from public.messages m where m.pitcher_id = pr.pitcher_id and m.sender_role = 'pitcher' and not m.read_by_coach), 0),
+         greatest(
+           (select max(created_at) from public.assessments a where a.pitcher_id = pr.pitcher_id),
+           (select max(created_at) from public.messages m where m.pitcher_id = pr.pitcher_id)
+         ),
+         greatest(pr.last_seen_at, u.last_sign_in_at)
+  from public.profiles pr
+  left join auth.users u on u.id = pr.user_id
+  where pr.pitcher_id is not null and public.is_coach();
+$$;

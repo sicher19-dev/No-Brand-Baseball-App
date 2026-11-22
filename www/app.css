@@ -132,3 +132,4 @@ textarea:focus{border-color:var(--gold)}
 .viewer-body{flex:1;position:relative;background:#000}
 #viewer-frame{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
 .loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:13px;background:var(--bg);z-index:1}
+.chip.link{cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}

@@ -202,6 +202,21 @@ window.NBB_BACKEND = (function () {
     if (r.error) fail(r.error);
     return r.data || [];
   }
+  // Everything waiting on a coach, newest first: pitcher videos not yet reviewed and pitcher messages not yet read.
+  async function coachInbox() {
+    var c = sb();
+    var a = await c.from('assessments').select('id,pitcher_id,created_at,note').eq('uploaded_by_role', 'pitcher').is('reviewed_at', null).order('created_at', { ascending: false }).limit(50);
+    if (a.error) fail(a.error);
+    var m = await c.from('messages').select('id,pitcher_id,created_at,body,sender_name').eq('sender_role', 'pitcher').eq('read_by_coach', false).order('created_at', { ascending: false }).limit(100);
+    if (m.error) fail(m.error);
+    return { videos: a.data || [], messages: m.data || [] };
+  }
+  // Stamp "last seen" on the signed-in user's profile so the coach list can show when a pitcher last opened the app.
+  // Best effort: an old backend without the function must never break sign-in.
+  async function touch() {
+    var c = sb(); if (!c) return;
+    try { await c.rpc('touch_profile'); } catch (e) { /* ignore */ }
+  }
 
   return {
     enabled: enabled, session: session, myProfile: myProfile,
@@ -209,7 +224,7 @@ window.NBB_BACKEND = (function () {
     registerDevice: registerDevice, unregisterDevice: unregisterDevice,
     listAssessments: listAssessments, uploadAssessment: uploadAssessment, videoUrl: videoUrl, reviewAssessment: reviewAssessment,
     listMessages: listMessages, sendMessage: sendMessage, markRead: markRead, unreadForPitcher: unreadForPitcher,
-    coachOverview: coachOverview, MAX_BYTES: MAX_BYTES, MAX_MB: MAX_MB, MAX_HINT: MAX_HINT,
+    coachOverview: coachOverview, coachInbox: coachInbox, touch: touch, MAX_BYTES: MAX_BYTES, MAX_MB: MAX_MB, MAX_HINT: MAX_HINT,
     linkTypeInUrl: linkTypeInUrl, onAuthChange: onAuthChange, setPassword: setPassword, sendPasswordReset: sendPasswordReset
   };
 })();

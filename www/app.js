@@ -332,9 +332,28 @@
         '<div class="card-ico">' + esc((p.first[0] || '') + (p.last[0] || '')) + '</div>' +
         '<div class="card-body"><div class="card-title">' + esc(p.first + ' ' + p.last) + ' ' + badges + '</div>' +
         '<div class="card-meta">' + esc([p.org, p.level, p.role].filter(Boolean).join(' · ')) +
-        (o.last_activity ? ' · last activity ' + esc(fmtWhen(o.last_activity)) : '') + '</div></div>' +
+        (o.last_seen ? ' · last sign-in ' + esc(fmtWhen(o.last_seen)) : (o.last_activity ? ' · last activity ' + esc(fmtWhen(o.last_activity)) : ' · never signed in')) + '</div></div>' +
         '<div class="card-arrow">&#8250;</div></a>';
     }
+    // Inbox: every pitcher video not yet reviewed and every pitcher message not yet read, newest first,
+    // each opening that pitcher's page. This is what the header counts are made of.
+    var inbox = { videos: [], messages: [] };
+    try { inbox = await B.coachInbox(); } catch (e) { console.warn('inbox', e && e.message); }
+    function who(id) { var p = pitcherById(id); return p ? p.first + ' ' + p.last + (id === 'demo' ? ' (test account)' : '') : id; }
+    function ini(id) { var p = pitcherById(id); return p ? (p.first[0] || '') + (p.last[0] || '') : '?'; }
+    var items = inbox.videos.map(function (a) { return { t: a.created_at, id: a.pitcher_id, kind: 'video', text: a.note || '' }; })
+      .concat(inbox.messages.map(function (m) { return { t: m.created_at, id: m.pitcher_id, kind: 'message', text: m.body || '' }; }));
+    items.sort(function (a, b) { return String(b.t).localeCompare(String(a.t)); });
+    $('coach-inbox').innerHTML = items.length ? items.map(function (it) {
+      var snippet = it.text.length > 140 ? it.text.slice(0, 140) + '…' : it.text;
+      return '<a class="card" href="#/coach/' + esc(it.id) + '">' +
+        '<div class="card-ico">' + esc(ini(it.id)) + '</div>' +
+        '<div class="card-body"><div class="card-title">' + esc(who(it.id)) + ' ' +
+          (it.kind === 'video' ? '<span class="badge">New video</span>' : '<span class="badge gold">Unread</span>') + '</div>' +
+        '<div class="card-meta">' + esc(fmtWhen(it.t)) + (snippet ? ' · ' + esc(snippet) : '') + '</div></div>' +
+        '<div class="card-arrow">&#8250;</div></a>';
+    }).join('') : '<div class="panel-text muted">Nothing waiting on you.</div>';
+    $('coach-inbox-count').textContent = items.length || '';
     $('coach-attn').innerHTML = attn.length ? attn.map(card).join('') : '<div class="panel-text muted">Nothing waiting on you.</div>';
     $('coach-attn-count').textContent = attn.length || '';
     // The demo account is left out of the roster lists, so its test uploads and messages must not be counted
@@ -347,7 +366,12 @@
     var totalNew = sum('new_assessments'), totalUnread = sum('unread_messages');
     $('coach-summary').textContent = totalNew + ' new videos · ' + totalUnread + ' unread' +
       (demoBusy ? ' · demo account: ' + (Number(od.new_assessments) || 0) + ' videos, ' + (Number(od.unread_messages) || 0) + ' unread' : '');
+    $('coach-summary').classList.toggle('link', items.length > 0);
   }
+  // Tapping the header counts jumps to the inbox that lists them.
+  $('coach-summary').addEventListener('click', function () {
+    var g = $('coach-inbox-group'); if (g) g.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
 
   async function renderCoachPitcher(id) {
     var p = pitcherById(id); if (!p) { location.hash = '#/coach'; return; }
@@ -474,6 +498,7 @@
       backend = true;
     } else if (B.enabled()) { try { await B.signInPitcher(p); backend = true; } catch (be) { backend = false; } }
     saveSession({ kind: 'pitcher', id: p.id, backend: backend });
+    if (backend) B.touch();
     syncPush();
     return p;
   }
@@ -503,6 +528,7 @@
       throw e;
     }
     saveSession({ kind: 'coach', name: prof.display_name || 'Coach', email: email });
+    B.touch();
     syncPush();
     return prof;
   }
@@ -731,10 +757,11 @@
   // If the backend session expired or was never established, retry quietly for pitchers.
   if (session && session.kind === 'pitcher' && B.enabled()) {
     B.session().then(function (s) {
-      if (!s) { var p = pitcherById(session.id); if (p) return B.signInPitcher(p).then(function () { session.backend = true; saveSession(session); syncPush(); if (!views.home.hidden) renderHome(p); }); }
-      else { if (!session.backend) { session.backend = true; saveSession(session); } syncPush(); }
+      if (!s) { var p = pitcherById(session.id); if (p) return B.signInPitcher(p).then(function () { session.backend = true; saveSession(session); B.touch(); syncPush(); if (!views.home.hidden) renderHome(p); }); }
+      else { if (!session.backend) { session.backend = true; saveSession(session); } B.touch(); syncPush(); }
     }).catch(function () {});
   } else if (session && session.kind === 'coach') {
+    if (B.enabled()) B.touch();
     syncPush();
   }
   route();
