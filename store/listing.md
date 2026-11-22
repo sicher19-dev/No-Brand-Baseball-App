@@ -67,3 +67,15 @@ No objectionable content. 4+. Unrestricted web access: No (reports are our own p
 4. Remote Assessment section with a received video
 5. Messages thread
 Take them on an iPhone from the TestFlight build; Apple accepts the phone's own screenshot size.
+
+## What's New (4000) - paste into the version's "What's New in This Version"
+
+### 1.5
+Coach inbox: every new video and unread message in one list, each opening the pitcher's page, and each pitcher card now shows his last sign-in.
+Documents open page by page instead of stopping at the first page.
+Pitchers can sign in with their own password.
+Cleaner login screen.
+
+### 1.4
+Push notifications: coaches hear about new videos and messages, pitchers hear when a coach replies or reviews.
+Coaches can record an assessment in person. Pitch Grip Library and Motion Capture Library in Coach tools.
