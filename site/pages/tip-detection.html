@@ -1,0 +1,178 @@
+<!-- {"title":"Tip Detection","nav":"tip","desc":"Tip Detection checks video of a pitcher for anything in his delivery that gives the pitch away before release, and reports what it is, when it shows and how to fix it."} -->
+<section class="top" aria-labelledby="top-h">
+  <img class="top__plate" src="./media/hero-delivery.jpg" alt="" decoding="async">
+  <div class="slate"><b><span class="hole" aria-hidden="true"></span>Tip Detection</b><span>Reel 01</span></div>
+  <h1 class="h1" id="top-h">Find the tell before a hitter <em class="hl in">does</em>.</h1>
+  <p class="body">Tip Detection checks video of a pitcher for anything in his delivery that gives the pitch away before release. If something is there, the report shows what it is, when it shows up and how much it gives away.</p>
+  <div class="top__cta">
+    <a class="pill" href="https://sicher19-dev.github.io/skenes-tip/">See the sample report <i aria-hidden="true"><svg width="16" height="16"><use href="#arr"/></svg></i></a>
+    <a class="quiet" href="#send">What to send us <svg width="16" height="16" aria-hidden="true"><use href="#arr"/></svg></a>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="how-h">
+  <div class="sec__grid">
+    <div data-rv>
+      <div class="slate"><b><span class="hole" aria-hidden="true"></span>How it works</b><span>Reel 02</span></div>
+      <h2 class="h2" id="how-h">A computer watches only his body.</h2>
+    </div>
+    <div class="prose" data-rv>
+      <p>We track the pitcher through every delivery: head, shoulders, elbows, hands, glove, hips, knees and feet. Nothing else in the picture is used.</p>
+      <p>From that tracking alone, the computer tries to name the pitch <strong>before the ball is released</strong>. It is tested on games it has never seen. If it can name the pitch more often than a good guess would, something in the delivery is giving the pitch away.</p>
+      <p>We run this separately for each camera angle, and separately for the windup and the stretch, because a tell often shows in only one of them.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="vd-h">
+  <div class="slate" data-rv><b><span class="hole" aria-hidden="true"></span>The verdict</b><span>Reel 03</span></div>
+  <h2 class="h2" id="vd-h" data-rv>Three possible answers.</h2>
+  <div class="verdicts" style="margin-top:clamp(32px,5vw,72px)">
+    <p class="verdicts__t">Every camera angle and delivery gets one of three verdicts</p>
+    <dl>
+      <div class="vd vd--clear" data-rv><dt>Clear tell</dt><dd data-n="01">A hitter who knows what to look for could use it.</dd></div>
+      <div class="vd vd--weak" data-rv><dt>Weak tell</dt><dd data-n="02">A small but real edge.</dd></div>
+      <div class="vd vd--none" data-rv><dt>No tell</dt><dd data-n="03">Nothing readable before release.</dd></div>
+    </dl>
+  </div>
+  <div class="sec__grid" style="margin-top:clamp(40px,6vw,88px)">
+    <div data-rv><h3 class="h3">Every number comes with its baseline.</h3></div>
+    <div class="prose" data-rv>
+      <p>A pitcher who throws his fastball half the time can be "read" half the time by anyone. So the report always shows how often the video named the pitch next to two baselines:</p>
+      <ul class="gets">
+        <li>By guessing his usual pitch</li>
+        <li>From the count and runners alone</li>
+      </ul>
+      <p>A tell only counts when the video beats both.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="rep-h">
+  <div class="sec__grid">
+    <div data-rv>
+      <div class="slate"><b><span class="hole" aria-hidden="true"></span>The report</b><span>Reel 04</span></div>
+      <h2 class="h2" id="rep-h">What comes back.</h2>
+      <p class="body">The report is written in plain words, for a pitcher and his coach to read together.</p>
+      <a class="quiet" href="https://sicher19-dev.github.io/skenes-tip/">See the sample report <svg width="16" height="16" aria-hidden="true"><use href="#arr"/></svg></a>
+    </div>
+    <div class="prose" data-rv>
+      <h3>In every report</h3>
+      <ul class="gets">
+        <li>A verdict for each camera angle and delivery</li>
+        <li>The moment in the delivery the tell shows</li>
+        <li>The body cue, such as where the glove sits</li>
+        <li>A fix to work on</li>
+        <li>A page for each game, with clips of the flagged pitches next to a typical pitch of another type</li>
+      </ul>
+      <h3>Game only and pen confirmed</h3>
+      <p>In a game, pitch choice follows the count and the hitter, so a pattern can come from the situation and not from the body. A tell found in game video alone is marked <strong>game only</strong>.</p>
+      <p>When the same tell shows up in a bullpen where the pitch types were shuffled, it is marked <strong>pen confirmed</strong>. That means it comes from the delivery.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="send" aria-labelledby="send-h">
+  <div class="sec__grid">
+    <div data-rv>
+      <div class="slate"><b><span class="hole" aria-hidden="true"></span>What to send</b><span>Reel 05</span></div>
+      <h2 class="h2" id="send-h">One clip per pitch and a pitch list.</h2>
+      <p class="body">A job is one pitcher, one season or set of pens, and one or two camera angles.</p>
+    </div>
+    <div class="prose" data-rv>
+      <h3>Video</h3>
+      <p>One video file for each pitch, in mp4.</p>
+      <h3>Pitch list</h3>
+      <p>One spreadsheet file with a row for each pitch:</p>
+      <ul class="gets">
+        <li>Pitch type</li>
+        <li>Runners on base</li>
+        <li>Date</li>
+        <li>Pitcher name</li>
+      </ul>
+      <h3>How much</h3>
+      <p>We need at least <strong>150 pitches in each pitch group</strong> (fastball, breaking and offspeed) from each camera angle. With less than that, the report says "not enough yet" and suggests a bullpen with the pitch types shuffled.</p>
+      <h3>What we keep</h3>
+      <p>Raw clips are kept only until the job is done. We keep the report, the still frames and the clips of the flagged pitches.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="cam-h">
+  <div class="slate" data-rv><b><span class="hole" aria-hidden="true"></span>Camera guide</b><span>Reel 06</span></div>
+  <h2 class="h2" id="cam-h" data-rv>Two angles. One steady camera each.</h2>
+  <div class="duo" style="margin-top:clamp(28px,4vw,56px)" data-rv>
+    <div class="box">
+      <p class="when"><span class="hole" aria-hidden="true"></span>Angle 01</p>
+      <h3>Behind the plate</h3>
+      <p>The hitter's view. This is the closest thing to what the batter sees, so it is the one to send if you can send only one.</p>
+    </div>
+    <div class="box">
+      <p class="when"><span class="hole" aria-hidden="true"></span>Angle 02</p>
+      <h3>Center field</h3>
+      <p>The view from behind the pitcher. It shows what a runner on second base can see.</p>
+    </div>
+  </div>
+  <div class="duo" data-rv>
+    <div class="box">
+      <p class="when">The clip works when</p>
+      <ul class="marks marks--yes">
+        <li>The camera is steady, on a tripod or a fixed mount</li>
+        <li>The whole body is in the picture, head to feet</li>
+        <li>It runs from the set through release without a cut</li>
+      </ul>
+    </div>
+    <div class="box">
+      <p class="when">We have to reject a clip when</p>
+      <ul class="marks marks--no">
+        <li>The pitcher is too small in the picture</li>
+        <li>The camera moves or zooms during the delivery</li>
+        <li>The shot cuts to a close-up in the middle of the pitch</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="sec sec--print" id="pen-card" aria-labelledby="pen-h">
+  <div class="sec__grid">
+    <div data-rv>
+      <div class="slate"><b><span class="hole" aria-hidden="true"></span>Shuffled pen</b><span>Reel 07</span></div>
+      <h2 class="h2" id="pen-h">A bullpen in random order.</h2>
+      <p class="body">Film a pen where the pitch order comes from a card and not from the pitcher or catcher. Pick the pitch types, print the card and throw it top to bottom.</p>
+    </div>
+    <div data-rv>
+      <form id="pen" class="no-print" onsubmit="return false">
+        <div class="pen__form" role="group" aria-label="Pitch types in this pen">
+          <label class="chip"><input type="checkbox" value="Fastball" checked>Fastball</label>
+          <label class="chip"><input type="checkbox" value="Sinker">Sinker</label>
+          <label class="chip"><input type="checkbox" value="Cutter">Cutter</label>
+          <label class="chip"><input type="checkbox" value="Slider" checked>Slider</label>
+          <label class="chip"><input type="checkbox" value="Sweeper">Sweeper</label>
+          <label class="chip"><input type="checkbox" value="Curveball">Curveball</label>
+          <label class="chip"><input type="checkbox" value="Changeup" checked>Changeup</label>
+          <label class="chip"><input type="checkbox" value="Splitter">Splitter</label>
+        </div>
+        <div class="pen__row">
+          <label for="penN">Pitches</label>
+          <select id="penN"><option>20</option><option selected>30</option><option>40</option><option>50</option><option>60</option></select>
+          <button type="button" class="btn" id="penDeal">Shuffle again</button>
+          <button type="button" class="btn btn--gold" id="penPrint">Print the card</button>
+        </div>
+      </form>
+      <div class="card">
+        <div class="card__top"><span>No Brand Baseball Analytics: shuffled pen</span><span id="penMeta" aria-live="polite"></span></div>
+        <ol id="penList"></ol>
+        <p class="card__foot">Pitcher: ______________________ &nbsp; Date: ____________ &nbsp; Windup / Stretch. Throw in this order. Keep the camera steady with the whole body in the picture.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta" aria-labelledby="cta-h">
+  <h2 id="cta-h" data-rv>Send us <em class="hl">the film</em>.</h2>
+  <p class="body" data-rv>Team and program accounts are set up by us for now. Write to us and we will get you started.</p>
+  <div class="cta__row" data-rv>
+    <a class="mail" href="mailto:nobrandbaseball@gmail.com?subject=Tip%20Detection">nobrandbaseball@gmail.com</a>
+    <a class="pill" href="./login.html#tip-tool">Pitch Tip Tool <i aria-hidden="true"><svg width="16" height="16"><use href="#arr"/></svg></i></a>
+  </div>
+</section>

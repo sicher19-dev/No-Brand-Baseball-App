@@ -1,0 +1,285 @@
+<!-- {"title":"Home","desc":"Pitching analytics and coaching for pitchers who do this for a living. Scouting reports, pitch grades, pitch design, delivery analysis and Tip Detection."} -->
+<!-- ================= HERO ================= -->
+<section class="hero" id="hero" aria-labelledby="hero-h">
+  <img class="hero__plate fit" src="./media/hero-delivery.jpg" alt="" decoding="async" fetchpriority="high">
+  <video class="hero__film fit" id="film" src="./media/hero-delivery.mp4" poster="./media/hero-delivery.jpg" muted playsinline loop autoplay preload="auto" disablepictureinpicture tabindex="-1" aria-label="Slow black-and-white film of a pitcher's delivery, seen from behind home plate"></video>
+  <script>
+  (function(){var v=document.getElementById('film');v.muted=true;v.defaultPlaybackRate=.5;v.playbackRate=.5;
+  if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches){v.removeAttribute('autoplay');v.pause();}})();
+  </script>
+  <div class="hero__shade fit" aria-hidden="true"></div>
+  <div class="hero__scrim" aria-hidden="true"></div>
+  <canvas class="hero__track" id="track" role="img" aria-label="Gold lines drawn over the film trace the pitcher's shoulders, arms, hips and legs through the delivery. Light trails follow his throwing hand and his glove.">Gold lines drawn over the film trace the pitcher's body through the delivery.</canvas>
+  <div class="hero__grain" aria-hidden="true"></div>
+
+  <div class="hero__body">
+    <p class="eyebrow"><span class="hole" aria-hidden="true"></span>Pitching analytics and coaching</p>
+    <h1 id="hero-h"><span>The hitter</span> <span>is watching.</span> <span>We watched <em class="hl">first</em>.</span></h1>
+    <p class="hero__lede">We turn your video and pitch data into a plan you can take to the mound. <span>And we find what your delivery gives away before a hitter does.</span></p>
+    <div class="hero__cta">
+      <a class="pill" href="./contact.html">Work with us <i aria-hidden="true"><svg width="16" height="16"><use href="#arr"/></svg></i></a>
+      <a class="quiet" href="https://sicher19-dev.github.io/skenes-tip/">See a sample report <svg width="16" height="16" aria-hidden="true"><use href="#arr"/></svg></a>
+    </div>
+  </div>
+
+  <div class="hero__foot">
+    <div class="foot__row">
+      <div class="foot__meta" id="meta" hidden>
+        <button type="button" class="foot__pp" id="pp" aria-label="Pause the film">Pause</button>
+        <span class="foot__ph" id="ph" aria-hidden="true">Set</span>
+        <span class="foot__tc" id="tc" aria-hidden="true">-00.00 s to release</span>
+      </div>
+      <p class="hero__cap">Paul Skenes, 2026. Tracked by No Brand.</p>
+    </div>
+    <div class="rail" id="rail" hidden>
+      <span class="rail__ruler"></span><span class="rail__line"></span><span class="rail__fill" id="fill"></span>
+      <input type="range" id="seek" min="0" max="201" step="1" value="0" aria-label="Scrub through the delivery, one frame per step">
+      <ol class="rail__ticks" id="ticks" aria-label="Jump to a moment in the delivery"></ol>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MANIFESTO ================= -->
+<section class="mani" aria-label="What we believe">
+  <div class="slate"><b><span class="hole" aria-hidden="true"></span>The idea</b><span>Reel 01</span></div>
+  <p class="mani__p" id="mani">You pitch for a living. Every start ends up on film, and every lineup you face has people studying it. They look for the pitch you lean on, the spot you miss to and the small thing your glove does before a changeup. <em>You should know all of it before they do.</em> We watch the same film and we measure it. Then we tell you what we found, in plain words, and what to do about it.</p>
+</section>
+
+<!-- ================= A SEASON ON FILM ================= -->
+<section id="season" class="season" aria-labelledby="season-h">
+  <div class="season__head">
+    <div class="slate" data-rv><b><span class="hole" aria-hidden="true"></span>The work</b><span>Reel 02</span></div>
+    <h2 class="h2" id="season-h" data-rv>A season <em class="hl">on film</em>.</h2>
+    <p class="body" data-rv>The work follows the calendar you live on. There is something for the day before a start, the day after and the months in between.</p>
+  </div>
+
+  <div class="reels" id="reels">
+    <article class="reel">
+      <div class="reel__in">
+        <div class="reel__txt">
+          <p class="reel__when"><span class="hole" aria-hidden="true"></span>Before the start</p>
+          <div class="reel__num" aria-hidden="true">01</div>
+          <h3>Walk out with a plan for every hitter.</h3>
+          <p class="gets__t">You get</p>
+          <ul class="gets">
+            <li>A pregame scouting report</li>
+            <li>A short plan for each hitter</li>
+            <li>Where to attack and where to stay away</li>
+            <li>All of it on your phone before you throw</li>
+          </ul>
+        </div>
+        <figure class="vis zone">
+          <div class="vis__top"><span>Plan by hitter</span><span class="sample">Sample</span></div>
+          <div class="zone__st">
+            <svg viewBox="0 0 400 420" aria-hidden="true" focusable="false">
+              <rect class="fd" style="--d:.9s" x="28" y="38" width="194" height="244" fill="none" stroke="rgba(239,236,228,.34)" stroke-width="1" stroke-dasharray="3 5"/>
+              <rect class="ln" pathLength="1" x="50" y="60" width="150" height="200"/>
+              <path class="ln ln--f" pathLength="1" style="--d:.35s" d="M100 60v200"/>
+              <path class="ln ln--f" pathLength="1" style="--d:.45s" d="M150 60v200"/>
+              <path class="ln ln--f" pathLength="1" style="--d:.55s" d="M50 126.7h150"/>
+              <path class="ln ln--f" pathLength="1" style="--d:.65s" d="M50 193.3h150"/>
+              <path class="ln" pathLength="1" style="--d:.5s" d="M75 348h100v16l-50 22-50-22z"/>
+              <g class="pop" style="--d:1s"><circle cx="185" cy="80" r="25" fill="rgba(245,183,0,.2)" stroke="#f5b700" stroke-width="1.4"/><path d="M185 72v16M177 80h16" stroke="#f5b700" stroke-width="1.4"/></g>
+              <g class="pop" style="--d:1.15s"><circle cx="62" cy="266" r="29" fill="rgba(245,183,0,.2)" stroke="#f5b700" stroke-width="1.4"/><path d="M62 258v16M54 266h16" stroke="#f5b700" stroke-width="1.4"/></g>
+              <g class="pop" style="--d:1.3s"><circle cx="125" cy="160" r="28" fill="none" stroke="#efece4" stroke-width="1.2" stroke-dasharray="4 4"/><path d="M106 141l38 38" stroke="#efece4" stroke-width="1.2"/></g>
+              <path class="ln ln--g" pathLength="1" style="--d:1.3s" d="M210 80h62"/>
+              <path class="ln" pathLength="1" style="--d:1.6s" d="M153 160h119"/>
+              <path class="ln ln--g" pathLength="1" style="--d:1.45s" d="M91 266h181"/>
+            </svg>
+            <span class="zone__lab" style="--x:70%;--y:19%;--d:1.6s"><b>Attack here</b><span>Fastball up</span></span>
+            <span class="zone__lab is-no" style="--x:70%;--y:38.1%;--d:1.9s"><b>Stay away</b><span>Middle</span></span>
+            <span class="zone__lab" style="--x:70%;--y:63.3%;--d:1.75s"><b>Attack here</b><span>Slider down</span></span>
+          </div>
+          <figcaption class="vis__cap">Sample hitter. One page like this for every bat in the lineup.</figcaption>
+        </figure>
+      </div>
+    </article>
+
+    <article class="reel">
+      <div class="reel__in">
+        <div class="reel__txt">
+          <p class="reel__when"><span class="hole" aria-hidden="true"></span>After the start</p>
+          <div class="reel__num" aria-hidden="true">02</div>
+          <h3>See what you threw, where it went and what it did.</h3>
+          <p class="gets__t">You get</p>
+          <ul class="gets">
+            <li>A reverse report after each outing</li>
+            <li>A grade for every pitch you throw</li>
+            <li>How often you hit your spot</li>
+            <li>Zone usage, pitch by pitch</li>
+          </ul>
+        </div>
+        <figure class="vis grades">
+          <div class="vis__top"><span>Pitch grades</span><span class="sample">Sample</span></div>
+          <div class="strip" role="img" aria-label="Sample pitch grades. Fastball 62. Slider 57. Changeup 49.">
+            <div class="strip__fr" aria-hidden="true">
+              <div class="fr" data-n="21" style="--g:.62;--d:.2s"><b>62</b><span>Fastball</span><i></i></div>
+              <div class="fr" data-n="21A" style="--g:.57;--d:.35s"><b>57</b><span>Slider</span><i></i></div>
+              <div class="fr" data-n="22" style="--g:.49;--d:.5s"><b>49</b><span>Changeup</span><i></i></div>
+            </div>
+          </div>
+          <div class="exec">
+            <div class="vis__top"><span>Execution, last outing</span><span class="sample">Sample</span></div>
+            <div class="exec__d" role="img" aria-label="Sample execution. 14 of 20 pitches hit the spot.">
+              <i class="h" style="--i:0"></i><i class="h" style="--i:1"></i><i style="--i:2"></i><i class="h" style="--i:3"></i><i class="h" style="--i:4"></i><i class="h" style="--i:5"></i><i style="--i:6"></i><i class="h" style="--i:7"></i><i class="h" style="--i:8"></i><i style="--i:9"></i><i class="h" style="--i:10"></i><i class="h" style="--i:11"></i><i class="h" style="--i:12"></i><i style="--i:13"></i><i style="--i:14"></i><i class="h" style="--i:15"></i><i class="h" style="--i:16"></i><i style="--i:17"></i><i class="h" style="--i:18"></i><i class="h" style="--i:19"></i>
+            </div>
+            <p class="vis__cap">Hit the spot on 14 of 20. Sample numbers for illustration.</p>
+          </div>
+        </figure>
+      </div>
+    </article>
+
+    <article class="reel">
+      <div class="reel__in">
+        <div class="reel__txt">
+          <p class="reel__when"><span class="hole" aria-hidden="true"></span>All winter</p>
+          <div class="reel__num" aria-hidden="true">03</div>
+          <h3>Use the offseason on purpose.</h3>
+          <p class="gets__t">You get</p>
+          <ul class="gets">
+            <li>Pitch design, to sharpen a pitch or build one</li>
+            <li>Motion-capture delivery analysis</li>
+            <li>An offseason arsenal plan</li>
+            <li>A purpose for every bullpen</li>
+          </ul>
+        </div>
+        <figure class="vis mocap" id="cfFig">
+          <div class="vis__top"><span>Delivery, joint by joint</span><span id="cfN" aria-hidden="true">Frame 000</span></div>
+          <canvas id="cf" role="img" aria-label="A tracked pitching delivery seen from center field, drawn as a figure of lines and joints, with earlier positions left behind it like a multiple exposure.">A tracked pitching delivery seen from center field.</canvas>
+          <figcaption class="vis__cap">A real tracked delivery, seen from center field.</figcaption>
+        </figure>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ================= TIP DETECTION ================= -->
+<section class="tip" id="tip" aria-labelledby="tip-h">
+  <div class="tip__grid">
+    <div class="tip__txt">
+      <div class="slate" data-rv><b><span class="hole" aria-hidden="true"></span>Tip Detection</b><span>Reel 03</span></div>
+      <h2 class="h2" id="tip-h" data-rv>Find the tell before a hitter does.</h2>
+      <p class="body" data-rv>Tip Detection checks video of a pitcher for anything in his delivery that gives the pitch away before release. If something is there, the report shows what it is, when it shows up and how much it gives away.</p>
+    </div>
+    <figure class="tip__fig" id="tipFig">
+      <div class="tip__st">
+        <canvas id="tipc" role="img" aria-label="A tracked delivery seen from the hitter's side. It plays, then stops before release. A gold ring marks the glove, with a note that reads: sample, glove sits lower before a changeup.">A tracked delivery that stops before release with a gold ring around the glove.</canvas>
+        <div class="tell" id="tell" aria-hidden="true">
+          <span class="sample">Sample</span>
+          <p>Glove sits lower before a changeup.</p>
+          <ul><li>Changeup</li><li>Fastball</li></ul>
+        </div>
+      </div>
+      <figcaption class="vis__cap">Hitter's view. The delivery is real tracking. The tell is a sample.</figcaption>
+    </figure>
+  </div>
+
+  <div class="verdicts">
+    <p class="verdicts__t">Every camera angle and delivery gets one of three verdicts</p>
+    <dl>
+      <div class="vd vd--clear" data-rv><dt>Clear tell</dt><dd data-n="01">A hitter who knows what to look for could use it.</dd></div>
+      <div class="vd vd--weak" data-rv><dt>Weak tell</dt><dd data-n="02">A small but real edge.</dd></div>
+      <div class="vd vd--none" data-rv><dt>No tell</dt><dd data-n="03">Nothing readable before release.</dd></div>
+    </dl>
+  </div>
+
+  <div class="tip__send" data-rv>
+    <p>A team sends one clip per pitch and a pitch list. We send back the report.</p>
+    <div class="tip__links">
+      <a class="quiet" href="./tip-detection.html">How it works <svg width="16" height="16" aria-hidden="true"><use href="#arr"/></svg></a>
+      <a class="quiet" href="https://sicher19-dev.github.io/skenes-tip/">See the sample report <svg width="16" height="16" aria-hidden="true"><use href="#arr"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= WHO ================= -->
+<section class="who" id="who" aria-labelledby="who-h">
+  <div class="slate"><b><span class="hole" aria-hidden="true"></span>Who we work with</b><span>Reel 04</span></div>
+  <h2 class="who__line" id="who-h"><span id="whoLine">Big-league, minor-league and college pitchers.</span></h2>
+  <ul class="who__list" aria-hidden="true">
+    <li data-n="01">Big-league</li>
+    <li data-n="02">Minor-league</li>
+    <li data-n="03">College</li>
+  </ul>
+</section>
+
+<!-- ================= THE APP ================= -->
+<section class="app" aria-labelledby="app-h">
+  <div class="app__grid">
+    <div class="app__txt">
+      <div class="slate" data-rv><b><span class="hole" aria-hidden="true"></span>The pitcher app</b><span>Reel 05</span></div>
+      <h2 class="h2" id="app-h" data-rv>Everything we build for you, in your pocket.</h2>
+      <p class="body" data-rv>Open it on the bus or in the clubhouse. Your work is there when you want it.</p>
+      <ul class="gets" data-rv>
+        <li>Your reports, all interactive</li>
+        <li>Pitch grades from start to start</li>
+        <li>Mobility videos, sent from your phone</li>
+        <li>Messages with your coaches</li>
+      </ul>
+      <a class="pill pill--line" href="./app/" data-rv>Athlete log in <i aria-hidden="true"><svg width="16" height="16"><use href="#arr"/></svg></i></a>
+    </div>
+    <figure class="app__ph" data-rv>
+      <div class="app__rig">
+        <div class="phone" role="img" aria-label="Mock phone screen of the pitcher app, with sample content. It shows the week with a bullpen day and a start day, a scouting report for the next start, pitch grades and a message from the coaches.">
+          <div class="phone__scr" aria-hidden="true">
+            <div class="ph-st"><span>9:41</span><span>&#9679;&#9679;&#9679;</span></div>
+            <div class="ph-hd"><svg><use href="#nb"/></svg><b>Today</b><span>Sample pitcher</span></div>
+            <div class="ph-wk"><span>M</span><span>T</span><span class="pen">W<i>Pen</i></span><span>T</span><span class="on">F<i>Start</i></span><span>S</span><span>S</span></div>
+            <div class="ph-c"><h4>Scouting report <em>New</em></h4>
+              <div class="ph-rep">
+                <div class="ph-z"><i></i><i></i><i class="a"></i><i></i><i class="n"></i><i></i><i class="a"></i><i></i><i></i></div>
+                <div><strong>Your next start</strong><p>A plan for every hitter.</p><span class="ph-btn">Open report</span></div>
+              </div>
+            </div>
+            <div class="ph-c"><h4>Pitch grades <em>Sample</em></h4>
+              <div class="ph-g" style="--g:.62"><span>Fastball</span><i></i><b>62</b></div>
+              <div class="ph-g" style="--g:.57"><span>Slider</span><i></i><b>57</b></div>
+              <div class="ph-g" style="--g:.49"><span>Changeup</span><i></i><b>49</b></div>
+            </div>
+            <div class="ph-c"><h4>Messages <em>1</em></h4><div class="ph-m"><svg><use href="#nb"/></svg><span><b>Your coaches</b>Sample message. Notes from your last outing are in.</span></div></div>
+            <div class="ph-tabs"><span>Today</span><span>Reports</span><span>Grades</span><span>Messages</span></div>
+          </div>
+        </div>
+        <ul class="app__notes" aria-hidden="true">
+          <li style="--y:36.7%"><b>01</b>Report</li>
+          <li style="--y:59.2%"><b>02</b>Grades</li>
+          <li style="--y:78.8%"><b>03</b>Messages</li>
+        </ul>
+      </div>
+      <figcaption class="vis__cap">Mock screen with sample numbers.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ================= FOUNDERS ================= -->
+<section id="team" class="team" aria-labelledby="team-h">
+  <div class="team__grid">
+    <div class="team__txt">
+      <div class="slate" data-rv><b><span class="hole" aria-hidden="true"></span>The founders</b><span>Reel 06</span></div>
+      <h2 class="h2" id="team-h" data-rv>The two people watching your film.</h2>
+      <p class="body" data-rv>No Brand Baseball Analytics is Derek Groomer and Brian Sicher. The people who build your reports are the people who answer your messages.</p>
+      <a class="quiet" href="./about.html" data-rv>About us <svg width="16" height="16" aria-hidden="true"><use href="#arr"/></svg></a>
+    </div>
+    <div class="team__film" data-rv>
+      <div class="film">
+        <div class="cell" data-placeholder="portrait"><span data-placeholder>[Portrait: Derek]</span><span class="cell__n" aria-hidden="true">11A</span></div>
+        <div class="cell" data-placeholder="portrait"><span data-placeholder>[Portrait: Brian]</span><span class="cell__n" aria-hidden="true">12A</span></div>
+      </div>
+      <div class="team__names">
+        <div><h3>Derek Groomer</h3><p><span data-placeholder>[One line about Derek]</span></p></div>
+        <div><h3>Brian Sicher</h3><p><span data-placeholder>[One line about Brian]</span></p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section id="contact" class="cta" aria-labelledby="cta-h">
+  <div class="slate" data-rv><b><span class="hole" aria-hidden="true"></span>Contact</b><span>Reel 07</span></div>
+  <h2 id="cta-h" data-rv>Tell us about <em class="hl">your arm</em>.</h2>
+  <p class="body" data-rv>Send a note about where you pitch and what you want to get better at. Pitchers, agents, college programs and teams are all welcome to write.</p>
+  <div class="cta__row" data-rv>
+    <a class="mail" href="mailto:nobrandbaseball@gmail.com">nobrandbaseball@gmail.com</a>
+    <a class="pill" href="./contact.html">Work with us <i aria-hidden="true"><svg width="16" height="16"><use href="#arr"/></svg></i></a>
+  </div>
+</section>

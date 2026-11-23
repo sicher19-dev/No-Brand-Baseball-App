@@ -9,3 +9,6 @@ android/local.properties
 android/.idea/
 *.log
 .DS_Store
+
+# built website (node tools/site/build.mjs)
+_site/
