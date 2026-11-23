@@ -54,6 +54,13 @@ Login, per-pitcher report hub, remote assessment video, messaging, coach view. T
 - Multi-coach roles (Brian, Derek, future staff), per-pitcher assignment.
 - Email/push digests.
 
+## To do for 1.6
+- Striker Pence's own password (held Nov 23 2026, was waiting on 1.5 which is now on the App Store). Steps, in order:
+  1. Add `pence:<password>` to the `PITCHER_LOGINS` repo secret.
+  2. Add `"auth": "password"` to his entry in `www/roster.js` and push.
+  3. Run **Provision app users** with *reset_passwords* ticked, right after the push (he cannot sign in between 2 and 3).
+  He must be on app 1.5 or later first.
+
 ## App Store description guidance
 Apple allows only current functionality in the description; update it as each phase ships.
 Positioning line candidates: "Your arm. Your data. Your coaches." / "Built on big-league data, not a lab pool."
