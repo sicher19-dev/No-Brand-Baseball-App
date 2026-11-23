@@ -1,5 +1,5 @@
 window.NBB_ROSTER = {
-  "updated": "2026-11-21",
+  "updated": "2026-11-23",
   "push": true,
   "coachTools": [
     {
@@ -164,6 +164,13 @@ window.NBB_ROSTER = {
           "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pens/index.html#chandler"
         },
         {
+          "id": "chandler-program",
+          "kind": "pen",
+          "title": "2026-27 Off-Season Throwing Program (Weeks 5-10)",
+          "updated": "2026-11-23",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pdfview.html?f=docs%2Fchandler%2Foffseason-throwing-program-2026-27-wk5-10.pdf&t=2026-27%20Off-Season%20Throwing%20Program%20(Weeks%205-10)"
+        },
+        {
           "id": "chandler-scout",
           "kind": "scout",
           "title": "Scouting Report - at Tigers, 9/25",
@@ -256,6 +263,13 @@ window.NBB_ROSTER = {
           "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pens/index.html#jax"
         },
         {
+          "id": "jax-program",
+          "kind": "pen",
+          "title": "2026-27 Off-Season Throwing Program (Weeks 1-4)",
+          "updated": "2026-11-23",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pdfview.html?f=docs%2Fjax%2Foffseason-throwing-program-2026-27-wk1-4.pdf&t=2026-27%20Off-Season%20Throwing%20Program%20(Weeks%201-4)"
+        },
+        {
           "id": "jax-scout",
           "kind": "scout",
           "title": "World Series Scout - vs Brewers",
@@ -341,6 +355,13 @@ window.NBB_ROSTER = {
           "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pens/index.html#joyce"
         },
         {
+          "id": "joyce-program",
+          "kind": "pen",
+          "title": "2026-27 Off-Season Throwing Program (Weeks 4-6)",
+          "updated": "2026-11-23",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pdfview.html?f=docs%2Fjoyce%2Foffseason-throwing-program-2026-27-wk4-6.pdf&t=2026-27%20Off-Season%20Throwing%20Program%20(Weeks%204-6)"
+        },
+        {
           "id": "joyce-grips",
           "kind": "lab",
           "title": "Pitch Grip Library",
@@ -403,6 +424,13 @@ window.NBB_ROSTER = {
           "title": "Offseason Bullpen Plan 2026-27",
           "updated": "2026-11-06",
           "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pens/index.html#cosgrove"
+        },
+        {
+          "id": "cosgrove-program",
+          "kind": "pen",
+          "title": "2026-27 Off-Season Throwing Program (Weeks 6-10)",
+          "updated": "2026-11-23",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pdfview.html?f=docs%2Fcosgrove%2Foffseason-throwing-program-2026-27-wk6-10.pdf&t=2026-27%20Off-Season%20Throwing%20Program%20(Weeks%206-10)"
         },
         {
           "id": "cosgrove-scout",
@@ -476,6 +504,13 @@ window.NBB_ROSTER = {
           "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pens/index.html#barco"
         },
         {
+          "id": "barco-program",
+          "kind": "pen",
+          "title": "2026-27 Off-Season Throwing Program (Weeks 6-10)",
+          "updated": "2026-11-23",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pdfview.html?f=docs%2Fbarco%2Foffseason-throwing-program-2026-27-wk6-10.pdf&t=2026-27%20Off-Season%20Throwing%20Program%20(Weeks%206-10)"
+        },
+        {
           "id": "barco-scout",
           "kind": "scout",
           "title": "Scouting Report",
@@ -543,6 +578,13 @@ window.NBB_ROSTER = {
           "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pens/index.html#dana"
         },
         {
+          "id": "dana-program",
+          "kind": "pen",
+          "title": "2026-27 Off-Season Throwing Program (Weeks 4-6)",
+          "updated": "2026-11-23",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pdfview.html?f=docs%2Fdana%2Foffseason-throwing-program-2026-27-wk4-6.pdf&t=2026-27%20Off-Season%20Throwing%20Program%20(Weeks%204-6)"
+        },
+        {
           "id": "dana-grips",
           "kind": "lab",
           "title": "Pitch Grip Library",
@@ -591,6 +633,13 @@ window.NBB_ROSTER = {
           "title": "Offseason Bullpen Plan 2026-27",
           "updated": "2026-11-06",
           "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pens/index.html#bwhite"
+        },
+        {
+          "id": "white-brandon-program",
+          "kind": "pen",
+          "title": "2026-27 Off-Season Throwing Program (Weeks 5-8)",
+          "updated": "2026-11-23",
+          "url": "https://sicher19-dev.github.io/No-Brand-Baseball-App/pdfview.html?f=docs%2Fwhite-brandon%2Foffseason-throwing-program-2026-27-wk5-8.pdf&t=2026-27%20Off-Season%20Throwing%20Program%20(Weeks%205-8)"
         },
         {
           "id": "white-brandon-grips",
